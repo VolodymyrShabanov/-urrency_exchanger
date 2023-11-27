@@ -2,10 +2,7 @@ package models;
 
 import utils.UserRole;
 
-/**
- * Created by Volodymyr Sh on 27.11.2023
- * project name: exchanger_currency
- */
+
 public class User {
     private final int id;
     private String name;
