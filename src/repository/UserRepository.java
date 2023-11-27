@@ -1,9 +1,26 @@
 package repository;
 
-/**
- * Created by Volodymyr Sh on 27.11.2023
- * project name: exchanger_currency
- */
-public class UserRepository {
+import models.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
+public class UserRepository {
+    private Map<String, User> usersByEmail;
+
+    public UserRepository() {
+        this.usersByEmail = new HashMap<>();
+    }
+
+    public boolean isUserExist(String email) {
+        return usersByEmail.containsKey(email);
+    }
+
+    public void saveUser(User user) {
+        usersByEmail.put(user.getEmail(), user);
+    }
+
+    public User getUserByEmail(String email) {
+        return usersByEmail.get(email);
+    }
 }
