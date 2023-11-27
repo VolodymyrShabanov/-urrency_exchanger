@@ -5,4 +5,5 @@ package repository;
  * project name: exchanger_currency
  */
 public class UserRepository {
+
 }
