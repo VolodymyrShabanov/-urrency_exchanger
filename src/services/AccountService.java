@@ -14,6 +14,7 @@ public class AccountService {
         this.accountRepository = new AccountRepository();
     }
 
+    // TODO: decide on account fetching/boolean
     public boolean openAccount(String email, double depositSum, Currency currency) {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
@@ -27,6 +28,7 @@ public class AccountService {
         return false;
     }
 
+    // TODO: decide on account fetching/boolean
     public boolean closeAccount(String email, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 

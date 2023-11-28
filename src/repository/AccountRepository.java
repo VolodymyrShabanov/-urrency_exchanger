@@ -40,7 +40,7 @@ public class AccountRepository {
         }
     }
 
-    // Used as helper class to check if account with user email has already been open
+    // TODO: Refactor account search, optimize number of times program has to search through Repo
     public boolean accountExists(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();

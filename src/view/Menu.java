@@ -135,6 +135,8 @@ public class Menu {
         }
     }
 
+    // TODO: add 'press enter to continue...' prompts
+    // TODO: add 'scanner input type' exception handling
     private void runUserMenu() {
         boolean isMenuRunning = true;
 
@@ -155,6 +157,7 @@ public class Menu {
 
             switch (ans) {
                 case "1":
+                    // TODO
                     System.out.println("Currency exchanged");
                     break;
                 case "2":
@@ -207,6 +210,7 @@ public class Menu {
                     );
                     break;
                 case "6":
+                    // TODO
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":
