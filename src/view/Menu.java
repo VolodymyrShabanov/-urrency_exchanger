@@ -3,6 +3,7 @@ package view;
 import services.AccountService;
 import services.CurrencyService;
 import services.UserService;
+import utils.UserRole;
 
 import java.util.Scanner;
 
@@ -20,40 +21,40 @@ public class Menu {
     UserService userService = new UserService();
     CurrencyService currencyService = new CurrencyService();
 
-    // TODO: Replace with enums
-    String state = "GUEST";
+    UserRole state = UserRole.GUEST;
 
     public void run() {
         while (isAppRunning) {
             switch (state) {
-                case "GUEST": {
+                case GUEST: {
                     runGuestMenu();
                     break;
                 }
-                case "USER": {
+                case USER: {
                     runUserMenu();
                     break;
                 }
-                case "ADMIN": {
+                case ADMIN: {
                     runUserMenu();
                     break;
                 }
-                default:
-                    System.err.println("Error: please choose a valid option.");
-                    break;
             }
 
             clearConsole();
         }
 
         System.out.println("Exiting...");
-        System.out.println("Thank you for using our app!");
+        System.out.println("Thank you for using our app!\n");
     }
 
     private void runGuestMenu() {
         boolean isMenuRunning = true;
 
+        String tempEmail = "";
+        String tempPass = "";
+
         while (isMenuRunning) {
+            System.out.println("Welcome Guest!\n");
             System.out.println("Select:");
             System.out.println("1. Register new user");
             System.out.println("2. Login");
@@ -64,12 +65,57 @@ public class Menu {
 
             switch (ans) {
                 case "1":
-                    System.out.println("User registered");
+                    clearConsole();
+
+                    System.out.println("Enter email:");
+                    tempEmail = scanner.nextLine();
+
+                    clearConsole();
+
+                    System.out.println("Enter password:");
+                    tempPass = scanner.nextLine();
+
+                    clearConsole();
+
+                    System.out.println("Choose role:\n1. User");
+//                    System.out.println("Choose role:\n1. User\n2. Admin");
+                    String roleSelect = scanner.nextLine();
+
+                    clearConsole();
+
+                    UserRole tempRole;
+
+                    switch (roleSelect) {
+                        case "1":
+                            tempRole = UserRole.USER;
+                            break;
+//                        case "2":
+//                            tempRole = UserRole.ADMIN;
+//                            break;
+                        default:
+                            tempRole = null;
+                            break;
+                    }
+
+                    userService.createUser(tempEmail, tempPass, tempRole);
                     break;
                 case "2":
-                    System.out.println("You have logged in");
-                    state = "USER";
-                    isMenuRunning = false;
+                    clearConsole();
+
+                    System.out.println("Enter email:");
+                    tempEmail = scanner.nextLine();
+
+                    clearConsole();
+
+                    System.out.println("Enter password:");
+                    tempPass = scanner.nextLine();
+
+                    clearConsole();
+
+                    if (userService.login(tempEmail, tempPass)) {
+                      isMenuRunning = false;
+                      state = UserRole.USER;
+                    }
                     break;
                 case "0":
                     isMenuRunning = false;
@@ -77,6 +123,9 @@ public class Menu {
                     break;
                 default:
                     System.err.println("Error: please choose a valid option.");
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
                     break;
             }
 
@@ -88,32 +137,14 @@ public class Menu {
         boolean isMenuRunning = true;
 
         while (isMenuRunning) {
-            System.out.println("Select:");
-
-            System.out.println("1. Exchange Currency");
-            System.out.println("2. Deposit Currency");
-            System.out.println("3. Withdraw Currency");
-
-            System.out.println();
-
-            System.out.println("4. Open Account");
-            System.out.println("5. Close Account");
-
-            System.out.println();
-
-            System.out.println("6. Display Transaction History");
-
-            System.out.println();
-
-            System.out.println("7. Display Account Balance");
-
-            System.out.println();
-
-            System.out.println("8. Logout");
-
-            System.out.println();
-
-            System.out.println("0. Exit");
+            System.out.printf("                       Welcome %s!\n\n", userService.getCurrentUserEmail().get());
+            System.out.println("1. Exchange Currency   | 4. Open Account    | 6. Transaction History\n" +
+                               "                       |                    |\n" +
+                               "2. Deposit Currency    | 5. Close Account   | 7. Account Balance\n" +
+                               "                       |                    |\n" +
+                               "3. Withdraw Currency   |                    |\n\n" +
+                               "                            8. Logout       \n" +
+                               "                            0. Exit App     ");
 
             String ans = scanner.nextLine();
 
@@ -141,7 +172,7 @@ public class Menu {
                     break;
                 case "8":
                     System.out.println("Logged out.");
-                    state = "GUEST";
+                    state = UserRole.GUEST;
                     isMenuRunning = false;
                     break;
                 case "0":
@@ -150,6 +181,9 @@ public class Menu {
                     break;
                 default:
                     System.err.println("Error: please choose a valid option.");
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
                     break;
             }
 
@@ -188,10 +222,6 @@ public class Menu {
     }
 
     private void clearConsole() {
-        System.out.println("Press enter to continue...");
-
-        scanner.nextLine();
-
         for (int i = 0; i < 50; i++) System.out.println();
     }
 }

@@ -42,7 +42,7 @@ public class UserService implements IUserService {
         Optional<User> user = userRepository.getUserByEmail(email);
 
         if (user.isPresent() && user.get().checkPassword(password)) {
-            System.out.println("Login success!");
+            currentUser = user;
             return true;
         }
 
