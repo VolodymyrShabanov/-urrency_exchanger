@@ -1,7 +1,7 @@
 package utils;
 
 public enum TransactionType {
-    DEPOSIT,
-    WITHDRAWAL,
+    DEBIT,
+    CREDIT,
     EXCHANGE
 }
