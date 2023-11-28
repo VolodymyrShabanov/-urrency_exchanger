@@ -5,7 +5,7 @@ public enum Currency {
     EUR(1.1),
     PLN(3.9);
 
-    double rate;
+    public double rate;
 
     Currency(double rate) {
         this.rate = rate;

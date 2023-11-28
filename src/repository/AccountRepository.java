@@ -1,6 +1,7 @@
 package repository;
 
 import models.Account;
+import utils.Currency;
 
 import java.util.*;
 
@@ -13,10 +14,10 @@ public class AccountRepository {
 
     public boolean addAccount(String email, double depositSum, Currency currency) {
         if (!accountExists(email, currency)) {
-            if (accounts.get(email).isEmpty()) {
-                accounts.put(email, new HashSet<Account>());
+            if (accounts.containsKey(email)) {
                 accounts.get(email).add(new Account(email, depositSum, currency));
             } else {
+                accounts.put(email, new HashSet<Account>());
                 accounts.get(email).add(new Account(email, depositSum, currency));
             }
 
@@ -35,10 +36,15 @@ public class AccountRepository {
     }
 
     // Used as helper class to check if account with user email has already been open
-    private boolean accountExists(String email, Currency currency) {
-        Optional<Account> accountOptional = accounts.get(email).stream()
-                .filter(account -> account.getCurrency().equals(currency))
-                .findFirst();
+    private boolean accountExists(String email, utils.Currency currency) {
+        boolean isAccountOpen = accounts.containsKey(email);
+        Optional<Account> accountOptional = Optional.empty();
+
+        if(isAccountOpen) {
+            accountOptional = accounts.get(email).stream()
+                    .filter(account -> account.getCurrency().equals(currency))
+                    .findFirst();
+        }
 
         return accountOptional.isPresent();
     }

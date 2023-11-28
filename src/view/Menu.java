@@ -3,8 +3,10 @@ package view;
 import services.AccountService;
 import services.CurrencyService;
 import services.UserService;
+import utils.Currency;
 import utils.UserRole;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 /**
@@ -159,7 +161,16 @@ public class Menu {
                     System.out.println("Currency withdrawn");
                     break;
                 case "4":
-                    System.out.println("New account is open");
+                    String email = userService.getCurrentUserEmail().get();
+
+                    System.out.println("Enter deposit sum:");
+                    double sum = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    System.out.println("Enter currency type:");
+                    String curAns = scanner.nextLine();
+
+                    accountService.openAccount(email, sum, Currency.valueOf(curAns));
                     break;
                 case "5":
                     System.out.println("Current account is closed");
@@ -168,7 +179,10 @@ public class Menu {
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":
-                    System.out.println("Account balance is displayed");
+                    accountService.printUserAccounts(userService.getCurrentUserEmail().get());
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
                     break;
                 case "8":
                     System.out.println("Logged out.");

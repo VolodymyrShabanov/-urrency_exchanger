@@ -1,6 +1,7 @@
 package models;
 
-import java.util.Currency;
+
+import utils.Currency;
 
 public class Account {
     private final int id;
