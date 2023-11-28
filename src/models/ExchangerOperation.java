@@ -1,6 +1,7 @@
 package models;
 
 import java.time.LocalDate;
+import java.util.Currency;
 
 /**
  * Created by Volodymyr Sh on 27.11.2023
