@@ -6,17 +6,19 @@ import java.time.LocalDateTime;
 public class Transaction {
     private final int id;
     private User user;
-    private Account account;
+    private Account fromAccount;
+    private Account toAccount;
     private TransactionType type;
     private double amount;
     private LocalDateTime date;
-    private static int counter;
 
 
-    public Transaction(User user, Account account, TransactionType type, double amount) {
-        this.id = counter++;
+
+    public Transaction(int id, User user, Account fromAccount, Account toAccount, TransactionType type, double amount) {
+        this.id = id;
         this.user = user;
-        this.account = account;
+        this.fromAccount = fromAccount;
+        this.toAccount = toAccount;
         this.type = type;
         this.amount = amount;
         this.date = LocalDateTime.now();
@@ -34,12 +36,20 @@ public class Transaction {
         this.user = user;
     }
 
-    public Account getAccount() {
-        return account;
+    public Account getFromAccount() {
+        return fromAccount;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setFromAccount(Account fromAccount) {
+        this.fromAccount = fromAccount;
+    }
+
+    public Account getToAccount() {
+        return toAccount;
+    }
+
+    public void setToAccount(Account toAccount) {
+        this.toAccount = toAccount;
     }
 
     public TransactionType getType() {
@@ -71,7 +81,7 @@ public class Transaction {
         return "Transaction{" +
                 "id=" + id +
                 ", user=" + user +
-                ", account=" + account +
+                ", account=" + fromAccount +
                 ", type=" + type +
                 ", amount=" + amount +
                 ", date=" + date +
