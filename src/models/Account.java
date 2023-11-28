@@ -5,13 +5,22 @@ public class Account {
     private User user;
     private double balance;
     private Currency currency;
-    private static int counter;
 
-    public Account(User user, double balance, Currency currency) {
-        this.id = counter++;
+    public Account(int id, User user, Currency currency) {
+        this.id = id;
         this.user = user;
-        this.balance = balance;
         this.currency = currency;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", user=" + user +
+                ", balance=" + balance +
+                ", currency=" + currency +
+                '}';
     }
 
     public long getId() {
@@ -22,16 +31,8 @@ public class Account {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public double getBalance() {
         return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 
     public Currency getCurrency() {
@@ -42,11 +43,11 @@ public class Account {
         this.currency = currency;
     }
 
-    public void deposit(double amount) {
+    public void debit(double amount) {
         balance += amount;
     }
 
-    public void withdraw(double amount) {
+    public void credit(double amount) {
         balance -= amount;
     }
 }
