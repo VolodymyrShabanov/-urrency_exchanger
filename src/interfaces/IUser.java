@@ -7,5 +7,5 @@ public interface IUser {
 
     public boolean checkPass(String password);
 
-    public List<IAccount> getAccounts();
+    public List<IAccount> getAccounts(); // Copy, no direct access
 }

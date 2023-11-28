@@ -7,46 +7,59 @@ import repository.UserRepository;
 import utils.UserRole;
 import utils.Validator;
 
+import java.util.Optional;
+
 public class UserService implements IUserService {
-    private static User currentUser;
+    private static Optional<User> currentUser;
     private UserRepository userRepository;
 
+    public UserService() {
+        userRepository = new UserRepository();
+    }
+
     @Override
-    public String getCurrentUserEmail() {
-        return null;
+    public Optional<String> getCurrentUserEmail() {
+        return currentUser.map(User::getEmail);
     }
 
     @Override
     public boolean createUser(String email, String password, UserRole role) {
-        validateUserData(email, password);
+        try {
+            validateUserData(email, password);
+        } catch (ValidationException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
 
         User newUser = new User(email, password, role);
-        userRepository.saveUser(newUser);
+        userRepository.addUser(newUser);
 
         return true;
     }
 
     @Override
     public boolean login(String email, String password) {
-        User user = userRepository.getUserByEmail(email);
-        if (user == null || !user.getPassword().equals(password)) {
-            return false;
+        Optional<User> user = userRepository.getUserByEmail(email);
+
+        if (user.isPresent() && user.get().checkPassword(password)) {
+            System.out.println("Login success!");
+            return true;
         }
 
-        currentUser = user;
-
-        return true;
+        System.err.println("Error: login details are incorrect.");
+        return false;
     }
 
-    public void logout() {
-        currentUser = null;
+    public boolean logout() {
+        if (currentUser.isPresent()) {
+            currentUser = Optional.empty();
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    private void validateUserData(String email, String password) {
+    private void validateUserData(String email, String password) throws ValidationException {
         if (!Validator.isValidEmail(email) || !Validator.isValidPassword(password)) {
             throw new ValidationException("Invalid email or password. Please try again.");
         }
