@@ -1,29 +1,40 @@
 package models;
 
+import java.util.Currency;
+
 public class Account {
     private final int id;
-    private User user;
+    private String userEmail;
     private double balance;
     private Currency currency;
     private static int counter;
 
-    public Account(User user, double balance, Currency currency) {
+    public Account(String userID, double balance, Currency currency) {
         this.id = counter++;
-        this.user = user;
+        this.userEmail = userID;
         this.balance = balance;
         this.currency = currency;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User: %s | Currency: %s | Account Balance %f",
+                userEmail,
+                currency.toString(),
+                balance
+        );
     }
 
     public long getId() {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public double getBalance() {

@@ -3,6 +3,7 @@ package models;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Currency;
 
 /**
  * Created by Volodymyr Sh on 27.11.2023
