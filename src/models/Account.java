@@ -24,6 +24,7 @@ public class Account {
                 currency.toString(),
                 balance
         );
+
     }
 
     public long getId() {
@@ -34,16 +35,8 @@ public class Account {
         return userEmail;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
     public double getBalance() {
         return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 
     public Currency getCurrency() {
@@ -54,11 +47,11 @@ public class Account {
         this.currency = currency;
     }
 
-    public void deposit(double amount) {
+    public void debit(double amount) {
         balance += amount;
     }
 
-    public void withdraw(double amount) {
+    public void credit(double amount) {
         balance -= amount;
     }
 }
