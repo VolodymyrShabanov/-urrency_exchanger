@@ -27,8 +27,13 @@ public class AccountRepository {
         return false;
     }
 
+    public boolean removeAccount(String email, Account account) {
+        accounts.get(email).remove(account);
+        return true;
+    }
+
     public Optional<Set<Account>> getUserAccounts(String email) {
-        if(accounts.containsKey(email)) {
+        if (accounts.containsKey(email)) {
             return Optional.ofNullable(accounts.get(email));
         } else {
             return Optional.empty();
@@ -36,16 +41,29 @@ public class AccountRepository {
     }
 
     // Used as helper class to check if account with user email has already been open
-    private boolean accountExists(String email, utils.Currency currency) {
+    public boolean accountExists(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();
 
-        if(isAccountOpen) {
+        if (isAccountOpen) {
             accountOptional = accounts.get(email).stream()
                     .filter(account -> account.getCurrency().equals(currency))
                     .findFirst();
         }
 
         return accountOptional.isPresent();
+    }
+
+    public Optional<Account> fetchAccount(String email, Currency currency) {
+        boolean isAccountOpen = accounts.containsKey(email);
+        Optional<Account> accountOptional = Optional.empty();
+
+        if (isAccountOpen) {
+            accountOptional = accounts.get(email).stream()
+                    .filter(account -> account.getCurrency().equals(currency))
+                    .findFirst();
+        }
+
+        return accountOptional;
     }
 }

@@ -150,30 +150,61 @@ public class Menu {
 
             String ans = scanner.nextLine();
 
+            double depositSum;
+            String currencyType;
+
             switch (ans) {
                 case "1":
                     System.out.println("Currency exchanged");
                     break;
                 case "2":
-                    System.out.println("Currency deposited");
+                    System.out.println("Enter deposit sum:");
+                    depositSum = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    System.out.println("Enter currency type:");
+                    currencyType = scanner.nextLine();
+
+                    accountService.depositCurrency(
+                            userService.getCurrentUserEmail().get(),
+                            depositSum,
+                            Currency.valueOf(currencyType)
+                    );
                     break;
                 case "3":
-                    System.out.println("Currency withdrawn");
+                    System.out.println("Enter withdrawal sum:");
+                    depositSum = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    System.out.println("Enter currency type:");
+                    currencyType = scanner.nextLine();
+
+                    accountService.withdrawCurrency(
+                            userService.getCurrentUserEmail().get(),
+                            depositSum,
+                            Currency.valueOf(currencyType)
+                    );
                     break;
                 case "4":
                     String email = userService.getCurrentUserEmail().get();
 
                     System.out.println("Enter deposit sum:");
-                    double sum = scanner.nextDouble();
+                    depositSum = scanner.nextDouble();
                     scanner.nextLine();
 
                     System.out.println("Enter currency type:");
-                    String curAns = scanner.nextLine();
+                    currencyType = scanner.nextLine();
 
-                    accountService.openAccount(email, sum, Currency.valueOf(curAns));
+                    accountService.openAccount(email, depositSum, Currency.valueOf(currencyType));
                     break;
                 case "5":
-                    System.out.println("Current account is closed");
+                    System.out.println("Enter currency type:");
+                    currencyType = scanner.nextLine();
+
+                    accountService.closeAccount(
+                            userService.getCurrentUserEmail().get(),
+                            Currency.valueOf(currencyType)
+                    );
                     break;
                 case "6":
                     System.out.println("Transaction history displayed");
