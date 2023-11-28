@@ -2,9 +2,8 @@ package services;
 
 import models.Account;
 import repository.AccountRepository;
+import utils.Currency;
 
-import java.util.Currency;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,7 +14,7 @@ public class AccountService {
         this.accountRepository = new AccountRepository();
     }
 
-    public boolean createAccount(String email, double depositSum, Currency currency) {
+    public boolean openAccount(String email, double depositSum, Currency currency) {
         boolean created = accountRepository.addAccount(email, depositSum, currency);
 
         if(created) {
