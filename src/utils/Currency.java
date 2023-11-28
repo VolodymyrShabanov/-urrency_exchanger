@@ -1,13 +1,13 @@
 package utils;
 
-public enum ExchangeRate {
+public enum Currency {
     USD(1),
     EUR(1.1),
     PLN(3.9);
 
     double rate;
 
-    ExchangeRate(double rate) {
+    Currency(double rate) {
         this.rate = rate;
     }
 }
