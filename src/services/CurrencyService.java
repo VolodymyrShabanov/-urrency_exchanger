@@ -6,6 +6,8 @@ import models.ExchangeRate;
 import repository.CurrencyRepository;
 import repository.ExchangeRateRepository;
 
+import java.util.Optional;
+
 public class CurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
     private CurrencyRepository currencyRepository;
@@ -16,30 +18,29 @@ public class CurrencyService {
     }
 
     public boolean updateExchangeRate(String fromCurrency, String toCurrency, double newRate) {
-        Currency sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
-        Currency targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
+        Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
+        Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
 
-        if (sourceCurrency == null || targetCurrency == null) {
+        if (sourceCurrency.isEmpty() || targetCurrency.isEmpty()) {
             System.out.println("Invalid currency codes.");
-
             return false;
         }
 
-        ExchangeRate existingRate = exchangeRateRepository.getExchangeRate(sourceCurrency, targetCurrency);
+        ExchangeRate existingRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
 
         if (existingRate != null) {
             existingRate.setRate(newRate);
             System.out.println("Exchange rate updated successfully.");
         } else {
-            ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency, targetCurrency, newRate);
-            exchangeRateRepository.saveExchangeRate(newExchangeRate);
+            ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency.get(), targetCurrency.get(), newRate);
+            exchangeRateRepository.createExchangeRate(newExchangeRate);
             System.out.println("New exchange rate added successfully.");
         }
 
         return true;
     }
 
-    public boolean performExchange(double amount, Currency sourceCurrency, Currency targetCurrency) {
+    public boolean exchangeCurrency(double amount, Currency sourceCurrency, Currency targetCurrency) {
         ExchangeRate exchangeRate = exchangeRateRepository.getExchangeRate(sourceCurrency, targetCurrency);
 
         if (exchangeRate == null) {

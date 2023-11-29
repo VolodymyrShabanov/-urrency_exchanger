@@ -20,7 +20,7 @@ public class AccountService {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
         if(!accountExists) {
-            accountRepository.addAccount(email, depositSum, currency);
+            accountRepository.createAccount(email, depositSum, currency);
             return true;
         } else {
             System.err.println("Error: this account already exists.");

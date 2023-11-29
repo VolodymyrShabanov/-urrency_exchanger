@@ -2,28 +2,39 @@ package repository;
 
 import models.Currency;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CurrencyRepository {
-    private List<Currency> currencies;
+    private Set<Currency> currencies;
 
     public CurrencyRepository() {
-        this.currencies = new ArrayList<>();
+        this.currencies = new HashSet<>();
     }
 
-    public void saveCurrency(Currency currency) {
-        currencies.add(currency);
+    public boolean addCurrency(String currencyCode, String currencyName) {
+        if (getCurrencyByCode(currencyCode).isEmpty() && getCurrencyByName(currencyName).isEmpty()) {
+            currencies.add(new Currency(currencyCode, currencyName));
+            return true;
+        } else {
+            System.err.println("Error: currencies with similar data already exist.");
+        }
+
+        return false;
     }
 
-    public Currency getCurrencyByCode(String code) {
+    public Optional<Currency> getCurrencyByName(String name) {
+        return currencies.stream()
+                .filter(currency -> currency.getName().equals(name))
+                .findFirst();
+    }
+
+    public Optional<Currency> getCurrencyByCode(String code) {
         return currencies.stream()
                 .filter(currency -> currency.getCode().equals(code))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
-    public List<Currency> getAllCurrencies() {
-        return new ArrayList<>(currencies);
+    public Set<Currency> getAllCurrencies() {
+        return Set.copyOf(currencies);
     }
 }
