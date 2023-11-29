@@ -156,13 +156,15 @@ public class Menu {
                     break;
                 case "2":
                     System.out.println("Currency deposited");
+                    // нужно предусмотреть/создать счет к примеру boxOffice откуда будут приходить деньги
                     break;
                 case "3":
                     System.out.println("Currency withdrawn");
+                    // нужно предусмотреть/создать счет к примеру boxOffice куда будут уходить деньги
                     break;
                 case "4":
                     String email = userService.getCurrentUserEmail().get();
-
+                // при создании счета depositSum - остаток должен быть нулевым
                     System.out.println("Enter deposit sum:");
                     double sum = scanner.nextDouble();
                     scanner.nextLine();

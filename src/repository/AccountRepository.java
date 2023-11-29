@@ -15,10 +15,12 @@ public class AccountRepository {
     public boolean addAccount(String email, double depositSum, Currency currency) {
         if (!accountExists(email, currency)) {
             if (accounts.containsKey(email)) {
-                accounts.get(email).add(new Account(email, depositSum, currency));
+//                accounts.get(email).add(new Account(email, depositSum, currency));
+                accounts.get(email).add(new Account(email, currency)); // при создании счета depositSum - остаток должен быть нулевым
             } else {
                 accounts.put(email, new HashSet<Account>());
-                accounts.get(email).add(new Account(email, depositSum, currency));
+//                accounts.get(email).add(new Account(email, depositSum, currency));
+                accounts.get(email).add(new Account(email, currency)); // при создании счета depositSum - остаток должен быть нулевым
             }
 
             return true;
