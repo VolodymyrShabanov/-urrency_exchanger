@@ -160,7 +160,7 @@ public class Menu {
                     // TODO
                     System.out.println("Currency exchanged");
                     break;
-                    // нужно предусмотреть/создать счет к примеру boxOffice куда будут уходить деньги
+                case "2":
                     System.out.println("Enter deposit sum:");
                     depositSum = scanner.nextDouble();
                     scanner.nextLine();
@@ -175,7 +175,6 @@ public class Menu {
                     );
                     break;
                 case "3":
-                // нужно предусмотреть/создать счет к примеру boxOffice куда будут уходить деньги
                     System.out.println("Enter withdrawal sum:");
                     depositSum = scanner.nextDouble();
                     scanner.nextLine();
@@ -191,7 +190,7 @@ public class Menu {
                     break;
                 case "4":
                     String email = userService.getCurrentUserEmail().get();
-                // при создании счета depositSum - остаток должен быть нулевым
+
                     System.out.println("Enter deposit sum:");
                     depositSum = scanner.nextDouble();
                     scanner.nextLine();

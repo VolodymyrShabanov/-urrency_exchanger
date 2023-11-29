@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 public class Currency {
     private final String code;
     private String name;
@@ -13,9 +15,8 @@ public class Currency {
         return code;
     }
 
-
     public String getName() {
-        return name;
+        return Objects.requireNonNullElse(name, "");
     }
 
     public void setName(String name) {

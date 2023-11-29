@@ -11,7 +11,15 @@ public class ExchangeRateRepository {
 
     public ExchangeRateRepository() {
         this.exchangeRates = new HashMap<>();
-        initializeExchangeRates();
+
+        Currency usdCurrency = new Currency("USD", "US Dollar");
+        Currency eurCurrency = new Currency("EUR", "Euro");
+        Currency gbpCurrency = new Currency("GBP", "British pound");
+
+        createExchangeRate(new ExchangeRate(usdCurrency, eurCurrency, 0.85));
+        createExchangeRate(new ExchangeRate(eurCurrency, usdCurrency, 1.18));
+        createExchangeRate(new ExchangeRate(usdCurrency, gbpCurrency, 0.75));
+        createExchangeRate(new ExchangeRate(gbpCurrency, usdCurrency, 1.33));
     }
 
     public ExchangeRate getExchangeRate(Currency baseCurrency, Currency targetCurrency) {
@@ -19,24 +27,13 @@ public class ExchangeRateRepository {
         return exchangeRates.get(key);
     }
 
-    public void saveExchangeRate(ExchangeRate exchangeRate) {
+    public void createExchangeRate(ExchangeRate exchangeRate) {
         String key = generateKey(exchangeRate.getFromCurrency(), exchangeRate.getToCurrency());
         exchangeRates.put(key, exchangeRate);
     }
 
     public Map<String, ExchangeRate> getAllExchangeRates() {
-        return new HashMap<>(exchangeRates);
-    }
-
-    public void initializeExchangeRates() {
-        Currency usdCurrency = new Currency("USD", "US Dollar");
-        Currency eurCurrency = new Currency("EUR", "Euro");
-        Currency gbpCurrency = new Currency("GBP", "British pound");
-
-        saveExchangeRate(new ExchangeRate(usdCurrency, eurCurrency, 0.85));
-        saveExchangeRate(new ExchangeRate(eurCurrency, usdCurrency, 1.18));
-        saveExchangeRate(new ExchangeRate(usdCurrency, gbpCurrency, 0.75));
-        saveExchangeRate(new ExchangeRate(gbpCurrency, usdCurrency, 1.33));
+        return Map.copyOf(exchangeRates);
     }
 
     private String generateKey(Currency fromCurrency, Currency toCurrency) {

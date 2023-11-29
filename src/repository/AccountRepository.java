@@ -12,7 +12,7 @@ public class AccountRepository {
         this.accounts = new HashMap<>();
     }
 
-    public boolean addAccount(String email, double depositSum, Currency currency) {
+    public boolean createAccount(String email, double depositSum, Currency currency) {
         if (!accountExists(email, currency)) {
             if (accounts.containsKey(email)) {
 //                accounts.get(email).add(new Account(email, depositSum, currency));
@@ -48,6 +48,7 @@ public class AccountRepository {
 
         return accountOptional.isPresent();
     }
+
     public Optional<Account> fetchAccount(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();
