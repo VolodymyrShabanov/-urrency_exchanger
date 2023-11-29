@@ -5,7 +5,6 @@ import repository.AccountRepository;
 import utils.Currency;
 
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.Set;
 
 public class AccountService {
@@ -15,7 +14,6 @@ public class AccountService {
         this.accountRepository = new AccountRepository();
     }
 
-    // TODO: decide on account fetching/boolean
     public boolean openAccount(String email, double depositSum, Currency currency) {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
@@ -29,7 +27,6 @@ public class AccountService {
         return false;
     }
 
-    // TODO: decide on account fetching/boolean
     public boolean closeAccount(String email, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
@@ -38,6 +35,7 @@ public class AccountService {
         } else {
             if (account.get().getBalance() == 0) {
                 accountRepository.deleteAccount(email, currency);
+                System.out.printf("%s account successfully closed.\n", currency.toString());
                 return true;
             } else {
                 System.err.println("Error: account can't be closed (account balance isn't empty)");
@@ -48,8 +46,6 @@ public class AccountService {
     }
 
     public double depositCurrency(String email, double depositSum, Currency currency) {
-        Scanner scanner = new Scanner(System.in);
-
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {

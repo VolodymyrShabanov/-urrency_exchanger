@@ -34,6 +34,8 @@ public class UserService implements IUserService {
         User newUser = new User(email, password, role);
         userRepository.addUser(newUser);
 
+        System.out.printf("User %s successfully created.\n", email);
+
         return true;
     }
 
@@ -43,6 +45,7 @@ public class UserService implements IUserService {
 
         if (user.isPresent() && user.get().checkPassword(password)) {
             currentUser = user;
+            System.out.printf("User %s has successfully logged in.\n", email);
             return true;
         }
 
@@ -53,6 +56,7 @@ public class UserService implements IUserService {
     public boolean logout() {
         if (currentUser.isPresent()) {
             currentUser = Optional.empty();
+            System.out.println("You have logged out.");
             return true;
         } else {
             return false;
