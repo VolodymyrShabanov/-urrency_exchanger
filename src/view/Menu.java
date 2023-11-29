@@ -115,8 +115,8 @@ public class Menu {
                     clearConsole();
 
                     if (userService.login(tempEmail, tempPass)) {
-                      isMenuRunning = false;
-                      state = UserRole.USER;
+                        isMenuRunning = false;
+                        state = UserRole.USER;
                     }
                     break;
                 case "0":
@@ -135,53 +135,93 @@ public class Menu {
         }
     }
 
+    // TODO: add 'press enter to continue...' prompts
+    // TODO: add 'scanner input type' exception handling
     private void runUserMenu() {
         boolean isMenuRunning = true;
 
         while (isMenuRunning) {
             System.out.printf("                       Welcome %s!\n\n", userService.getCurrentUserEmail().get());
             System.out.println("1. Exchange Currency   | 4. Open Account    | 6. Transaction History\n" +
-                               "                       |                    |\n" +
-                               "2. Deposit Currency    | 5. Close Account   | 7. Account Balance\n" +
-                               "                       |                    |\n" +
-                               "3. Withdraw Currency   |                    |\n\n" +
-                               "                            8. Logout       \n" +
-                               "                            0. Exit App     ");
+                    "                       |                    |\n" +
+                    "2. Deposit Currency    | 5. Close Account   | 7. Account Balance\n" +
+                    "                       |                    |\n" +
+                    "3. Withdraw Currency   |                    |\n\n" +
+                    "                            8. Logout       \n" +
+                    "                            0. Exit App     ");
 
             String ans = scanner.nextLine();
 
+            double depositSum;
+            String currencyType;
+
             switch (ans) {
                 case "1":
+                    // TODO
                     System.out.println("Currency exchanged");
                     break;
-                case "2":
-                    System.out.println("Currency deposited");
-                    // нужно предусмотреть/создать счет к примеру boxOffice откуда будут приходить деньги
+                    // нужно предусмотреть/создать счет к примеру boxOffice куда будут уходить деньги
+                    System.out.println("Enter deposit sum:");
+                    depositSum = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    System.out.println("Enter currency type:");
+                    currencyType = scanner.nextLine();
+
+                    accountService.depositCurrency(
+                            userService.getCurrentUserEmail().get(),
+                            depositSum,
+                            Currency.valueOf(currencyType)
+                    );
                     break;
                 case "3":
-                    System.out.println("Currency withdrawn");
-                    // нужно предусмотреть/создать счет к примеру boxOffice куда будут уходить деньги
+                // нужно предусмотреть/создать счет к примеру boxOffice куда будут уходить деньги
+                    System.out.println("Enter withdrawal sum:");
+                    depositSum = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    System.out.println("Enter currency type:");
+                    currencyType = scanner.nextLine();
+
+                    accountService.withdrawCurrency(
+                            userService.getCurrentUserEmail().get(),
+                            depositSum,
+                            Currency.valueOf(currencyType)
+                    );
                     break;
                 case "4":
                     String email = userService.getCurrentUserEmail().get();
                 // при создании счета depositSum - остаток должен быть нулевым
                     System.out.println("Enter deposit sum:");
-                    double sum = scanner.nextDouble();
+                    depositSum = scanner.nextDouble();
                     scanner.nextLine();
 
                     System.out.println("Enter currency type:");
-                    String curAns = scanner.nextLine();
+                    currencyType = scanner.nextLine();
 
-                    accountService.openAccount(email, sum, Currency.valueOf(curAns));
+                    accountService.openAccount(email, depositSum, Currency.valueOf(currencyType));
                     break;
                 case "5":
-                    System.out.println("Current account is closed");
+                    System.out.println("Enter currency type:");
+                    currencyType = scanner.nextLine();
+
+                    accountService.closeAccount(
+                            userService.getCurrentUserEmail().get(),
+                            Currency.valueOf(currencyType)
+                    );
                     break;
                 case "6":
+                    // TODO
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":
-                    accountService.printUserAccounts(userService.getCurrentUserEmail().get());
+                    System.out.println("Enter currency type (leave field empty to display all accounts):");
+                    currencyType = scanner.nextLine();
+
+                    if (currencyType.isBlank())
+                        accountService.printUserAccounts(userService.getCurrentUserEmail().get());
+                    else
+                        accountService.printUserAccount(userService.getCurrentUserEmail().get(), Currency.valueOf(currencyType));
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();

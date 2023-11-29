@@ -56,11 +56,11 @@ public class Account {
         this.currency = currency;
     }
 
-    public void debit(double amount) {
+    public void deposit(double amount) {
         balance += amount;
     }
 
-    public void credit(double amount) {
+    public void withdraw(double amount) {
         balance -= amount;
     }
 
