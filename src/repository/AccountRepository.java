@@ -32,15 +32,8 @@ public class AccountRepository {
         return true;
     }
 
-    public Optional<Set<Account>> getUserAccounts(String email) {
-        if (accounts.containsKey(email)) {
-            return Optional.ofNullable(accounts.get(email));
-        } else {
-            return Optional.empty();
-        }
-    }
-
     // TODO: Refactor account search, optimize number of times program has to search through Repo
+
     public boolean accountExists(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();
@@ -53,7 +46,6 @@ public class AccountRepository {
 
         return accountOptional.isPresent();
     }
-
     public Optional<Account> fetchAccount(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();
@@ -65,5 +57,13 @@ public class AccountRepository {
         }
 
         return accountOptional;
+    }
+
+    public Optional<Set<Account>> fetchAccounts(String email) {
+        if (accounts.containsKey(email)) {
+            return Optional.ofNullable(accounts.get(email));
+        } else {
+            return Optional.empty();
+        }
     }
 }

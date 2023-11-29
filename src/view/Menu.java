@@ -115,8 +115,8 @@ public class Menu {
                     clearConsole();
 
                     if (userService.login(tempEmail, tempPass)) {
-                      isMenuRunning = false;
-                      state = UserRole.USER;
+                        isMenuRunning = false;
+                        state = UserRole.USER;
                     }
                     break;
                 case "0":
@@ -143,12 +143,12 @@ public class Menu {
         while (isMenuRunning) {
             System.out.printf("                       Welcome %s!\n\n", userService.getCurrentUserEmail().get());
             System.out.println("1. Exchange Currency   | 4. Open Account    | 6. Transaction History\n" +
-                               "                       |                    |\n" +
-                               "2. Deposit Currency    | 5. Close Account   | 7. Account Balance\n" +
-                               "                       |                    |\n" +
-                               "3. Withdraw Currency   |                    |\n\n" +
-                               "                            8. Logout       \n" +
-                               "                            0. Exit App     ");
+                    "                       |                    |\n" +
+                    "2. Deposit Currency    | 5. Close Account   | 7. Account Balance\n" +
+                    "                       |                    |\n" +
+                    "3. Withdraw Currency   |                    |\n\n" +
+                    "                            8. Logout       \n" +
+                    "                            0. Exit App     ");
 
             String ans = scanner.nextLine();
 
@@ -214,7 +214,13 @@ public class Menu {
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":
-                    accountService.printUserAccounts(userService.getCurrentUserEmail().get());
+                    System.out.println("Enter currency type (leave field empty to display all accounts):");
+                    currencyType = scanner.nextLine();
+
+                    if (currencyType.isBlank())
+                        accountService.printUserAccounts(userService.getCurrentUserEmail().get());
+                    else
+                        accountService.printUserAccount(userService.getCurrentUserEmail().get(), Currency.valueOf(currencyType));
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
