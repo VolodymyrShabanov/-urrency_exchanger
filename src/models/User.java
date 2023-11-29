@@ -48,4 +48,7 @@ public class User {
     public void setRole(UserRole role) {
         this.role = role;
     }
+    public void addAccount(Account account){  // у user есть счета
+        accounts.add(account);
+    }
 }
