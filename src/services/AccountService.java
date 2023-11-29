@@ -19,7 +19,7 @@ public class AccountService {
     public boolean openAccount(String email, double depositSum, Currency currency) {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
-        if(!accountExists) {
+        if (!accountExists) {
             accountRepository.createAccount(email, depositSum, currency);
             return true;
         } else {
@@ -33,11 +33,12 @@ public class AccountService {
     public boolean closeAccount(String email, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
-        if(account.isEmpty()) {
+        if (account.isEmpty()) {
             System.err.println("Error: this account doesn't exist.");
         } else {
-            if(account.get().getBalance() == 0) {
-                accountRepository.removeAccount(email, account.get());
+            if (account.get().getBalance() == 0) {
+                accountRepository.deleteAccount(email, currency);
+                return true;
             } else {
                 System.err.println("Error: account can't be closed (account balance isn't empty)");
             }
@@ -52,26 +53,13 @@ public class AccountService {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
-                account.get().deposit(depositSum);
-                return depositSum;
+            account.get().deposit(depositSum);
         } else {
-            System.out.println("Warning: such account isn't open yet. Open new account? y/n");
-
-            String ans = scanner.nextLine();
-
-            switch (ans) {
-                case "y":
-                    openAccount(email, depositSum, currency);
-                    System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
-                    break;
-                default:
-                    System.err.println("Error: currency can't be deposited to a non-existent account.");
-                    break;
-            }
-
+                openAccount(email, depositSum, currency);
+                System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
         }
 
-        return 0;
+        return depositSum;
     }
 
     public double withdrawCurrency(String email, double withdrawalSum, Currency currency) {
@@ -91,22 +79,29 @@ public class AccountService {
         return 0;
     }
 
-    public void printUserAccounts(String email) {
+    public boolean printUserAccounts(String email) {
         Optional<Set<Account>> userAccounts = accountRepository.fetchAccounts(email);
 
         if (userAccounts.isPresent()) {
             userAccounts.get().forEach(System.out::println);
+            return true;
         } else {
             System.err.println("Error: no such accounts associated with this user.");
         }
+
+        return false;
     }
-    public void printUserAccount(String email, Currency currency) {
+
+    public boolean printUserAccount(String email, Currency currency) {
         Optional<Account> userAccount = accountRepository.fetchAccount(email, currency);
 
         if (userAccount.isPresent()) {
             System.out.println(userAccount.get());
+            return true;
         } else {
             System.err.println("Error: no such accounts associated with this user.");
         }
+
+        return false;
     }
 }

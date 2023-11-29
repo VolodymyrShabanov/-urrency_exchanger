@@ -6,6 +6,8 @@ import utils.Currency;
 import java.util.*;
 
 public class AccountRepository {
+    private int repositorySize = 0;
+
     private final Map<String, Set<Account>> accounts;
 
     public AccountRepository() {
@@ -15,22 +17,27 @@ public class AccountRepository {
     public boolean createAccount(String email, double depositSum, Currency currency) {
         if (!accountExists(email, currency)) {
             if (accounts.containsKey(email)) {
-//                accounts.get(email).add(new Account(email, depositSum, currency));
-                accounts.get(email).add(new Account(email, currency)); // при создании счета depositSum - остаток должен быть нулевым
+                accounts.get(email).add(new Account(email, currency, depositSum));
             } else {
                 accounts.put(email, new HashSet<Account>());
-//                accounts.get(email).add(new Account(email, depositSum, currency));
-                accounts.get(email).add(new Account(email, currency)); // при создании счета depositSum - остаток должен быть нулевым
+                accounts.get(email).add(new Account(email, currency, depositSum));
             }
 
+            repositorySize++;
             return true;
         }
 
         return false;
     }
 
-    public boolean removeAccount(String email, Account account) {
-        accounts.get(email).remove(account);
+    public boolean deleteAccount(String email, Currency currency) {
+        Optional<Account> account = fetchAccount(email, currency);
+
+        if(account.isEmpty()) return false;
+
+        accounts.get(email).remove(account.get());
+        repositorySize--;
+
         return true;
     }
 
@@ -68,5 +75,9 @@ public class AccountRepository {
         } else {
             return Optional.empty();
         }
+    }
+
+    public int getRepositorySize() {
+        return repositorySize;
     }
 }
