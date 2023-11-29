@@ -6,24 +6,20 @@ import utils.Currency;
 import java.util.List;
 
 public class Account {
-    private final int id;
     private String userEmail;
-    private double balance; // при создании счета балан должен быть нулевой
+    private double balance;
     private Currency currency;
-    private static int counter;
-    private List<Transaction> transactions; //  у счета есть транзакции
 
-    public Account(String userID, Currency currency) {
-        this.id = counter++;
-        this.userEmail = userID;
+    public Account(String userEmail, Currency currency) {
+        this.userEmail = userEmail;
         this.currency = currency;
+        this.balance = 0;
     }
 
-    public Account(User user, Currency currency) { //нужно принимать User что бы можно было связать с их между собой
-        this.id = counter++;
-        this.userEmail = user.getEmail();
+    public Account(String userEmail, Currency currency, double depositSum) {
+        this.userEmail = userEmail;
         this.currency = currency;
-        user.addAccount(this);
+        this.balance = depositSum;
     }
 
     @Override
@@ -34,10 +30,6 @@ public class Account {
                 balance
         );
 
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getUserEmail() {
@@ -64,7 +56,7 @@ public class Account {
         balance -= amount;
     }
 
-    public void addTransaction(Transaction transaction){ // у счета есть транзакции.
-        transactions.add(transaction);
+    public void addTransaction(Transaction transaction) {
+
     }
 }
