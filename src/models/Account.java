@@ -1,9 +1,6 @@
 package models;
 
-
 import utils.Currency;
-
-import java.util.List;
 
 public class Account {
     private String userEmail;
@@ -15,6 +12,7 @@ public class Account {
         this.currency = currency;
         this.balance = 0;
     }
+
 
     public Account(String userEmail, Currency currency, double depositSum) {
         this.userEmail = userEmail;
@@ -54,9 +52,5 @@ public class Account {
 
     public void withdraw(double amount) {
         balance -= amount;
-    }
 
-    public void addTransaction(Transaction transaction) {
-
-    }
 }

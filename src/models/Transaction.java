@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 
 public class Transaction {
     private final int id;
-    private User user; // как по мне это лишнее так как Account сам по себе уже привязан к клиенту
-    private Account fromAccount;
-    private Account toAccount;
+    private String userEmail;
+    private String account; // - ?
+    private String currency;
     private TransactionType type;
     private double amount;
     private LocalDateTime date;
@@ -16,16 +16,14 @@ public class Transaction {
 
 
     // конструктор для - 1. Exchange Currency
-    public Transaction(int id, User user, Account fromAccount, Account toAccount, TransactionType type, double amount) {
+    public Transaction(int id, String userEmail, String account, String currency, TransactionType type, double amount) {
         this.id = id;
-        this.user = user;
-        this.fromAccount = fromAccount; // подумать о счете касса как нейтральный счет для пополнения и снятия денег
-        this.toAccount = toAccount;
+        this.userEmail = userEmail;
+        this.account = account;
+        this.currency = currency;
         this.type = type;
         this.amount = amount;
         this.date = LocalDateTime.now();
-        fromAccount.addTransaction(this);
-        toAccount.addTransaction(this);
 
         this.status = DocumentStatus.DRAFT; // можно реализовать позже если будет время
     }
@@ -35,28 +33,28 @@ public class Transaction {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public Account getFromAccount() {
-        return fromAccount;
+    public String getAccount() {
+        return account;
     }
 
-    public void setFromAccount(Account fromAccount) {
-        this.fromAccount = fromAccount;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
-    public Account getToAccount() {
-        return toAccount;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setToAccount(Account toAccount) {
-        this.toAccount = toAccount;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public TransactionType getType() {
@@ -95,12 +93,13 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", user=" + user +
-                ", fromAccount=" + fromAccount + "|" + fromAccount.getCurrency() + "|" +
-                ", toAccount=" + toAccount + "|" + toAccount.getCurrency() + "|" +
+                ", userID='" + userEmail + '\'' +
+                ", account='" + account + '\'' +
+                ", currency='" + currency + '\'' +
                 ", type=" + type +
                 ", amount=" + amount +
                 ", date=" + date +
+                ", status=" + status +
                 '}';
     }
 }
