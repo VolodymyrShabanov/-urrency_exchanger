@@ -73,8 +73,8 @@ public class CurrencyService {
         return true;
     }
 
-    public Optional<Currency> getCurrency(String name) {
-        return currencyRepository.getCurrencyByName(name);
+    public Optional<Currency> getCurrencyByCode(String code) {
+        return currencyRepository.getCurrencyByCode(code);
     }
 
     public double exchangeCurrency(double amount, Currency sourceCurrency, Currency targetCurrency) {

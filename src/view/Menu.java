@@ -165,14 +165,14 @@ public class Menu {
 
                     System.out.println("Enter currency type:");
                     currencyType = scanner.nextLine();
-                    currencyService.getCurrency(currencyType);
+                    currencyService.getCurrencyByCode(currencyType);
 
                     clearConsole();
 
                     accountService.depositCurrency(
                             userService.getCurrentUserEmail().get(),
                             depositSum,
-                            currencyService.getCurrency(currencyType).get()
+                            currencyService.getCurrencyByCode(currencyType).get()
                     );
 
                     transactionService.createNewTransaction(
@@ -203,7 +203,7 @@ public class Menu {
                     accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),
                             depositSum,
-                            currencyService.getCurrency(currencyType).get()
+                            currencyService.getCurrencyByCode(currencyType).get()
                     );
 
 
@@ -236,7 +236,7 @@ public class Menu {
 
                     clearConsole();
 
-                    accountService.openAccount(email, depositSum, currencyService.getCurrency(currencyType).get());
+                    accountService.openAccount(email, depositSum, currencyService.getCurrencyByCode(currencyType).get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -251,7 +251,7 @@ public class Menu {
 
                     accountService.closeAccount(
                             userService.getCurrentUserEmail().get(),
-                            currencyService.getCurrency(currencyType).get()
+                            currencyService.getCurrencyByCode(currencyType).get()
                     );
 
                     System.out.println("Press enter to continue...");
@@ -279,7 +279,7 @@ public class Menu {
                     else
                         accountService.printUserAccount(
                                 userService.getCurrentUserEmail().get(),
-                                currencyService.getCurrency(currencyType).get()
+                                currencyService.getCurrencyByCode(currencyType).get()
                         );
 
                     System.out.println("Press enter to continue...");
