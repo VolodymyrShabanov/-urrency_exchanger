@@ -33,7 +33,7 @@ public class CurrencyService {
             System.err.println("Currency not found.");
             return false;
         }
-        utils.Currency currencyEnum = utils.Currency.valueOf(currency.get().toString());
+        utils.Currency currencyEnum = utils.Currency.valueOf(currency.get().getCode());
         if (areOpenAccountsExist(currencyEnum)) {
             System.err.println("Cannot delete currency. Open accounts exist.");
 
