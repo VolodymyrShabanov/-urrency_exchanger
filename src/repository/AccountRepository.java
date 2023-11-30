@@ -1,7 +1,7 @@
 package repository;
 
 import models.Account;
-import utils.Currency;
+import models.Currency;
 
 import java.util.*;
 import java.util.stream.Collectors;

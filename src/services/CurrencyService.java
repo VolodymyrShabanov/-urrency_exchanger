@@ -16,6 +16,10 @@ public class CurrencyService {
     public CurrencyService() {
         this.currencyRepository = new CurrencyRepository();
         this.exchangeRateRepository = new ExchangeRateRepository();
+
+        addCurrency("USD", "US Dollar");
+        addCurrency("EUR", "Euro");
+        addCurrency("PLN", "Polish Zloty");
     }
 
     public Optional<Currency> addCurrency(String code, String name) {
@@ -67,6 +71,10 @@ public class CurrencyService {
         }
 
         return true;
+    }
+
+    public Optional<Currency> getCurrency(String name) {
+        return currencyRepository.getCurrencyByName(name);
     }
 
     public double exchangeCurrency(double amount, Currency sourceCurrency, Currency targetCurrency) {

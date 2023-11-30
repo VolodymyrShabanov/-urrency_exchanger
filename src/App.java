@@ -1,4 +1,3 @@
-import utils.Currency;
 import view.Menu;
 
 public class App {

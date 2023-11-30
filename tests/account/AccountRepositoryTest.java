@@ -1,12 +1,10 @@
 package account;
 
 import models.Account;
+import models.Currency;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import repository.AccountRepository;
-import utils.Currency;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,51 +22,66 @@ public class AccountRepositoryTest {
 
     @Test
     public void testCreateValidAccount() {
-        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, Currency.EUR));
+        Currency EUR = new Currency("EUR", "Euro");
+        Currency USD = new Currency("USD", "US Dollar");
+        Currency PLN = new Currency("PLN", "Polish Zloty");
+
+        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, EUR));
         assertEquals(accountRepository.getRepositorySize(), 1);
 
-        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, Currency.PLN));
+        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, PLN));
         assertEquals(accountRepository.getRepositorySize(), 2);
 
-        assertFalse(accountRepository.createAccount("andrey@gmail.com", 1000, Currency.EUR));
+        assertFalse(accountRepository.createAccount("andrey@gmail.com", 1000, EUR));
         assertEquals(accountRepository.getRepositorySize(), 2);
 
-        assertTrue(accountRepository.createAccount("alex@gmail.com", 1000, Currency.PLN));
+        assertTrue(accountRepository.createAccount("alex@gmail.com", 1000, PLN));
         assertEquals(accountRepository.getRepositorySize(), 3);
     }
 
     @Test
     public void testAccountRetrieval() {
-        accountRepository.createAccount("andrey@gmail.com", 1000, Currency.EUR);
-        assertTrue(accountRepository.fetchAccount("andrey@gmail.com", Currency.EUR).isPresent());
+        Currency EUR = new Currency("EUR", "Euro");
+        Currency USD = new Currency("USD", "US Dollar");
+        Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        accountRepository.createAccount("andrey@gmail.com", 1000, Currency.PLN);
-        assertTrue(accountRepository.fetchAccount("andrey@gmail.com", Currency.PLN).isPresent());
+        accountRepository.createAccount("andrey@gmail.com", 1000, EUR);
+        assertTrue(accountRepository.fetchAccount("andrey@gmail.com", EUR).isPresent());
 
-        assertFalse(accountRepository.fetchAccount("andrey@gmail.com", Currency.USD).isPresent());
+        accountRepository.createAccount("andrey@gmail.com", 1000, PLN);
+        assertTrue(accountRepository.fetchAccount("andrey@gmail.com", PLN).isPresent());
 
-        assertFalse(accountRepository.fetchAccount("alex@gmail.com", Currency.USD).isPresent());
+        assertFalse(accountRepository.fetchAccount("andrey@gmail.com", USD).isPresent());
+
+        assertFalse(accountRepository.fetchAccount("alex@gmail.com", USD).isPresent());
     }
 
     @Test
     public void testAccountExistence() {
-        accountRepository.createAccount("andrey@gmail.com", 1000, Currency.EUR);
-        assertTrue(accountRepository.accountExists("andrey@gmail.com", Currency.EUR));
+        Currency EUR = new Currency("EUR", "Euro");
+        Currency USD = new Currency("USD", "US Dollar");
+        Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        accountRepository.createAccount("andrey@gmail.com", 1000, Currency.PLN);
-        assertTrue(accountRepository.accountExists("andrey@gmail.com", Currency.PLN));
+        accountRepository.createAccount("andrey@gmail.com", 1000, EUR);
+        assertTrue(accountRepository.accountExists("andrey@gmail.com", EUR));
 
-        assertFalse(accountRepository.accountExists("andrey@gmail.com", Currency.USD));
+        accountRepository.createAccount("andrey@gmail.com", 1000, PLN);
+        assertTrue(accountRepository.accountExists("andrey@gmail.com", PLN));
 
-        assertFalse(accountRepository.accountExists("alex@gmail.com", Currency.USD));
+        assertFalse(accountRepository.accountExists("andrey@gmail.com", USD));
+
+        assertFalse(accountRepository.accountExists("alex@gmail.com", USD));
     }
 
     @Test
     public void testAccountDeletion() {
-        accountRepository.createAccount("andrey@gmail.com", 1000, Currency.EUR);
-        Account eurAccount = accountRepository.fetchAccount("andrey@gmail.com", Currency.EUR).get();
-        assertTrue(accountRepository.deleteAccount("andrey@gmail.com", Currency.EUR));
+        Currency EUR = new Currency("EUR", "Euro");
+        Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        assertFalse(accountRepository.deleteAccount("andrey@gmail.com", Currency.PLN));
+        accountRepository.createAccount("andrey@gmail.com", 1000, EUR);
+        Account eurAccount = accountRepository.fetchAccount("andrey@gmail.com", EUR).get();
+        assertTrue(accountRepository.deleteAccount("andrey@gmail.com", EUR));
+
+        assertFalse(accountRepository.deleteAccount("andrey@gmail.com", PLN));
     }
 }

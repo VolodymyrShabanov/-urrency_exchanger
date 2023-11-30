@@ -1,11 +1,12 @@
 package services;
 
 import models.Account;
+import models.Currency;
 import repository.AccountRepository;
-import utils.Currency;
 
 import java.util.Optional;
 import java.util.Set;
+
 
 public class AccountService {
     private final AccountRepository accountRepository;
