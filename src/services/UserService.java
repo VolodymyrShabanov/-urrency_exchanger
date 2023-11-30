@@ -1,6 +1,7 @@
 package services;
 
 import exceptions.ValidationException;
+import exceptions.PermissionException;
 import interfaces.IUserService;
 import models.User;
 import repository.UserRepository;
@@ -63,6 +64,26 @@ public class UserService implements IUserService {
         }
     }
 
+    public boolean assignUserRole(String userEmail, UserRole newRole) {
+        if (!isCurrentUserAdmin()) {
+            throw new PermissionException("Only administrators can assign roles");
+        }
+
+        Optional<User> user = userRepository.getUserByEmail(userEmail);
+
+        if (user.isEmpty()) {
+            System.out.println("User not found.");
+            return false;
+        }
+
+        User userModel = user.get();
+        userModel.setRole(newRole);
+        userRepository.updateUser(userModel);
+        System.out.println("User role updated successfully");
+
+        return true;
+    }
+
     private void validateUserData(String email, String password) throws ValidationException {
         if (!Validator.isValidEmail(email) || !Validator.isValidPassword(password)) {
             throw new ValidationException("Invalid email or password. Please try again.");
@@ -71,5 +92,9 @@ public class UserService implements IUserService {
         if (userRepository.isUserExist(email)) {
             throw new ValidationException("User with this email already exists.");
         }
+    }
+
+    private boolean isCurrentUserAdmin() {
+        return currentUser.isPresent() && currentUser.get().getRole() == UserRole.ADMIN;
     }
 }

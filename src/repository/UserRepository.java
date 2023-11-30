@@ -24,4 +24,8 @@ public class UserRepository {
     public Optional<User> getUserByEmail(String email) {
         return Optional.ofNullable(users.get(email));
     }
+
+    public void updateUser(User user) {
+        users.put(user.getEmail(), user);
+    }
 }
