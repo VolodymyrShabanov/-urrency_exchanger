@@ -3,16 +3,21 @@ package models;
 import utils.Currency;
 
 public class Account {
-    private final int id;
     private String userEmail;
     private double balance;
     private Currency currency;
-    private static int counter;
 
-    public Account(String userID, Currency currency) {
-        this.id = counter++;
-        this.userEmail = userID;
+    public Account(String userEmail, Currency currency) {
+        this.userEmail = userEmail;
         this.currency = currency;
+        this.balance = 0;
+    }
+
+
+    public Account(String userEmail, Currency currency, double depositSum) {
+        this.userEmail = userEmail;
+        this.currency = currency;
+        this.balance = depositSum;
     }
 
     @Override
@@ -23,10 +28,6 @@ public class Account {
                 balance
         );
 
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getUserEmail() {
@@ -51,7 +52,5 @@ public class Account {
 
     public void withdraw(double amount) {
         balance -= amount;
-    }
-
 
 }
