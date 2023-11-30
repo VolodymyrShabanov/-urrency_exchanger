@@ -2,6 +2,7 @@ package account;
 
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import repository.AccountRepository;
 import services.AccountService;
 import utils.Currency;
 
@@ -11,7 +12,7 @@ public class AccountServiceTest {
     private AccountService accountService;
 
     public AccountServiceTest() {
-        accountService = new AccountService();
+        accountService = new AccountService(new AccountRepository());
     }
 
     @BeforeEach
