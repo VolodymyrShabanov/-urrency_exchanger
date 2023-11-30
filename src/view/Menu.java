@@ -1,9 +1,12 @@
 package view;
 
+import models.Transaction;
 import services.AccountService;
 import services.CurrencyService;
+import services.TransactionService;
 import services.UserService;
 import utils.Currency;
+import utils.TransactionType;
 import utils.UserRole;
 
 import java.sql.SQLOutput;
@@ -22,6 +25,8 @@ public class Menu {
     AccountService accountService = new AccountService();
     UserService userService = new UserService();
     CurrencyService currencyService = new CurrencyService();
+
+    TransactionService transactionService = new TransactionService();
 
     UserRole state = UserRole.GUEST;
 
@@ -142,7 +147,8 @@ public class Menu {
 
         while (isMenuRunning) {
             System.out.printf("                       Welcome %s!\n\n", userService.getCurrentUserEmail().get());
-            System.out.println("1. Exchange Currency   | 4. Open Account    | 6. Transaction History\n" +
+            System.out.println(
+                    "1. Exchange Currency   | 4. Open Account    | 6. Transaction History\n" +
                     "                       |                    |\n" +
                     "2. Deposit Currency    | 5. Close Account   | 7. Account Balance\n" +
                     "                       |                    |\n" +
@@ -173,6 +179,14 @@ public class Menu {
                             depositSum,
                             Currency.valueOf(currencyType)
                     );
+
+                    transactionService.createNewTransaction(
+                            userService.getCurrentUserEmail().get(),
+                            "account", //TODO - нужен счет
+                            String.valueOf(currencyType),
+                            TransactionType.CREDIT,
+                            depositSum
+                    );
                     break;
                 case "3":
                     System.out.println("Enter withdrawal sum:");
@@ -187,6 +201,15 @@ public class Menu {
                             depositSum,
                             Currency.valueOf(currencyType)
                     );
+
+                    transactionService.createNewTransaction(
+                            userService.getCurrentUserEmail().get(),
+                            "account", //TODO - нужен счет
+                            String.valueOf(currencyType),
+                            TransactionType.CREDIT,
+                            depositSum
+                    );
+
                     break;
                 case "4":
                     String email = userService.getCurrentUserEmail().get();
@@ -211,6 +234,9 @@ public class Menu {
                     break;
                 case "6":
                     // TODO
+                    transactionService.printTransactionsByUserEmail(
+                            userService.getCurrentUserEmail().get()
+                    );
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":
