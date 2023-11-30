@@ -11,15 +11,19 @@ public class CurrencyRepository {
         this.currencies = new HashSet<>();
     }
 
-    public boolean addCurrency(String currencyCode, String currencyName) {
+    public Optional<Currency> addCurrency(String currencyCode, String currencyName) {
         if (getCurrencyByCode(currencyCode).isEmpty() && getCurrencyByName(currencyName).isEmpty()) {
-            currencies.add(new Currency(currencyCode, currencyName));
-            return true;
+            Currency currency = new Currency(currencyCode, currencyName);
+            Currency currencyCopy = new Currency(currencyCode, currencyName);
+
+            currencies.add(currency);
+
+            return Optional.of(currencyCopy);
         } else {
             System.err.println("Error: currencies with similar data already exist.");
         }
 
-        return false;
+        return Optional.empty();
     }
 
     public Optional<Currency> getCurrencyByName(String name) {

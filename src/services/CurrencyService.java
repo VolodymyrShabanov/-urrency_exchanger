@@ -18,7 +18,7 @@ public class CurrencyService {
         this.exchangeRateRepository = new ExchangeRateRepository();
     }
 
-    public boolean addCurrency(String code, String name) {
+    public Optional<Currency> addCurrency(String code, String name) {
         return currencyRepository.addCurrency(code, name);
     }
 
