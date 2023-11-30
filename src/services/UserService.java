@@ -13,8 +13,8 @@ public class UserService implements IUserService {
     private static Optional<User> currentUser;
     private UserRepository userRepository;
 
-    public UserService() {
-        userRepository = new UserRepository();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override

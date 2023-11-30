@@ -1,8 +1,10 @@
 package view;
 
+import repository.*;
 import services.AccountService;
 import services.CurrencyService;
 import services.UserService;
+import services.DataInitializer;
 import utils.Currency;
 import utils.UserRole;
 
@@ -19,11 +21,21 @@ public class Menu {
 
     private boolean isAppRunning = true;
 
-    AccountService accountService = new AccountService();
-    UserService userService = new UserService();
-    CurrencyService currencyService = new CurrencyService();
+    AccountRepository accountRepository = new AccountRepository();
+    CurrencyRepository currencyRepository = new CurrencyRepository();
+    TransactionRepository transactionRepository = new TransactionRepository();
+    ExchangeRateRepository exchangeRateRepository = new ExchangeRateRepository();
+    UserRepository userRepository = new UserRepository();
+    AccountService accountService = new AccountService(accountRepository);
+    UserService userService = new UserService(userRepository);
+    CurrencyService currencyService = new CurrencyService(currencyRepository, accountRepository, exchangeRateRepository);
 
     UserRole state = UserRole.GUEST;
+
+    public Menu() {
+        DataInitializer dataInitializer = new DataInitializer(userRepository, currencyRepository, exchangeRateRepository);
+        dataInitializer.initializeData();
+    }
 
     public void run() {
         while (isAppRunning) {

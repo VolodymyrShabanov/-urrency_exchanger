@@ -4,6 +4,7 @@ import models.Account;
 import utils.Currency;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AccountRepository {
     private int repositorySize = 0;
@@ -79,5 +80,12 @@ public class AccountRepository {
 
     public int getRepositorySize() {
         return repositorySize;
+    }
+
+    public Set<Account> getAccountsByCurrency(Currency currency) {
+        return accounts.values().stream()
+                .flatMap(Set::stream)
+                .filter(account -> account.getCurrency().equals(currency))
+                .collect(Collectors.toSet());
     }
 }
