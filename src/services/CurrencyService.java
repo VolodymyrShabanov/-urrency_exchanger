@@ -14,7 +14,6 @@ import java.util.Set;
 public class CurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
     private CurrencyRepository currencyRepository;
-    private AccountRepository accountRepository;
 
     public CurrencyService(CurrencyRepository currencyRepository, AccountRepository accountRepository, ExchangeRateRepository exchangeRateRepository) {
         this.currencyRepository = currencyRepository;
@@ -34,21 +33,21 @@ public class CurrencyService {
             return false;
         }
         utils.Currency currencyEnum = utils.Currency.valueOf(currency.get().getCode());
-        if (areOpenAccountsExist(currencyEnum)) {
-            System.err.println("Cannot delete currency. Open accounts exist.");
-
-            return false;
-        }
+//        if (areOpenAccountsExist(currencyEnum)) {
+//            System.err.println("Cannot delete currency. Open accounts exist.");
+//
+//            return false;
+//        }
 
         currencyRepository.deleteCurrency(currency.get());
 
         return true;
     }
-
-    private boolean areOpenAccountsExist(utils.Currency currency) {
-        Set<Account> openAccounts = accountRepository.getAccountsByCurrency(currency);
-        return !openAccounts.isEmpty();
-    }
+//
+//    private boolean areOpenAccountsExist(utils.Currency currency) {
+//        Set<Account> openAccounts = accountRepository.getAccountsByCurrency(currency);
+//        return !openAccounts.isEmpty();
+//    }
 
     public boolean updateExchangeRate(String fromCurrency, String toCurrency, double newRate) {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
