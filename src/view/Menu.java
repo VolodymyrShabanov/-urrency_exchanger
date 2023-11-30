@@ -25,23 +25,13 @@ public class Menu {
 
     private boolean isAppRunning = true;
 
-    AccountRepository accountRepository = new AccountRepository();
-    CurrencyRepository currencyRepository = new CurrencyRepository();
-    TransactionRepository transactionRepository = new TransactionRepository();
-    ExchangeRateRepository exchangeRateRepository = new ExchangeRateRepository();
-    UserRepository userRepository = new UserRepository();
-    AccountService accountService = new AccountService(accountRepository);
-    UserService userService = new UserService(userRepository);
-    CurrencyService currencyService = new CurrencyService(currencyRepository, accountRepository, exchangeRateRepository);
+    AccountService accountService = new AccountService();
+    UserService userService = new UserService();
+    CurrencyService currencyService = new CurrencyService();
 
     TransactionService transactionService = new TransactionService();
 
     UserRole state = UserRole.GUEST;
-
-    public Menu() {
-        DataInitializer dataInitializer = new DataInitializer(userRepository, currencyRepository, exchangeRateRepository);
-        dataInitializer.initializeData();
-    }
 
     public void run() {
         while (isAppRunning) {

@@ -16,10 +16,9 @@ public class CurrencyService {
     private CurrencyRepository currencyRepository;
     private AccountRepository accountRepository;
 
-    public CurrencyService(CurrencyRepository currencyRepository, AccountRepository accountRepository, ExchangeRateRepository exchangeRateRepository) {
-        this.currencyRepository = currencyRepository;
-        this.accountRepository = accountRepository;
-        this.exchangeRateRepository = exchangeRateRepository;
+    public CurrencyService() {
+        this.currencyRepository = new CurrencyRepository();
+        this.exchangeRateRepository = new ExchangeRateRepository();
     }
 
     public boolean addCurrency(String code, String name) {
