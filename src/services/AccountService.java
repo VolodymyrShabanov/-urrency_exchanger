@@ -10,8 +10,8 @@ import java.util.Set;
 public class AccountService {
     private AccountRepository accountRepository;
 
-    public AccountService() {
-        this.accountRepository = new AccountRepository();
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
     public boolean openAccount(String email, double depositSum, Currency currency) {

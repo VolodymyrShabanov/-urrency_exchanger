@@ -37,4 +37,8 @@ public class CurrencyRepository {
     public Set<Currency> getAllCurrencies() {
         return Set.copyOf(currencies);
     }
+
+    public void deleteCurrency(Currency currency) {
+        currencies.remove(currency);
+    }
 }
