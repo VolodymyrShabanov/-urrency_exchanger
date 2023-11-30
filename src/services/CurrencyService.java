@@ -1,15 +1,13 @@
 package services;
 
 
-import models.Account;
+import exceptions.TransactionException;
 import models.Currency;
 import models.ExchangeRate;
-import repository.AccountRepository;
 import repository.CurrencyRepository;
 import repository.ExchangeRateRepository;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class CurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
@@ -71,18 +69,16 @@ public class CurrencyService {
         return true;
     }
 
-    public boolean exchangeCurrency(double amount, Currency sourceCurrency, Currency targetCurrency) {
+    public double exchangeCurrency(double amount, Currency sourceCurrency, Currency targetCurrency) {
         ExchangeRate exchangeRate = exchangeRateRepository.getExchangeRate(sourceCurrency, targetCurrency);
 
         if (exchangeRate == null) {
-            System.out.println("Exchange rate not found.");
-
-            return false;
+            throw new TransactionException("Exchange rate not found");
         }
 
         double exchangedAmount = amount * exchangeRate.getRate();
         System.out.println("Exchanged amount: " + exchangedAmount);
 
-        return true;
+        return exchangedAmount;
     }
 }
