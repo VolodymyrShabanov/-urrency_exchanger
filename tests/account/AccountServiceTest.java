@@ -12,7 +12,7 @@ public class AccountServiceTest {
     private AccountService accountService;
 
     public AccountServiceTest() {
-        accountService = new AccountService(new AccountRepository());
+        accountService = new AccountService();
     }
 
     @BeforeEach

@@ -12,10 +12,10 @@ import java.util.Optional;
 
 public class UserService implements IUserService {
     private static Optional<User> currentUser;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService() {
+        this.userRepository = new UserRepository();
     }
 
     @Override

@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class AccountService {
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public AccountService() {
+        this.accountRepository = new AccountRepository();
     }
 
     public boolean openAccount(String email, double depositSum, Currency currency) {
