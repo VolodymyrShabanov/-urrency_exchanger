@@ -15,9 +15,8 @@ public class CurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
     private CurrencyRepository currencyRepository;
 
-    public CurrencyService(CurrencyRepository currencyRepository, AccountRepository accountRepository, ExchangeRateRepository exchangeRateRepository) {
+    public CurrencyService(CurrencyRepository currencyRepository, ExchangeRateRepository exchangeRateRepository) {
         this.currencyRepository = currencyRepository;
-        this.accountRepository = accountRepository;
         this.exchangeRateRepository = exchangeRateRepository;
     }
 
