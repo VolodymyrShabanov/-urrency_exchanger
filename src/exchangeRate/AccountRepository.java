@@ -15,20 +15,22 @@ public class AccountRepository {
         this.accounts = new HashMap<>();
     }
 
-    public boolean createAccount(String email, double depositSum, Currency currency) {
+    public Optional<Account> createAccount(String email, double depositSum, Currency currency) {
         if (!accountExists(email, currency)) {
+            Account newAccount = new Account(email, currency, depositSum);
+
             if (accounts.containsKey(email)) {
-                accounts.get(email).add(new Account(email, currency, depositSum));
+                accounts.get(email).add(newAccount);
             } else {
                 accounts.put(email, new HashSet<Account>());
-                accounts.get(email).add(new Account(email, currency, depositSum));
+                accounts.get(email).add(newAccount);
             }
 
             repositorySize++;
-            return true;
+            return Optional.of(new Account(newAccount));
         }
 
-        return false;
+        return Optional.empty();
     }
 
     public boolean deleteAccount(String email, Currency currency) {
@@ -41,8 +43,6 @@ public class AccountRepository {
 
         return true;
     }
-
-    // TODO: Refactor account search, optimize number of times program has to search through Repo
 
     public boolean accountExists(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
