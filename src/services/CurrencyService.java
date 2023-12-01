@@ -40,7 +40,7 @@ public class CurrencyService {
 //            return false;
 //        }
 
-        currencyRepository.deleteCurrency(currency.get());
+        currencyRepository.deleteCurrencyByCode(currency.get().getCode());
 
         return true;
     }
