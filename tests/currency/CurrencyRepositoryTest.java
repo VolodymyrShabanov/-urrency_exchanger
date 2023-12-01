@@ -1,7 +1,7 @@
 package currency;
 
 import org.junit.jupiter.api.Test;
-import repository.CurrencyRepository;
+import exchangeRate.CurrencyRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 

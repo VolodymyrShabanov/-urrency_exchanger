@@ -3,11 +3,11 @@ package services;
 import exceptions.ValidationException;
 import models.Currency;
 import models.User;
-import repository.UserRepository;
+import exchangeRate.UserRepository;
 import utils.UserRole;
 import models.ExchangeRate;
-import repository.CurrencyRepository;
-import repository.ExchangeRateRepository;
+import exchangeRate.CurrencyRepository;
+import exchangeRate.ExchangeRateRepository;
 
 public class DataInitializer {
 
