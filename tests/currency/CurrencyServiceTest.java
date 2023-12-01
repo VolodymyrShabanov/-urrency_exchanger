@@ -8,20 +8,11 @@ import services.CurrencyService;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CurrencyServiceTest {
-
-    @BeforeEach
-    public void init () {
-
-    }
-
     @Test
     public void testCurrencyCreation() {
         CurrencyService currencyService = new CurrencyService();
 
-        assertTrue(currencyService.addCurrency("USD", "US Dollar").isPresent());
-        assertTrue(currencyService.addCurrency("EUR", "Euro").isPresent());
-        assertTrue(currencyService.addCurrency("PLN", "Polish Zloty").isPresent());
-
+        // CurrencyService is using initializator
         assertFalse(currencyService.addCurrency("USD", "US Dollar").isPresent());
         assertFalse(currencyService.addCurrency("EUR", "Euro").isPresent());
         assertFalse(currencyService.addCurrency("PLN", "Polish Zloty").isPresent());

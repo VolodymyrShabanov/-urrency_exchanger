@@ -13,13 +13,14 @@ public class CurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
     private CurrencyRepository currencyRepository;
 
+    private final boolean dataInitStatus;
+
     public CurrencyService() {
         this.currencyRepository = new CurrencyRepository();
         this.exchangeRateRepository = new ExchangeRateRepository();
 
-        addCurrency("USD", "US Dollar");
-        addCurrency("EUR", "Euro");
-        addCurrency("PLN", "Polish Zloty");
+        init();
+        dataInitStatus = true;
     }
 
     public Optional<Currency> addCurrency(String code, String name) {
@@ -88,5 +89,15 @@ public class CurrencyService {
         System.out.println("Exchanged amount: " + exchangedAmount);
 
         return exchangedAmount;
+    }
+
+    private void init() {
+        if (!dataInitStatus) {
+            addCurrency("USD", "US Dollar");
+            addCurrency("EUR", "Euro");
+            addCurrency("PLN", "Polish Zloty");
+        } else {
+            System.err.println("Error: repo has already been initialized.");
+        }
     }
 }
