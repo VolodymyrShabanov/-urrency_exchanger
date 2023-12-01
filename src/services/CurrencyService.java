@@ -7,6 +7,7 @@ import models.Currency;
 import models.ExchangeRate;
 import exchangeRate.CurrencyRepository;
 import exchangeRate.ExchangeRateRepository;
+import models.TransactionExchange;
 
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class CurrencyService {
         dataInitStatus = true;
     }
 
-    public double exchangeCurrency(Account current, Account target, double amount) {
+    public Optional<TransactionExchange> exchangeCurrency(Account current, Account target, double amount) {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()

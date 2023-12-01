@@ -3,6 +3,7 @@ package services;
 import models.Account;
 import models.Currency;
 import exchangeRate.AccountRepository;
+import models.TransactionExchange;
 
 import java.util.Optional;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class AccountService {
         return false;
     }
 
-    public double depositCurrency(String email, double depositSum, Currency currency) {
+    public Optional<TransactionExchange> depositCurrency(String email, double depositSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
@@ -59,7 +60,7 @@ public class AccountService {
         return depositSum;
     }
 
-    public double withdrawCurrency(String email, double withdrawalSum, Currency currency) {
+    public Optional<TransactionExchange> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
@@ -76,29 +77,23 @@ public class AccountService {
         return 0;
     }
 
-    public boolean printUserAccounts(String email) {
+    public void printUserAccounts(String email) {
         Optional<Set<Account>> userAccounts = accountRepository.fetchAccounts(email);
 
         if (userAccounts.isPresent()) {
             userAccounts.get().forEach(System.out::println);
-            return true;
         } else {
             System.err.println("Error: no such accounts associated with this user.");
         }
-
-        return false;
     }
 
-    public boolean printUserAccount(String email, Currency currency) {
+    public void printUserAccount(String email, Currency currency) {
         Optional<Account> userAccount = accountRepository.fetchAccount(email, currency);
 
         if (userAccount.isPresent()) {
             System.out.println(userAccount.get());
-            return true;
         } else {
             System.err.println("Error: no such accounts associated with this user.");
         }
-
-        return false;
     }
 }
