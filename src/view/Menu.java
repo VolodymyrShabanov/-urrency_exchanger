@@ -5,7 +5,7 @@ import services.AccountService;
 import services.CurrencyService;
 import services.TransactionService;
 import services.UserService;
-import utils.TransactionType;
+import utils.CurrencyTransactionType;
 import utils.UserRole;
 
 import java.util.Scanner;
@@ -179,7 +179,7 @@ public class Menu {
                             userService.getCurrentUserEmail().get(),
                             "account", //TODO - нужен счет
                             String.valueOf(currencyType),
-                            TransactionType.CREDIT,
+                            CurrencyTransactionType.CREDIT,
                             depositSum
                     );
 
@@ -211,7 +211,7 @@ public class Menu {
                             userService.getCurrentUserEmail().get(),
                             "account", //TODO - нужен счет
                             String.valueOf(currencyType),
-                            TransactionType.CREDIT,
+                            CurrencyTransactionType.CREDIT,
                             depositSum
                     );
 

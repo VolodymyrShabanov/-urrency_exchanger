@@ -1,7 +1,7 @@
 package exchangeRate;
 
-import models.Transaction;
-import utils.TransactionType;
+import models.TransactionExchange;
+import utils.CurrencyTransactionType;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,33 +14,33 @@ import java.util.stream.Collectors;
  */
 public class TransactionRepository {
     private final AtomicInteger transactionId = new AtomicInteger(1);
-    private List<Transaction> transactions;
+    private List<TransactionExchange> transactionExchanges;
 
     public TransactionRepository() {
-        this.transactions = new ArrayList<>();
+        this.transactionExchanges = new ArrayList<>();
     }
 
-    public Transaction createTransaction(String userEmail, String account, String currency, TransactionType type, double amount) {
-        Transaction newTransaction = new Transaction(transactionId.getAndIncrement(), userEmail, account, currency, type, amount);
-        transactions.add(newTransaction);
-        return newTransaction;
+    public TransactionExchange createTransaction(String userEmail, String account, String currency, CurrencyTransactionType type, double amount) {
+        TransactionExchange newTransactionExchange = new TransactionExchange(transactionId.getAndIncrement(), userEmail, account, currency, type, amount);
+        transactionExchanges.add(newTransactionExchange);
+        return newTransactionExchange;
     }
 
-    public Optional<Transaction> getTransactionById(int id) {
-        Transaction transactionById = transactions.stream()
+    public Optional<TransactionExchange> getTransactionById(int id) {
+        TransactionExchange transactionExchangeById = transactionExchanges.stream()
                 .filter(transaction1 -> transaction1.getId() == id)
                 .findFirst()
                 .orElse(null);
 
-        return Optional.ofNullable(transactionById);
+        return Optional.ofNullable(transactionExchangeById);
     }
 
-    public Optional<List<Transaction>> getAllTransactions() {
-        return Optional.ofNullable(new ArrayList<>(transactions));
+    public Optional<List<TransactionExchange>> getAllTransactions() {
+        return Optional.ofNullable(new ArrayList<>(transactionExchanges));
     }
 
-    public Optional<List<Transaction>> getTransactionsByPredicate(Predicate<Transaction> predicate) {
-        return Optional.of(transactions.stream()
+    public Optional<List<TransactionExchange>> getTransactionsByPredicate(Predicate<TransactionExchange> predicate) {
+        return Optional.of(transactionExchanges.stream()
                 .filter(predicate)
                 .collect(Collectors.toList()));
 

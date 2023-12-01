@@ -1,8 +1,8 @@
 package services;
 
-import models.Transaction;
+import models.TransactionExchange;
 import exchangeRate.TransactionRepository;
-import utils.TransactionType;
+import utils.CurrencyTransactionType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,14 +19,14 @@ public class TransactionService {
         this.transactionRepository = new TransactionRepository();
     }
 
-    public Transaction createNewTransaction(String userEmail, String account, String currency, TransactionType type, double amount) {
+    public TransactionExchange createNewTransaction(String userEmail, String account, String currency, CurrencyTransactionType type, double amount) {
         System.out.println("Transaction is created.");
         return transactionRepository.createTransaction(userEmail, account, currency, type, amount);
     }
 
     public void printTransactionById(int id) {
 
-        Optional<Transaction> transactionOptional = transactionRepository.getTransactionById(id);
+        Optional<TransactionExchange> transactionOptional = transactionRepository.getTransactionById(id);
 
         if (transactionOptional.isPresent()) {
             System.out.println(transactionOptional);
@@ -36,7 +36,7 @@ public class TransactionService {
     }
 
     public void printTransactionsByUserEmail(String userEmail) {
-        Optional<List<Transaction>> transactionOptional = transactionRepository.
+        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
                 getTransactionsByPredicate(transaction -> transaction.getUserEmail().equals(userEmail));
 
         if (transactionOptional.isPresent()) {
@@ -48,7 +48,7 @@ public class TransactionService {
     }
 
     public void printTransactionsByAccount(String account) {
-        Optional<List<Transaction>> transactionOptional = transactionRepository.
+        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
                 getTransactionsByPredicate(transaction -> transaction.getAccount().equals(account));
 
         if (transactionOptional.isPresent()) {
@@ -59,7 +59,7 @@ public class TransactionService {
     }
 
     public void printTransactionsByCurrency(String currency) {
-        Optional<List<Transaction>> transactionOptional = transactionRepository.
+        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
                 getTransactionsByPredicate(transaction -> transaction.getCurrency().equals(currency));
 
         if (transactionOptional.isPresent()) {
@@ -70,9 +70,9 @@ public class TransactionService {
     }
 
     public void printTransactionsBetweenAmounts(double amountFrom, double amountTo) {
-        Optional<List<Transaction>> transactionOptional = transactionRepository.
-                getTransactionsByPredicate(transaction -> transaction.getAmount() <= amountFrom &&
-                                                          transaction.getAmount() >= amountTo);
+        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
+                getTransactionsByPredicate(transaction -> transaction.getTransactionAmount() <= amountFrom &&
+                                                          transaction.getTransactionAmount() >= amountTo);
 
         if (transactionOptional.isPresent()) {
             System.out.println(transactionOptional);
@@ -82,9 +82,9 @@ public class TransactionService {
     }
 
     public void printTransactionsBetweenDates(LocalDateTime dateAfter, LocalDateTime dateBefore) {
-        Optional<List<Transaction>> transactionOptional = transactionRepository.
-                getTransactionsByPredicate(transaction -> transaction.getDate().isAfter(dateAfter) &&
-                        transaction.getDate().isBefore(dateBefore));
+        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
+                getTransactionsByPredicate(transaction -> transaction.getTransactionDate().isAfter(dateAfter) &&
+                        transaction.getTransactionDate().isBefore(dateBefore));
 
         if (transactionOptional.isPresent()) {
             System.out.println(transactionOptional);
