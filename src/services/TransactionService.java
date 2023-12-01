@@ -1,10 +1,7 @@
 package services;
 
-import models.Account;
-import models.Currency;
 import models.Transaction;
-import models.User;
-import repository.TransactionRepository;
+import exchangeRate.TransactionRepository;
 import utils.TransactionType;
 
 import java.time.LocalDateTime;

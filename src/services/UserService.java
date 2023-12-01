@@ -4,7 +4,7 @@ import exceptions.ValidationException;
 import exceptions.PermissionException;
 import interfaces.IUserService;
 import models.User;
-import repository.UserRepository;
+import exchangeRate.UserRepository;
 import utils.UserRole;
 import utils.Validator;
 

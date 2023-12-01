@@ -1,4 +1,4 @@
-package repository;
+package exchangeRate;
 
 import models.Account;
 import models.Currency;

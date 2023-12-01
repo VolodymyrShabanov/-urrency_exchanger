@@ -1,8 +1,6 @@
-package repository;
+package exchangeRate;
 
-import models.Account;
 import models.Transaction;
-import models.User;
 import utils.TransactionType;
 
 import java.util.*;

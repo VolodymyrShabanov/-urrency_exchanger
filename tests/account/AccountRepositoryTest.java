@@ -4,7 +4,7 @@ import models.Account;
 import models.Currency;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import repository.AccountRepository;
+import exchangeRate.AccountRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 

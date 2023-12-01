@@ -13,7 +13,6 @@ public class Account {
         this.balance = 0;
     }
 
-
     public Account(String userEmail, Currency currency, double depositSum) {
         this.userEmail = userEmail;
         this.currency = currency;
