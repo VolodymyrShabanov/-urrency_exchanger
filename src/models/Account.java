@@ -19,6 +19,12 @@ public class Account {
         this.balance = depositSum;
     }
 
+    public Account(Account account) {
+        this.userEmail = account.userEmail;
+        this.balance = account.balance;
+        this.currency = account.currency;
+    }
+
     @Override
     public String toString() {
         return String.format("User: %s | Currency: %s | Account Balance %f",

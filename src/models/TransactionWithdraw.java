@@ -56,8 +56,9 @@ public class TransactionWithdraw implements ITransaction {
 
     @Override
     public String getInfo() {
-        return String.format("%s withdrawn %f from %s account\nDate: %s",
+        return String.format("%s withdrawn %f (-%f) from %s account\nDate: %s",
                 currentAccount.getUserEmail(),
+                currentTransactionAmount,
                 currentTransactionAmount,
                 currentAccount.getCurrency().getCode(),
                 transactionDate.toString()

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class TransactionDeposit implements ITransaction {
     private final Account targetAccount;
 
-    private final double currentTransactionAmount;
+    private final double targetTransactionAmount;
 
     private final CurrencyTransactionType currencyTransactionType;
 
@@ -17,7 +17,7 @@ public class TransactionDeposit implements ITransaction {
 
     public TransactionDeposit(Account currentAccount, double currentTransactionAmount) {
         this.targetAccount = currentAccount;
-        this.currentTransactionAmount = currentTransactionAmount;
+        this.targetTransactionAmount = currentTransactionAmount;
 
         this.currencyTransactionType = CurrencyTransactionType.DEPOSIT;
 
@@ -28,7 +28,7 @@ public class TransactionDeposit implements ITransaction {
     public String toString() {
         return "TransactionDeposit{" +
                 "targetAccount=" + targetAccount +
-                ", currentTransactionAmount=" + currentTransactionAmount +
+                ", currentTransactionAmount=" + targetTransactionAmount +
                 ", currencyTransactionType=" + currencyTransactionType +
                 ", transactionDate=" + transactionDate +
                 '}';
@@ -42,8 +42,8 @@ public class TransactionDeposit implements ITransaction {
         return targetAccount.getCurrency();
     }
 
-    public double getCurrentTransactionAmount() {
-        return currentTransactionAmount;
+    public double getTargetTransactionAmount() {
+        return targetTransactionAmount;
     }
 
     public CurrencyTransactionType getCurrencyTransactionType() {
@@ -56,9 +56,10 @@ public class TransactionDeposit implements ITransaction {
 
     @Override
     public String getInfo() {
-        return String.format("%s deposited %f to %s account\nDate: %s",
+        return String.format("%s deposited %f (+%f) to %s account\nDate: %s",
                 targetAccount.getUserEmail(),
-                currentTransactionAmount,
+                targetTransactionAmount,
+                targetTransactionAmount,
                 targetAccount.getCurrency().getCode(),
                 transactionDate.toString()
         );
