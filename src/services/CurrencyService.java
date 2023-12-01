@@ -2,6 +2,7 @@ package services;
 
 
 import exceptions.TransactionException;
+import interfaces.ITransaction;
 import models.Account;
 import models.Currency;
 import models.ExchangeRate;
@@ -25,7 +26,7 @@ public class CurrencyService {
         dataInitStatus = true;
     }
 
-    public Optional<TransactionExchange> exchangeCurrency(Account current, Account target, double amount) {
+    public Optional<ITransaction> exchangeCurrency(Account current, Account target, double amount) {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()
@@ -34,18 +35,26 @@ public class CurrencyService {
         if (exchangeRate.isEmpty()) {
             throw new TransactionException("Exchange rate not found");
         }
+        
 
         double exchangedSum = amount * exchangeRate.get().getRate();
 
         current.withdraw(amount);
         target.deposit(exchangedSum);
 
-        return exchangedSum;
+        return Optional.of(new TransactionExchange(
+                current,
+                target,
+                exchangeRate.get().getRate(),
+                amount,
+                exchangedSum)
+        );
     }
 
     public Optional<Currency> addCurrency(String code, String name) {
         return currencyRepository.addCurrency(code, name);
     }
+
     public boolean deleteCurrency(String code) {
         Optional<Currency> currency = currencyRepository.getCurrencyByCode(code);
 

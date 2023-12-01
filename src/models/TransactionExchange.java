@@ -3,6 +3,7 @@ package models;
 import interfaces.ITransaction;
 import utils.CurrencyTransactionType;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -109,5 +110,11 @@ public class TransactionExchange implements ITransaction {
     @Override
     public String getCurrentInfo() {
         return currentAccount.toString();
+    }
+
+    @Override
+    public String getCurrentAmount() {
+        DecimalFormat df = new DecimalFormat("0.##");
+        return df.format(targetTransactionAmount);
     }
 }

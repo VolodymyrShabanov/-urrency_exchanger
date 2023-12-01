@@ -10,4 +10,6 @@ public interface ITransaction {
     public String getDateInfo();
 
     public String getCurrentInfo();
+
+    public String getCurrentAmount();
 }

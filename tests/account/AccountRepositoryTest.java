@@ -26,16 +26,16 @@ public class AccountRepositoryTest {
         Currency USD = new Currency("USD", "US Dollar");
         Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, EUR));
+        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, EUR).isPresent());
         assertEquals(accountRepository.getRepositorySize(), 1);
 
-        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, PLN));
+        assertTrue(accountRepository.createAccount("andrey@gmail.com", 1000, PLN).isPresent());
         assertEquals(accountRepository.getRepositorySize(), 2);
 
-        assertFalse(accountRepository.createAccount("andrey@gmail.com", 1000, EUR));
+        assertFalse(accountRepository.createAccount("andrey@gmail.com", 1000, EUR).isPresent());
         assertEquals(accountRepository.getRepositorySize(), 2);
 
-        assertTrue(accountRepository.createAccount("alex@gmail.com", 1000, PLN));
+        assertTrue(accountRepository.createAccount("alex@gmail.com", 1000, PLN).isPresent());
         assertEquals(accountRepository.getRepositorySize(), 3);
     }
 

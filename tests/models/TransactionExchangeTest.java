@@ -7,29 +7,29 @@ import utils.CurrencyTransactionType;
 class TransactionExchangeTest {
     @BeforeEach
     void init() {
-        var currentCurrency = new Currency("EUR", "Euro");
-        var targetCurrency = new Currency("USD", "US Dollar");
-
-        var currentAcconut = new Account("andrey@gmail.com", currentCurrency);
-        var targetAcconut = new Account("alex@gmail.com", targetCurrency);
-
-        var converstionRate = 1.1;
-
-        var currentTransactionAmount = 100;
-        var targetTransactionAmount = 110;
-
-        var transactionType = CurrencyTransactionType.EXCHANGE;
-
-        var transaction1 = new TransactionExchange(
-                currentAcconut,
-                targetAcconut,
-                converstionRate,
-                currentCurrency,
-                targetCurrency,
-                currentTransactionAmount,
-                targetTransactionAmount,
-                transactionType
-        );
+//        var currentCurrency = new Currency("EUR", "Euro");
+//        var targetCurrency = new Currency("USD", "US Dollar");
+//
+//        var currentAcconut = new Account("andrey@gmail.com", currentCurrency);
+//        var targetAcconut = new Account("alex@gmail.com", targetCurrency);
+//
+//        var converstionRate = 1.1;
+//
+//        var currentTransactionAmount = 100;
+//        var targetTransactionAmount = 110;
+//
+//        var transactionType = CurrencyTransactionType.EXCHANGE;
+//
+//        var transaction1 = new TransactionExchange(
+//                currentAcconut,
+//                targetAcconut,
+//                converstionRate,
+//                currentCurrency,
+//                targetCurrency,
+//                currentTransactionAmount,
+//                targetTransactionAmount,
+//                transactionType
+//        );
     }
 
     @Test

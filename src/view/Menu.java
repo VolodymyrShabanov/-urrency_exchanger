@@ -3,9 +3,7 @@ package view;
 
 import services.AccountService;
 import services.CurrencyService;
-import services.TransactionService;
 import services.UserService;
-import utils.CurrencyTransactionType;
 import utils.UserRole;
 
 import java.util.Scanner;
@@ -23,7 +21,7 @@ public class Menu {
     AccountService accountService = new AccountService();
     UserService userService = new UserService();
     CurrencyService currencyService = new CurrencyService();
-    TransactionService transactionService = new TransactionService();
+//    TransactionService transactionService = new TransactionService();
 
     UserRole state = UserRole.GUEST;
 
@@ -175,13 +173,13 @@ public class Menu {
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
 
-                    transactionService.createNewTransaction(
-                            userService.getCurrentUserEmail().get(),
-                            "account", //TODO - нужен счет
-                            String.valueOf(currencyType),
-                            CurrencyTransactionType.CREDIT,
-                            depositSum
-                    );
+//                    transactionService.createNewTransaction(
+//                            userService.getCurrentUserEmail().get(),
+//                            "account", //TODO - нужен счет
+//                            String.valueOf(currencyType),
+//                            CurrencyTransactionType.CREDIT,
+//                            depositSum
+//                    );
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -207,13 +205,13 @@ public class Menu {
                     );
 
 
-                    transactionService.createNewTransaction(
-                            userService.getCurrentUserEmail().get(),
-                            "account", //TODO - нужен счет
-                            String.valueOf(currencyType),
-                            CurrencyTransactionType.CREDIT,
-                            depositSum
-                    );
+//                    transactionService.createNewTransaction(
+//                            userService.getCurrentUserEmail().get(),
+//                            "account", //TODO - нужен счет
+//                            String.valueOf(currencyType),
+//                            CurrencyTransactionType.CREDIT,
+//                            depositSum
+//                    );
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -261,9 +259,9 @@ public class Menu {
                     clearConsole();
 
                     // TODO
-                    transactionService.printTransactionsByUserEmail(
-                            userService.getCurrentUserEmail().get()
-                    );
+//                    transactionService.printTransactionsByUserEmail(
+//                            userService.getCurrentUserEmail().get()
+//                    );
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":

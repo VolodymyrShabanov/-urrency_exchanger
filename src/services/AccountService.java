@@ -54,11 +54,11 @@ public class AccountService {
 
             return Optional.of(new TransactionDeposit(account.get(), depositSum));
         } else {
-            openAccount(email, depositSum, currency);
+            Optional<ITransaction> transactionData = openAccount(email, depositSum, currency);
             System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
-        }
 
-        return Optional.empty();
+            return transactionData;
+        }
     }
 
     public Optional<ITransaction> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
