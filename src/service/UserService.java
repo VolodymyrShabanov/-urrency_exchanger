@@ -26,7 +26,11 @@ public class UserService implements IUserService {
 
     @Override
     public boolean createUser(String email, String password, UserRole role) {
-        validateUserData(email, password);
+        try {
+            validateUserData(email, password);
+        } catch (ValidationException e) {
+            System.err.println(e.getMessage());
+        }
 
         if (userRepository.isUserExist(email)) {
             return false;
