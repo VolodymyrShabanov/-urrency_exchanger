@@ -1,6 +1,4 @@
-package models;
-
-import models.Currency;
+package model;
 
 public class Account {
     private String userEmail;

@@ -1,4 +1,4 @@
-package models;
+package model;
 
 public class ExchangeRate {
     private final Currency fromCurrency;

@@ -1,14 +1,13 @@
 package view;
 
 
-import interfaces.ITransaction;
-import models.Account;
-import models.Currency;
-import models.TransactionExchange;
-import services.AccountService;
-import services.CurrencyService;
-import services.UserService;
-import utils.UserRole;
+import interfaces.ITransactionData;
+import model.*;
+import service.AccountService;
+import service.CurrencyService;
+import service.TransactionService;
+import service.UserService;
+import util.UserRole;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -26,7 +25,7 @@ public class Menu {
     AccountService accountService = new AccountService();
     UserService userService = new UserService();
     CurrencyService currencyService = new CurrencyService();
-//    TransactionService transactionService = new TransactionService();
+    TransactionService transactionService = new TransactionService();
 
     UserRole state = UserRole.GUEST;
 
@@ -175,17 +174,19 @@ public class Menu {
                     Account currentAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), currentCurrency).get();
                     Account targetAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), targetCurrency).get();
 
-                    Optional<TransactionExchange> transactionData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+                    Optional<TransactionExchangeData> exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+
+                    if(exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
 
                     accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),
-                            transactionData.get().getCurrentTransactionAmount(),
+                            exchangeData.get().getCurrentTransactionAmount(),
                             currentCurrency
                     );
 
                     accountService.depositCurrency(
                             userService.getCurrentUserEmail().get(),
-                            transactionData.get().getTargetTransactionAmount(),
+                            exchangeData.get().getTargetTransactionAmount(),
                             targetCurrency
                     );
                     break;
@@ -204,11 +205,13 @@ public class Menu {
 
                     clearConsole();
 
-                    accountService.depositCurrency(
+                    Optional<TransactionDepositData> dataDeposit = accountService.depositCurrency(
                             userService.getCurrentUserEmail().get(),
                             depositSum,
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
+
+                    if(dataDeposit.isPresent()) transactionService.addNewTransaction(dataDeposit.get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -227,11 +230,13 @@ public class Menu {
 
                     clearConsole();
 
-                    accountService.withdrawCurrency(
+                    Optional<TransactionWithdrawData> dataWithdraw = accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),
                             depositSum,
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
+
+                    if(dataWithdraw.isPresent()) transactionService.addNewTransaction(dataWithdraw.get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -278,7 +283,27 @@ public class Menu {
                 case "6":
                     clearConsole();
 
-                    System.out.println("Transaction history displayed");
+                    System.out.println("Display user transaction history:\n" +
+                            "1. All transactions\n" +
+                            "2. By currency");
+                    ans = scanner.nextLine();
+
+                    switch (ans) {
+                        case "1":
+                            transactionService.displayTransactionsByUserEmail(userService.getCurrentUserEmail().get());
+                            break;
+                        case "2":
+                            System.out.println("Enter currency code:");
+                            ans = scanner.nextLine();
+
+                            Currency currencyFilter = currencyService.getCurrencyByCode(ans).get();
+                            transactionService.displayTransactionsByCurrency(currencyFilter);
+                            break;
+                        default:
+                            System.err.println("Error: wrong option selection.");
+                            break;
+                    }
+
                     break;
                 case "7":
                     clearConsole();

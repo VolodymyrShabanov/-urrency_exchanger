@@ -1,6 +1,6 @@
 package interfaces;
 
-import utils.UserRole;
+import util.UserRole;
 
 import java.util.Optional;
 

@@ -1,13 +1,14 @@
-package models;
+package model;
 
-import interfaces.ITransaction;
-import utils.CurrencyTransactionType;
+import interfaces.ITransactionData;
+import util.CurrencyTransactionType;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class TransactionDeposit implements ITransaction {
+public class TransactionDepositData implements ITransactionData {
     private final Account targetAccount;
 
     private final double targetTransactionAmount;
@@ -16,9 +17,9 @@ public class TransactionDeposit implements ITransaction {
 
     private final LocalDateTime transactionDate;
 
-    public TransactionDeposit(Account currentAccount, double currentTransactionAmount) {
-        this.targetAccount = currentAccount;
-        this.targetTransactionAmount = currentTransactionAmount;
+    public TransactionDepositData(Account targetAccount, double targetTransactionAmount) {
+        this.targetAccount = targetAccount;
+        this.targetTransactionAmount = targetTransactionAmount;
 
         this.currencyTransactionType = CurrencyTransactionType.DEPOSIT;
 
@@ -27,9 +28,9 @@ public class TransactionDeposit implements ITransaction {
 
     @Override
     public String toString() {
-        return "TransactionDeposit{" +
+        return "TransactionDepositData{" +
                 "targetAccount=" + targetAccount +
-                ", currentTransactionAmount=" + targetTransactionAmount +
+                ", targetTransactionAmount=" + targetTransactionAmount +
                 ", currencyTransactionType=" + currencyTransactionType +
                 ", transactionDate=" + transactionDate +
                 '}';
@@ -77,11 +78,29 @@ public class TransactionDeposit implements ITransaction {
     }
 
     @Override
-    public String getCurrentInfo() {
-        return targetAccount.toString();
+    public String getUserEmail() {
+        return targetAccount.getUserEmail();
     }
 
     @Override
+    public List<Account> getAccounts() {
+        return List.of(targetAccount);
+    }
+
+    @Override
+    public List<Double> getAmounts() {
+        return List.of(targetTransactionAmount);
+    }
+
+    @Override
+    public List<Currency> getCurrencies() {
+        return List.of(targetAccount.getCurrency());
+    }
+
+    public String getCurrent() {
+        return targetAccount.toString();
+    }
+
     public String getCurrentAmount() {
         DecimalFormat df = new DecimalFormat("0.##");
         return df.format(targetTransactionAmount);

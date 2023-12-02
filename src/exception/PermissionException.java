@@ -1,4 +1,4 @@
-package exceptions;
+package exception;
 
 public class PermissionException extends RuntimeException {
     public PermissionException(String message) {

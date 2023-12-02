@@ -1,6 +1,6 @@
-package exchangeRate;
+package repository;
 
-import models.Currency;
+import model.Currency;
 
 import java.util.*;
 

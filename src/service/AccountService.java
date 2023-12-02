@@ -1,8 +1,8 @@
-package services;
+package service;
 
-import interfaces.ITransaction;
-import models.*;
-import exchangeRate.AccountRepository;
+import interfaces.ITransactionData;
+import model.*;
+import repository.AccountRepository;
 
 import java.util.Optional;
 import java.util.Set;
@@ -15,12 +15,12 @@ public class AccountService {
         this.accountRepository = new AccountRepository();
     }
 
-    public Optional<ITransaction> openAccount(String email, double depositSum, Currency currency) {
+    public Optional<TransactionDepositData> openAccount(String email, double depositSum, Currency currency) {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
         if (!accountExists) {
             Optional<Account> newAccount = accountRepository.createAccount(email, depositSum, currency);
-            return Optional.of(new TransactionDeposit(newAccount.get(), depositSum));
+            return Optional.of(new TransactionDepositData(newAccount.get(), depositSum));
         } else {
             System.err.println("Error: this account already exists.");
         }
@@ -46,29 +46,29 @@ public class AccountService {
         return false;
     }
 
-    public Optional<ITransaction> depositCurrency(String email, double depositSum, Currency currency) {
+    public Optional<TransactionDepositData> depositCurrency(String email, double depositSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
             account.get().deposit(depositSum);
 
-            return Optional.of(new TransactionDeposit(account.get(), depositSum));
+            return Optional.of(new TransactionDepositData(account.get(), depositSum));
         } else {
-            Optional<ITransaction> transactionData = openAccount(email, depositSum, currency);
+            Optional<TransactionDepositData> transactionData = openAccount(email, depositSum, currency);
             System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
 
             return transactionData;
         }
     }
 
-    public Optional<ITransaction> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
+    public Optional<TransactionWithdrawData> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
             if (account.get().getBalance() >= withdrawalSum) {
                 account.get().withdraw(withdrawalSum);
 
-                return Optional.of(new TransactionWithdraw(account.get(), withdrawalSum));
+                return Optional.of(new TransactionWithdrawData(account.get(), withdrawalSum));
             } else {
                 System.err.println("Error: there is not enough balance.");
             }

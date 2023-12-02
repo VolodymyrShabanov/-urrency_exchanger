@@ -1,7 +1,7 @@
-package exchangeRate;
+package repository;
 
-import models.Account;
-import models.Currency;
+import model.Account;
+import model.Currency;
 
 import java.util.*;
 import java.util.stream.Collectors;

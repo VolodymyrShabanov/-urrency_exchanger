@@ -1,6 +1,6 @@
-package exchangeRate;
+package repository;
 
-import models.User;
+import model.User;
 
 import java.util.HashMap;
 import java.util.Map;
