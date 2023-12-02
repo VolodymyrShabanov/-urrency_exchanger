@@ -1,9 +1,8 @@
 package view;
 
 
-import model.Account;
-import model.Currency;
-import model.TransactionExchangeData;
+import interfaces.ITransactionData;
+import model.*;
 import service.AccountService;
 import service.CurrencyService;
 import service.TransactionService;
@@ -175,17 +174,19 @@ public class Menu {
                     Account currentAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), currentCurrency).get();
                     Account targetAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), targetCurrency).get();
 
-                    Optional<TransactionExchangeData> transactionData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+                    Optional<TransactionExchangeData> exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+
+                    if(exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
 
                     accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),
-                            transactionData.get().getCurrentTransactionAmount(),
+                            exchangeData.get().getCurrentTransactionAmount(),
                             currentCurrency
                     );
 
                     accountService.depositCurrency(
                             userService.getCurrentUserEmail().get(),
-                            transactionData.get().getTargetTransactionAmount(),
+                            exchangeData.get().getTargetTransactionAmount(),
                             targetCurrency
                     );
                     break;
@@ -204,11 +205,13 @@ public class Menu {
 
                     clearConsole();
 
-                    accountService.depositCurrency(
+                    Optional<TransactionDepositData> dataDeposit = accountService.depositCurrency(
                             userService.getCurrentUserEmail().get(),
                             depositSum,
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
+
+                    if(dataDeposit.isPresent()) transactionService.addNewTransaction(dataDeposit.get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -227,11 +230,13 @@ public class Menu {
 
                     clearConsole();
 
-                    accountService.withdrawCurrency(
+                    Optional<TransactionWithdrawData> dataWithdraw = accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),
                             depositSum,
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
+
+                    if(dataWithdraw.isPresent()) transactionService.addNewTransaction(dataWithdraw.get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();

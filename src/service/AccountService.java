@@ -15,7 +15,7 @@ public class AccountService {
         this.accountRepository = new AccountRepository();
     }
 
-    public Optional<ITransactionData> openAccount(String email, double depositSum, Currency currency) {
+    public Optional<TransactionDepositData> openAccount(String email, double depositSum, Currency currency) {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
         if (!accountExists) {
@@ -46,7 +46,7 @@ public class AccountService {
         return false;
     }
 
-    public Optional<ITransactionData> depositCurrency(String email, double depositSum, Currency currency) {
+    public Optional<TransactionDepositData> depositCurrency(String email, double depositSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
@@ -54,14 +54,14 @@ public class AccountService {
 
             return Optional.of(new TransactionDepositData(account.get(), depositSum));
         } else {
-            Optional<ITransactionData> transactionData = openAccount(email, depositSum, currency);
+            Optional<TransactionDepositData> transactionData = openAccount(email, depositSum, currency);
             System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
 
             return transactionData;
         }
     }
 
-    public Optional<ITransactionData> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
+    public Optional<TransactionWithdrawData> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         if (account.isPresent()) {
