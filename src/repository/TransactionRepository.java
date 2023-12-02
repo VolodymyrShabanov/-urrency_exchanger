@@ -16,17 +16,14 @@ public class TransactionRepository {
         this.transactions = new HashMap<>();
     }
 
-    public boolean addTransaction(ITransactionData transactionData) {
+    public void addTransaction(ITransactionData transactionData) {
         boolean emailExists = transactions.containsKey(transactionData.getUserEmail());
 
         if (emailExists) {
             transactions.get(transactionData.getUserEmail()).add(transactionData);
-            return true;
         } else {
             transactions.put(transactionData.getUserEmail(), new ArrayList<>(List.of(transactionData)));
         }
-
-        return false;
     }
 
     public Optional<List<ITransactionData>> getTransactionsByCurrency(Currency currency) {

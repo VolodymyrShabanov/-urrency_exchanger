@@ -16,6 +16,7 @@ public class UserService implements IUserService {
 
     public UserService() {
         this.userRepository = new UserRepository();
+        userRepository.addUser(new User("admin", "admin", UserRole.ADMIN));
     }
 
     @Override
@@ -41,17 +42,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean login(String email, String password) {
+    public UserRole login(String email, String password) {
         Optional<User> user = userRepository.getUserByEmail(email);
 
         if (user.isPresent() && user.get().checkPassword(password)) {
             currentUser = user;
             System.out.printf("User %s has successfully logged in.\n", email);
-            return true;
+            return user.get().getRole();
         }
 
         System.err.println("Error: login details are incorrect.");
-        return false;
+        return UserRole.GUEST;
     }
 
     public boolean logout() {

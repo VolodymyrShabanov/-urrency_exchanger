@@ -41,7 +41,7 @@ public class Menu {
                     break;
                 }
                 case ADMIN: {
-                    runUserMenu();
+                    runAdminMenu();
                     break;
                 }
             }
@@ -103,9 +103,18 @@ public class Menu {
 
                     clearConsole();
 
-                    if (userService.login(tempEmail, tempPass)) {
+                    switch (userService.login(tempEmail, tempPass)) {
+                        case USER:
                         isMenuRunning = false;
                         state = UserRole.USER;
+                        break;
+                        case ADMIN:
+                            isMenuRunning = false;
+                            state = UserRole.ADMIN;
+                            break;
+                        default:
+                            System.err.println("Error: this role doesn't exist.");
+                            break;
                     }
 
                     System.out.println("Press enter to continue...");

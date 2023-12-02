@@ -9,7 +9,7 @@ public interface IUserService {
 
     public boolean createUser(String email, String password, UserRole role);
 
-    public boolean login(String email, String password);
+    public UserRole login(String email, String password);
 
     public boolean logout();
 }
