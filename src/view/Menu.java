@@ -154,14 +154,23 @@ public class Menu {
 
             switch (ans) {
                 case "1":
+                    clearConsole();
+
                     System.out.println("Enter Current currency code:");
                     Currency currentCurrency = currencyService.getCurrencyByCode(scanner.nextLine()).get();
+
+                    clearConsole();
 
                     System.out.println("Enter Target currency code:");
                     Currency targetCurrency = currencyService.getCurrencyByCode(scanner.nextLine()).get();
 
+                    clearConsole();
+
                     System.out.println("Enter sum to exchange:");
                     double currentAmount = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    clearConsole();
 
                     Account currentAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), currentCurrency).get();
                     Account targetAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), targetCurrency).get();
@@ -179,8 +188,6 @@ public class Menu {
                             transactionData.get().getTargetTransactionAmount(),
                             targetCurrency
                     );
-
-                    scanner.nextLine();
                     break;
                 case "2":
                     clearConsole();
