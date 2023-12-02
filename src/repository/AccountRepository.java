@@ -83,11 +83,21 @@ public class AccountRepository {
     }
 
     public Optional<Set<Account>> getAccountsByCurrency(Currency currency) {
-        Set<Account> fetchedAccounts = accounts.values().stream()
-                .flatMap(Set::stream)
-                .filter(account -> account.getCurrency().equals(currency))
-                .collect(Collectors.toSet());
+        Set<Account> fetchedAccounts = new HashSet<>();
 
-        return Optional.of(Set.copyOf(fetchedAccounts));
+        accounts.values()
+                .forEach(accountSet -> {
+                    Optional<Account> tempAccount = accountSet.stream()
+                            .filter(account -> account.getCurrency().getCode().equals(currency.getCode()))
+                            .findFirst();
+
+                    if(tempAccount.isPresent()) fetchedAccounts.add(tempAccount.get());
+                });
+
+        if (fetchedAccounts.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(Set.copyOf(fetchedAccounts));
+        }
     }
 }

@@ -79,6 +79,12 @@ public class AccountService {
         return Optional.empty();
     }
 
+    public boolean isAccountOpenByCurrency(Currency currency) {
+        Optional<Set<Account>> accounts = accountRepository.getAccountsByCurrency(currency);
+
+        return accounts.isPresent();
+    }
+
     public Optional<Account> getAccountCopy(String email, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 

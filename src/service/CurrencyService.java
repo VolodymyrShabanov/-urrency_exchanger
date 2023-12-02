@@ -50,8 +50,8 @@ public class CurrencyService {
         return currencyRepository.addCurrency(code, name);
     }
 
-    public boolean deleteCurrency(String code) {
-        Optional<Currency> currency = currencyRepository.getCurrencyByCode(code);
+    public boolean deleteCurrency(Currency currencyToDelete) {
+        Optional<Currency> currency = currencyRepository.getCurrencyByCode(currencyToDelete.getCode());
 
         if (currency.isEmpty()) {
             System.err.println("Currency not found.");
@@ -59,6 +59,7 @@ public class CurrencyService {
         }
 
         currencyRepository.deleteCurrencyByCode(currency.get().getCode());
+        System.out.printf("Currency '%s' has successfully been deleted.\n", currencyToDelete.getName());
 
         return true;
     }
@@ -100,6 +101,7 @@ public class CurrencyService {
 
         if (existingRate.isPresent()) {
             existingRate.get().setRate(newRate);
+            System.out.println("Exchange Rate has successfully been updated.");
             return Optional.of(new ExchangeRate(existingRate.get()));
         } else {
             System.out.println("Error: this rate doesn't exist.");
@@ -116,7 +118,7 @@ public class CurrencyService {
         Optional<Currency> current = currencyRepository.getCurrencyByCode(currentCode);
         Optional<Currency> target = currencyRepository.getCurrencyByCode(targetCode);
 
-        if(current.isEmpty() || target.isEmpty()) {
+        if (current.isEmpty() || target.isEmpty()) {
             return Optional.empty();
         }
 

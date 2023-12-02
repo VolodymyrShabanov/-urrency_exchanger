@@ -105,9 +105,9 @@ public class Menu {
 
                     switch (userService.login(tempEmail, tempPass)) {
                         case USER:
-                        isMenuRunning = false;
-                        state = UserRole.USER;
-                        break;
+                            isMenuRunning = false;
+                            state = UserRole.USER;
+                            break;
                         case ADMIN:
                             isMenuRunning = false;
                             state = UserRole.ADMIN;
@@ -185,7 +185,7 @@ public class Menu {
 
                     Optional<TransactionExchangeData> exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 
-                    if(exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
+                    if (exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
 
                     accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),
@@ -220,7 +220,7 @@ public class Menu {
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
 
-                    if(dataDeposit.isPresent()) transactionService.addNewTransaction(dataDeposit.get());
+                    if (dataDeposit.isPresent()) transactionService.addNewTransaction(dataDeposit.get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -245,7 +245,7 @@ public class Menu {
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
 
-                    if(dataWithdraw.isPresent()) transactionService.addNewTransaction(dataWithdraw.get());
+                    if (dataWithdraw.isPresent()) transactionService.addNewTransaction(dataWithdraw.get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -370,7 +370,11 @@ public class Menu {
 
             System.out.println("Select:");
 
-            System.out.println("1. admin menu");
+            System.out.println("1. Edit Exchange Rate");
+            System.out.println("2. Delete Currency");
+            System.out.println("3. Get Transactions Log");
+            System.out.println("4. Edit User Role");
+            System.out.println("5. Log Out");
 
             System.out.println("0. Exit");
 
@@ -380,7 +384,74 @@ public class Menu {
                 case "1":
                     clearConsole();
 
-                    System.out.println("Admin menu");
+                    System.out.println("Enter Current currency:");
+                    String editCurrency1 = scanner.nextLine();
+
+                    System.out.println("Enter Target currency:");
+                    String editCurrency2 = scanner.nextLine();
+
+                    System.out.println("Enter exchange rate:");
+                    double editRate = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    currencyService.updateExchangeRate(editCurrency1, editCurrency2, editRate);
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
+                    clearConsole();
+                    break;
+                case "2":
+                    System.out.println("Enter currency code you want to delete:");
+                    String queryCodeToDelete = scanner.nextLine();
+
+                    Optional<Currency> currencyToDelete = currencyService.getCurrencyByCode(queryCodeToDelete);
+
+                    if (currencyToDelete.isPresent()) {
+                        if (accountService.isAccountOpenByCurrency(currencyToDelete.get())) {
+                            System.err.println("Error: can't delete currency in use.");
+                        } else {
+                            currencyService.deleteCurrency(currencyToDelete.get());
+                        }
+                    }
+                    break;
+                case "3":
+                    System.out.println("Select option:\n1. By User Email\n2. By Currency");
+                    String queryOption = scanner.nextLine();
+
+                    switch (queryOption) {
+                        case "1":
+                            System.out.println("Enter user email:");
+                            String queryEmail = scanner.nextLine();
+
+                            transactionService.displayTransactionsByUserEmail(queryEmail);
+                            break;
+                        case "2":
+                            System.out.println("Enter currency code:");
+                            String queryCode = scanner.nextLine();
+
+                            Optional<Currency> fetchedCurrency = currencyService.getCurrencyByCode(queryCode);
+
+                            if (fetchedCurrency.isPresent()) {
+                                transactionService.displayTransactionsByCurrency(fetchedCurrency.get());
+                            }
+                            break;
+                        default:
+                            System.err.println("Error: please choose a valid option.");
+                            break;
+                    }
+                    break;
+                case "4":
+                    System.out.println("Enter user email:");
+                    String queryEmail = scanner.nextLine();
+
+                    System.out.println("Enter user role type:");
+                    String queryRole = scanner.nextLine();
+
+                    userService.assignUserRole(queryEmail, UserRole.valueOf(queryRole));
+                    break;
+                case "5":
+                    isMenuRunning = false;
+                    state = UserRole.GUEST;
                     break;
                 case "0":
                     clearConsole();
