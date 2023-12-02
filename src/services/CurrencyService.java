@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class CurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
-    private CurrencyRepository currencyRepository;
+    private final CurrencyRepository currencyRepository;
 
     private final boolean dataInitStatus;
 
@@ -35,7 +35,6 @@ public class CurrencyService {
         if (exchangeRate.isEmpty()) {
             throw new TransactionException("Exchange rate not found");
         }
-        
 
         double exchangedSum = amount * exchangeRate.get().getRate();
 
@@ -68,13 +67,13 @@ public class CurrencyService {
         return true;
     }
 
-    public double createExchangeRate(String fromCurrency, String toCurrency, double rate) {
+    public Optional<ExchangeRate> createExchangeRate(String fromCurrency, String toCurrency, double rate) {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
 
         if (sourceCurrency.isEmpty() || targetCurrency.isEmpty()) {
             System.out.println("Invalid currency codes.");
-            return 0;
+            return Optional.empty();
         }
 
         Optional<ExchangeRate> existingRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
@@ -83,37 +82,51 @@ public class CurrencyService {
             ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency.get(), targetCurrency.get(), rate);
             exchangeRateRepository.createExchangeRate(newExchangeRate);
 
-            return rate;
+            return Optional.of(new ExchangeRate(newExchangeRate));
         } else {
             System.err.println("Error: this rate already exists.");
         }
 
-        return 0;
+        return Optional.empty();
     }
 
-    public double updateExchangeRate(String fromCurrency, String toCurrency, double newRate) {
-        Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
-        Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
+    public Optional<ExchangeRate> updateExchangeRate(String currentCode, String targetCode, double newRate) {
+        Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(currentCode);
+        Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(targetCode);
 
         if (sourceCurrency.isEmpty() || targetCurrency.isEmpty()) {
             System.out.println("Invalid currency codes.");
-            return 0;
+
+            return Optional.empty();
         }
 
         Optional<ExchangeRate> existingRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
 
         if (existingRate.isPresent()) {
             existingRate.get().setRate(newRate);
-            return newRate;
+            return Optional.of(new ExchangeRate(existingRate.get()));
         } else {
             System.out.println("Error: this rate doesn't exist.");
         }
 
-        return 0;
+        return Optional.empty();
     }
 
     public Optional<Currency> getCurrencyByCode(String code) {
         return currencyRepository.getCurrencyByCode(code);
+    }
+
+    public Optional<ExchangeRate> getExchangeRateByCode(String currentCode, String targetCode) {
+        Optional<Currency> current = currencyRepository.getCurrencyByCode(currentCode);
+        Optional<Currency> target = currencyRepository.getCurrencyByCode(targetCode);
+
+        if(current.isEmpty() || target.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(current.get(), target.get());
+
+        return exchangeRate.map(ExchangeRate::new);
     }
 
     private void init() {

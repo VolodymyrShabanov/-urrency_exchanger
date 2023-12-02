@@ -11,6 +11,12 @@ public class ExchangeRate {
         this.rate = rate;
     }
 
+    public ExchangeRate(ExchangeRate exchangeRate) {
+        this.fromCurrency = exchangeRate.fromCurrency;
+        this.toCurrency = exchangeRate.toCurrency;
+        this.rate = exchangeRate.rate;
+    }
+
     public Currency getFromCurrency() {
         return fromCurrency;
     }

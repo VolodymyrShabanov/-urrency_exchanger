@@ -36,7 +36,7 @@ public class AccountRepository {
     public boolean deleteAccount(String email, Currency currency) {
         Optional<Account> account = fetchAccount(email, currency);
 
-        if(account.isEmpty()) return false;
+        if (account.isEmpty()) return false;
 
         accounts.get(email).remove(account.get());
         repositorySize--;
@@ -82,10 +82,12 @@ public class AccountRepository {
         return repositorySize;
     }
 
-    public Set<Account> getAccountsByCurrency(Currency currency) {
-        return accounts.values().stream()
+    public Optional<Set<Account>> getAccountsByCurrency(Currency currency) {
+        Set<Account> fetchedAccounts = accounts.values().stream()
                 .flatMap(Set::stream)
                 .filter(account -> account.getCurrency().equals(currency))
                 .collect(Collectors.toSet());
+
+        return Optional.of(Set.copyOf(fetchedAccounts));
     }
 }
