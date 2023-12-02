@@ -1,4 +1,4 @@
-package account;
+package repository;
 
 import model.Account;
 import model.Currency;

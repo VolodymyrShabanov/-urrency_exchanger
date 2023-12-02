@@ -1,4 +1,4 @@
-package currency;
+package repository;
 
 import org.junit.jupiter.api.Test;
 import repository.CurrencyRepository;

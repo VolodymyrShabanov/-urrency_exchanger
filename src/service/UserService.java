@@ -11,7 +11,7 @@ import util.Validator;
 import java.util.Optional;
 
 public class UserService implements IUserService {
-    private static Optional<User> currentUser;
+    private static User currentUser;
     private final UserRepository userRepository;
 
     public UserService() {
@@ -21,15 +21,14 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<String> getCurrentUserEmail() {
-        return currentUser.map(User::getEmail);
+        return currentUser == null ? Optional.empty() : Optional.of(currentUser.getEmail());
     }
 
     @Override
     public boolean createUser(String email, String password, UserRole role) {
-        try {
-            validateUserData(email, password);
-        } catch (ValidationException e) {
-            System.err.println(e.getMessage());
+        validateUserData(email, password);
+
+        if (userRepository.isUserExist(email)) {
             return false;
         }
 
@@ -46,7 +45,7 @@ public class UserService implements IUserService {
         Optional<User> user = userRepository.getUserByEmail(email);
 
         if (user.isPresent() && user.get().checkPassword(password)) {
-            currentUser = user;
+            currentUser = user.get();
             System.out.printf("User %s has successfully logged in.\n", email);
             return user.get().getRole();
         }
@@ -56,8 +55,8 @@ public class UserService implements IUserService {
     }
 
     public boolean logout() {
-        if (currentUser.isPresent()) {
-            currentUser = Optional.empty();
+        if (currentUser != null) {
+            currentUser = null;
             System.out.println("You have logged out.");
             return true;
         } else {
@@ -65,16 +64,12 @@ public class UserService implements IUserService {
         }
     }
 
-    public boolean assignUserRole(String userEmail, UserRole newRole) {
-        if (!isCurrentUserAdmin()) {
-            throw new PermissionException("Only administrators can assign roles");
-        }
-
+    public UserRole assignUserRole(String userEmail, UserRole newRole) {
         Optional<User> user = userRepository.getUserByEmail(userEmail);
 
         if (user.isEmpty()) {
             System.out.println("User not found.");
-            return false;
+            return UserRole.GUEST;
         }
 
         User userModel = user.get();
@@ -82,20 +77,12 @@ public class UserService implements IUserService {
         userRepository.updateUser(userModel);
         System.out.println("User role updated successfully");
 
-        return true;
+        return newRole;
     }
 
     private void validateUserData(String email, String password) throws ValidationException {
         if (!Validator.isValidEmail(email) || !Validator.isValidPassword(password)) {
             throw new ValidationException("Invalid email or password. Please try again.");
         }
-
-        if (userRepository.isUserExist(email)) {
-            throw new ValidationException("User with this email already exists.");
-        }
-    }
-
-    private boolean isCurrentUserAdmin() {
-        return currentUser.isPresent() && currentUser.get().getRole() == UserRole.ADMIN;
     }
 }

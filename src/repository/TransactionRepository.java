@@ -56,4 +56,8 @@ public class TransactionRepository {
 
         return Optional.empty();
     }
+
+    public int size() {
+        return transactions.size();
+    }
 }

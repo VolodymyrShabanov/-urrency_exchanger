@@ -19,9 +19,13 @@ public class ExchangeRateRepository {
         return Optional.ofNullable(exchangeRates.get(key));
     }
 
-    public void createExchangeRate(ExchangeRate exchangeRate) {
+    public boolean createExchangeRate(ExchangeRate exchangeRate) {
         String key = generateKey(exchangeRate.getFromCurrency(), exchangeRate.getToCurrency());
+
+        if(exchangeRates.containsKey(key)) return false;
+
         exchangeRates.put(key, exchangeRate);
+        return true;
     }
 
     public Optional<Map<String, ExchangeRate>> getAllExchangeRates() {

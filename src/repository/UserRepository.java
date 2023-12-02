@@ -28,4 +28,8 @@ public class UserRepository {
     public void updateUser(User user) {
         users.put(user.getEmail(), user);
     }
+
+    public int repositorySize() {
+        return users.size();
+    }
 }
