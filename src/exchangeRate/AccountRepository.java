@@ -63,7 +63,7 @@ public class AccountRepository {
 
         if (isAccountOpen) {
             accountOptional = accounts.get(email).stream()
-                    .filter(account -> account.getCurrency().equals(currency))
+                    .filter(account -> account.getCurrency().getCode().equals(currency.getCode()))
                     .findFirst();
         }
 

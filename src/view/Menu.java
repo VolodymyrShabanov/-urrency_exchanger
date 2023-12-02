@@ -1,11 +1,16 @@
 package view;
 
 
+import interfaces.ITransaction;
+import models.Account;
+import models.Currency;
+import models.TransactionExchange;
 import services.AccountService;
 import services.CurrencyService;
 import services.UserService;
 import utils.UserRole;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -149,8 +154,40 @@ public class Menu {
 
             switch (ans) {
                 case "1":
-                    // TODO
-                    System.out.println("Currency exchanged");
+                    clearConsole();
+
+                    System.out.println("Enter Current currency code:");
+                    Currency currentCurrency = currencyService.getCurrencyByCode(scanner.nextLine()).get();
+
+                    clearConsole();
+
+                    System.out.println("Enter Target currency code:");
+                    Currency targetCurrency = currencyService.getCurrencyByCode(scanner.nextLine()).get();
+
+                    clearConsole();
+
+                    System.out.println("Enter sum to exchange:");
+                    double currentAmount = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    clearConsole();
+
+                    Account currentAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), currentCurrency).get();
+                    Account targetAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), targetCurrency).get();
+
+                    Optional<TransactionExchange> transactionData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+
+                    accountService.withdrawCurrency(
+                            userService.getCurrentUserEmail().get(),
+                            transactionData.get().getCurrentTransactionAmount(),
+                            currentCurrency
+                    );
+
+                    accountService.depositCurrency(
+                            userService.getCurrentUserEmail().get(),
+                            transactionData.get().getTargetTransactionAmount(),
+                            targetCurrency
+                    );
                     break;
                 case "2":
                     clearConsole();
@@ -172,14 +209,6 @@ public class Menu {
                             depositSum,
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
-
-//                    transactionService.createNewTransaction(
-//                            userService.getCurrentUserEmail().get(),
-//                            "account", //TODO - нужен счет
-//                            String.valueOf(currencyType),
-//                            CurrencyTransactionType.CREDIT,
-//                            depositSum
-//                    );
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -203,15 +232,6 @@ public class Menu {
                             depositSum,
                             currencyService.getCurrencyByCode(currencyType).get()
                     );
-
-
-//                    transactionService.createNewTransaction(
-//                            userService.getCurrentUserEmail().get(),
-//                            "account", //TODO - нужен счет
-//                            String.valueOf(currencyType),
-//                            CurrencyTransactionType.CREDIT,
-//                            depositSum
-//                    );
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -258,10 +278,6 @@ public class Menu {
                 case "6":
                     clearConsole();
 
-                    // TODO
-//                    transactionService.printTransactionsByUserEmail(
-//                            userService.getCurrentUserEmail().get()
-//                    );
                     System.out.println("Transaction history displayed");
                     break;
                 case "7":

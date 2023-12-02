@@ -2,7 +2,6 @@ package services;
 
 
 import exceptions.TransactionException;
-import interfaces.ITransaction;
 import models.Account;
 import models.Currency;
 import models.ExchangeRate;
@@ -26,7 +25,7 @@ public class CurrencyService {
         dataInitStatus = true;
     }
 
-    public Optional<ITransaction> exchangeCurrency(Account current, Account target, double amount) {
+    public Optional<TransactionExchange> exchangeCurrency(Account current, Account target, double amount) {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()
@@ -37,9 +36,6 @@ public class CurrencyService {
         }
 
         double exchangedSum = amount * exchangeRate.get().getRate();
-
-        current.withdraw(amount);
-        target.deposit(exchangedSum);
 
         return Optional.of(new TransactionExchange(
                 current,
@@ -134,6 +130,13 @@ public class CurrencyService {
             addCurrency("USD", "US Dollar");
             addCurrency("EUR", "Euro");
             addCurrency("PLN", "Polish Zloty");
+
+            createExchangeRate("EUR", "USD", 1.1);
+            createExchangeRate("USD", "EUR", 0.9);
+            createExchangeRate("USD", "PLN", 4);
+            createExchangeRate("PLN", "USD", 0.25);
+            createExchangeRate("EUR", "PLN", 4.3);
+            createExchangeRate("PLN", "EUR", 0.23);
         } else {
             System.err.println("Error: repo has already been initialized.");
         }
