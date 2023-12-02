@@ -1,13 +1,13 @@
-package services;
+package service;
 
-import exceptions.ValidationException;
-import models.Currency;
-import models.User;
-import exchangeRate.UserRepository;
-import utils.UserRole;
-import models.ExchangeRate;
-import exchangeRate.CurrencyRepository;
-import exchangeRate.ExchangeRateRepository;
+import exception.ValidationException;
+import model.Currency;
+import model.User;
+import repository.UserRepository;
+import util.UserRole;
+import model.ExchangeRate;
+import repository.CurrencyRepository;
+import repository.ExchangeRateRepository;
 
 public class DataInitializer {
 

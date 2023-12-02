@@ -1,10 +1,10 @@
 package account;
 
-import models.Account;
-import models.Currency;
+import model.Account;
+import model.Currency;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import exchangeRate.AccountRepository;
+import repository.AccountRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 

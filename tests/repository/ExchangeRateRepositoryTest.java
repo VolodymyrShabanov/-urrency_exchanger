@@ -1,4 +1,4 @@
-package exchangeRate;
+package repository;
 
 import org.junit.jupiter.api.Test;
 

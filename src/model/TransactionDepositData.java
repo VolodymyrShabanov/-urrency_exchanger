@@ -1,13 +1,13 @@
-package models;
+package model;
 
-import interfaces.ITransaction;
-import utils.CurrencyTransactionType;
+import interfaces.ITransactionData;
+import util.CurrencyTransactionType;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class TransactionDeposit implements ITransaction {
+public class TransactionDepositData implements ITransactionData {
     private final Account targetAccount;
 
     private final double targetTransactionAmount;
@@ -16,7 +16,7 @@ public class TransactionDeposit implements ITransaction {
 
     private final LocalDateTime transactionDate;
 
-    public TransactionDeposit(Account currentAccount, double currentTransactionAmount) {
+    public TransactionDepositData(Account currentAccount, double currentTransactionAmount) {
         this.targetAccount = currentAccount;
         this.targetTransactionAmount = currentTransactionAmount;
 
@@ -77,7 +77,7 @@ public class TransactionDeposit implements ITransaction {
     }
 
     @Override
-    public String getCurrentInfo() {
+    public String getCurrent() {
         return targetAccount.toString();
     }
 

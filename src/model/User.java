@@ -1,6 +1,6 @@
-package models;
+package model;
 
-import utils.UserRole;
+import util.UserRole;
 
 public class User {
     private final String email;

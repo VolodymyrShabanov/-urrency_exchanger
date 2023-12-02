@@ -1,13 +1,13 @@
-package services;
+package service;
 
 
-import exceptions.TransactionException;
-import models.Account;
-import models.Currency;
-import models.ExchangeRate;
-import exchangeRate.CurrencyRepository;
-import exchangeRate.ExchangeRateRepository;
-import models.TransactionExchange;
+import exception.TransactionException;
+import model.Account;
+import model.Currency;
+import model.ExchangeRate;
+import repository.CurrencyRepository;
+import repository.ExchangeRateRepository;
+import model.TransactionExchangeData;
 
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class CurrencyService {
         dataInitStatus = true;
     }
 
-    public Optional<TransactionExchange> exchangeCurrency(Account current, Account target, double amount) {
+    public Optional<TransactionExchangeData> exchangeCurrency(Account current, Account target, double amount) {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()
@@ -37,7 +37,7 @@ public class CurrencyService {
 
         double exchangedSum = amount * exchangeRate.get().getRate();
 
-        return Optional.of(new TransactionExchange(
+        return Optional.of(new TransactionExchangeData(
                 current,
                 target,
                 exchangeRate.get().getRate(),

@@ -1,7 +1,7 @@
-package exchangeRate;
+package repository;
 
-import models.Currency;
-import models.ExchangeRate;
+import model.Currency;
+import model.ExchangeRate;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,12 +1,12 @@
-package services;
+package service;
 
-import exceptions.ValidationException;
-import exceptions.PermissionException;
+import exception.ValidationException;
+import exception.PermissionException;
 import interfaces.IUserService;
-import models.User;
-import exchangeRate.UserRepository;
-import utils.UserRole;
-import utils.Validator;
+import model.User;
+import repository.UserRepository;
+import util.UserRole;
+import util.Validator;
 
 import java.util.Optional;
 

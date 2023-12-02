@@ -1,14 +1,13 @@
 package view;
 
 
-import interfaces.ITransaction;
-import models.Account;
-import models.Currency;
-import models.TransactionExchange;
-import services.AccountService;
-import services.CurrencyService;
-import services.UserService;
-import utils.UserRole;
+import model.Account;
+import model.Currency;
+import model.TransactionExchangeData;
+import service.AccountService;
+import service.CurrencyService;
+import service.UserService;
+import util.UserRole;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -175,7 +174,7 @@ public class Menu {
                     Account currentAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), currentCurrency).get();
                     Account targetAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), targetCurrency).get();
 
-                    Optional<TransactionExchange> transactionData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+                    Optional<TransactionExchangeData> transactionData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 
                     accountService.withdrawCurrency(
                             userService.getCurrentUserEmail().get(),

@@ -2,8 +2,8 @@ package account;
 
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import services.AccountService;
-import models.Currency;
+import service.AccountService;
+import model.Currency;
 
 import java.util.NoSuchElementException;
 
