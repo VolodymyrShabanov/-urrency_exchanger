@@ -79,6 +79,12 @@ public class AccountService {
         return Optional.empty();
     }
 
+    public Optional<Account> getAccountCopy(String email, Currency currency) {
+        Optional<Account> account = accountRepository.fetchAccount(email, currency);
+
+        return account.map(Account::new);
+    }
+
     public void printUserAccounts(String email) {
         Optional<Set<Account>> userAccounts = accountRepository.fetchAccounts(email);
 
