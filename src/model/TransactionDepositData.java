@@ -17,9 +17,9 @@ public class TransactionDepositData implements ITransactionData {
 
     private final LocalDateTime transactionDate;
 
-    public TransactionDepositData(Account currentAccount, double currentTransactionAmount) {
-        this.targetAccount = currentAccount;
-        this.targetTransactionAmount = currentTransactionAmount;
+    public TransactionDepositData(Account targetAccount, double targetTransactionAmount) {
+        this.targetAccount = targetAccount;
+        this.targetTransactionAmount = targetTransactionAmount;
 
         this.currencyTransactionType = CurrencyTransactionType.DEPOSIT;
 
@@ -28,9 +28,9 @@ public class TransactionDepositData implements ITransactionData {
 
     @Override
     public String toString() {
-        return "TransactionDeposit{" +
+        return "TransactionDepositData{" +
                 "targetAccount=" + targetAccount +
-                ", currentTransactionAmount=" + targetTransactionAmount +
+                ", targetTransactionAmount=" + targetTransactionAmount +
                 ", currencyTransactionType=" + currencyTransactionType +
                 ", transactionDate=" + transactionDate +
                 '}';
@@ -79,22 +79,22 @@ public class TransactionDepositData implements ITransactionData {
 
     @Override
     public String getUserEmail() {
-        return null;
+        return targetAccount.getUserEmail();
     }
 
     @Override
     public List<Account> getAccounts() {
-        return null;
+        return List.of(targetAccount);
     }
 
     @Override
     public List<Double> getAmounts() {
-        return null;
+        return List.of(targetTransactionAmount);
     }
 
     @Override
     public List<Currency> getCurrencies() {
-        return null;
+        return List.of(targetAccount.getCurrency());
     }
 
     public String getCurrent() {

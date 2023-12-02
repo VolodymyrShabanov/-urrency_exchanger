@@ -6,6 +6,7 @@ import util.CurrencyTransactionType;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TransactionWithdrawData implements ITransactionData {
     private final Account currentAccount;
@@ -77,11 +78,29 @@ public class TransactionWithdrawData implements ITransactionData {
     }
 
     @Override
+    public String getUserEmail() {
+        return currentAccount.getUserEmail();
+    }
+
+    @Override
+    public List<Account> getAccounts() {
+        return List.of(currentAccount);
+    }
+
+    @Override
+    public List<Double> getAmounts() {
+        return List.of(currentTransactionAmount);
+    }
+
+    @Override
+    public List<Currency> getCurrencies() {
+        return List.of(currentAccount.getCurrency());
+    }
+
     public String getCurrent() {
         return currentAccount.toString();
     }
 
-    @Override
     public String getCurrentAmount() {
         DecimalFormat df = new DecimalFormat("0.##");
         return df.format(currentTransactionAmount);

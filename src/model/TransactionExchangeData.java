@@ -100,7 +100,7 @@ public class TransactionExchangeData implements ITransactionData {
 
     @Override
     public CurrencyTransactionType getType() {
-        return null;
+        return currencyTransactionType;
     }
 
     @Override
@@ -110,24 +110,24 @@ public class TransactionExchangeData implements ITransactionData {
 
     @Override
     public String getUserEmail() {
-        return null;
+        return currentAccount.getUserEmail();
     }
 
     @Override
     public List<Account> getAccounts() {
-        return null;
+        return List.of(currentAccount, targetAccount);
     }
 
     @Override
     public List<Double> getAmounts() {
-        return null;
+        return List.of(currentTransactionAmount, targetTransactionAmount);
     }
 
     @Override
     public List<Currency> getCurrencies() {
-        return null;
+        return List.of(currentAccount.getCurrency(), targetAccount.getCurrency());
     }
-    
+
     public String getCurrent() {
         return currentAccount.toString();
     }
