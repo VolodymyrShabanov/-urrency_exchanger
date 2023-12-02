@@ -1,7 +1,6 @@
 package repository;
 
 import interfaces.ITransactionData;
-import model.Account;
 import model.Currency;
 
 import java.util.*;
@@ -30,7 +29,9 @@ public class TransactionRepository {
         return false;
     }
 
-    public Optional<List<ITransactionData>> getTransactionByCurrency(Currency currency) {
+    public Optional<List<ITransactionData>> getTransactionsByCurrency(Currency currency) {
+        if (transactions.isEmpty()) return Optional.empty();
+
         List<ITransactionData> transactionList = new ArrayList<>();
 
         transactions.keySet()
@@ -46,7 +47,7 @@ public class TransactionRepository {
                             });
                 });
 
-        if (transactions.isEmpty()) return Optional.empty();
+        if(transactionList.isEmpty()) return Optional.empty();
 
         return Optional.of(transactionList);
     }
@@ -54,9 +55,7 @@ public class TransactionRepository {
     public Optional<List<ITransactionData>> getTransactionsByUserEmail(String userEmail) {
         boolean emailExists = transactions.containsKey(userEmail);
 
-        if (emailExists) {
-            return Optional.of(transactions.get(userEmail));
-        }
+        if (emailExists) return Optional.of(transactions.get(userEmail));
 
         return Optional.empty();
     }

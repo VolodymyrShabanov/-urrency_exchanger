@@ -1,10 +1,9 @@
 package service;
 
 import interfaces.ITransactionData;
-import model.TransactionExchange;
+import model.Currency;
 import repository.TransactionRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,58 +18,35 @@ public class TransactionService {
         this.transactionRepository = new TransactionRepository();
     }
 
-    public boolean createNewTransaction(ITransactionData transactionData) {
+    public void addNewTransaction(ITransactionData transactionData) {
+        transactionRepository.addTransaction(transactionData);
+    }
 
+    public boolean displayTransactionsByUserEmail(String userEmail) {
+        Optional<List<ITransactionData>> dataList = transactionRepository.getTransactionsByUserEmail(userEmail);
 
-        transactionRepository.addTransaction(userEmail, account, currency, type, amount);
+        if (dataList.isEmpty()) return false;
+
+        System.out.printf("User %s transaction history:\n", dataList.get().get(0).getUserEmail());
+
+        dataList.get().forEach(dataEl -> {
+            System.out.println(dataEl.getInfo());
+        });
 
         return true;
     }
 
-    public void printTransactionsByUserEmail(String userEmail) {
-        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
-                getTransactionsByPredicate(transaction -> transaction.getUserEmail().equals(userEmail));
+    public boolean displayTransactionsByCurrency(Currency currency) {
+        Optional<List<ITransactionData>> dataList = transactionRepository.getTransactionsByCurrency(currency);
 
-        if (transactionOptional.isPresent()) {
-            System.out.println(transactionOptional);
-        } else {
-            System.out.printf("Transaction by User: %s not found", userEmail);
-        }
+        if (dataList.isEmpty()) return false;
 
-    }
+        System.out.printf("%s currency transaction history:\n", currency.getCode());
 
-    public void printTransactionsByCurrency(String currency) {
-        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
-                getTransactionsByPredicate(transaction -> transaction.getCurrency().equals(currency));
+        dataList.get().forEach(dataEl -> {
+            System.out.println(dataEl.getInfo());
+        });
 
-        if (transactionOptional.isPresent()) {
-            System.out.println(transactionOptional);
-        } else {
-            System.out.printf("Transaction by currency: %s not found", currency);
-        }
-    }
-
-    public void printTransactionsBetweenAmounts(double amountFrom, double amountTo) {
-        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
-                getTransactionsByPredicate(transaction -> transaction.getTransactionAmount() <= amountFrom &&
-                                                          transaction.getTransactionAmount() >= amountTo);
-
-        if (transactionOptional.isPresent()) {
-            System.out.println(transactionOptional);
-        } else {
-            System.out.printf("Transaction between amounts: %s and %s not found", amountFrom,  amountTo);
-        }
-    }
-
-    public void printTransactionsBetweenDates(LocalDateTime dateAfter, LocalDateTime dateBefore) {
-        Optional<List<TransactionExchange>> transactionOptional = transactionRepository.
-                getTransactionsByPredicate(transaction -> transaction.getTransactionDate().isAfter(dateAfter) &&
-                        transaction.getTransactionDate().isBefore(dateBefore));
-
-        if (transactionOptional.isPresent()) {
-            System.out.println(transactionOptional);
-        } else {
-            System.out.printf("Transaction between dates: %s and %s not found", dateAfter,  dateBefore);
-        }
+        return true;
     }
 }

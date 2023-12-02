@@ -6,6 +6,7 @@ import model.Currency;
 import model.TransactionExchangeData;
 import service.AccountService;
 import service.CurrencyService;
+import service.TransactionService;
 import service.UserService;
 import util.UserRole;
 
@@ -25,7 +26,7 @@ public class Menu {
     AccountService accountService = new AccountService();
     UserService userService = new UserService();
     CurrencyService currencyService = new CurrencyService();
-//    TransactionService transactionService = new TransactionService();
+    TransactionService transactionService = new TransactionService();
 
     UserRole state = UserRole.GUEST;
 
@@ -277,7 +278,27 @@ public class Menu {
                 case "6":
                     clearConsole();
 
-                    System.out.println("Transaction history displayed");
+                    System.out.println("Display user transaction history:\n" +
+                            "1. All transactions\n" +
+                            "2. By currency");
+                    ans = scanner.nextLine();
+
+                    switch (ans) {
+                        case "1":
+                            transactionService.displayTransactionsByUserEmail(userService.getCurrentUserEmail().get());
+                            break;
+                        case "2":
+                            System.out.println("Enter currency code:");
+                            ans = scanner.nextLine();
+
+                            Currency currencyFilter = currencyService.getCurrencyByCode(ans).get();
+                            transactionService.displayTransactionsByCurrency(currencyFilter);
+                            break;
+                        default:
+                            System.err.println("Error: wrong option selection.");
+                            break;
+                    }
+
                     break;
                 case "7":
                     clearConsole();

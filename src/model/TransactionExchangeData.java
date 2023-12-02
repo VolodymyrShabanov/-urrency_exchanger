@@ -6,6 +6,7 @@ import util.CurrencyTransactionType;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TransactionExchangeData implements ITransactionData {
     private final Account currentAccount;
@@ -108,11 +109,29 @@ public class TransactionExchangeData implements ITransactionData {
     }
 
     @Override
+    public String getUserEmail() {
+        return null;
+    }
+
+    @Override
+    public List<Account> getAccounts() {
+        return null;
+    }
+
+    @Override
+    public List<Double> getAmounts() {
+        return null;
+    }
+
+    @Override
+    public List<Currency> getCurrencies() {
+        return null;
+    }
+    
     public String getCurrent() {
         return currentAccount.toString();
     }
 
-    @Override
     public String getCurrentAmount() {
         DecimalFormat df = new DecimalFormat("0.##");
         return df.format(targetTransactionAmount);
