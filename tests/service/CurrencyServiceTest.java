@@ -1,10 +1,14 @@
 package service;
 
 
+import exceptions.DataInUseException;
+import exceptions.DataNotFoundException;
 import model.Account;
 import model.AccountData;
 import model.Currency;
 import org.junit.Test;
+
+import javax.xml.crypto.Data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,49 +18,87 @@ public class CurrencyServiceTest {
         CurrencyService currencyService = new CurrencyService();
 
         // CurrencyService is using initializator
-        assertFalse(currencyService.addCurrency("USD", "US Dollar").isPresent());
-        assertFalse(currencyService.addCurrency("EUR", "Euro").isPresent());
-        assertFalse(currencyService.addCurrency("PLN", "Polish Zloty").isPresent());
+        assertThrows(DataInUseException.class, () -> {
+            currencyService.addCurrency("USD", "US Dollar");
+        });
+        assertThrows(DataInUseException.class, () -> {
+            currencyService.addCurrency("EUR", "Euro");
+        });
+        assertThrows(DataInUseException.class, () -> {
+            currencyService.addCurrency("PLN", "Polish Zloty");
+        });
     }
 
     @Test
     public void testCurrencyDeletion() {
         CurrencyService currencyService = new CurrencyService();
 
-        Currency usd = currencyService.getCurrencyByCode("USD").get();
-        Currency eur = currencyService.getCurrencyByCode("EUR").get();
-        Currency pln = currencyService.getCurrencyByCode("PLN").get();
+        Currency usd = currencyService.getCurrencyByCode("USD");
+        Currency eur = currencyService.getCurrencyByCode("EUR");
+        Currency pln = currencyService.getCurrencyByCode("PLN");
 
-        Currency uah = currencyService.addCurrency("UAH", "Ukrainian Hryvnia").get();
-        Currency cad = currencyService.addCurrency("CAD", "Canadian Dollar").get();
+        Currency uah;
+        Currency cad;
 
-        assertTrue(currencyService.deleteCurrency(usd));
-        assertTrue(currencyService.deleteCurrency(eur));
-        assertTrue(currencyService.deleteCurrency(pln));
+        try {
+            uah = currencyService.addCurrency("UAH", "Ukrainian Hryvnia");
+            cad = currencyService.addCurrency("CAD", "Canadian Dollar");
+        } catch (DataInUseException e) {
+            throw new RuntimeException(e);
+        }
 
-        assertFalse(currencyService.deleteCurrency(usd));
-        assertFalse(currencyService.deleteCurrency(eur));
-        assertFalse(currencyService.deleteCurrency(pln));
+        assertDoesNotThrow(() -> {
+            currencyService.deleteCurrency(usd);
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.deleteCurrency(eur);
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.deleteCurrency(pln);
+        });
 
-        assertTrue(currencyService.deleteCurrency(uah));
-        assertTrue(currencyService.deleteCurrency(cad));
+
+        assertThrows(DataNotFoundException.class, () -> {
+            currencyService.deleteCurrency(usd);
+        });
+        assertThrows(DataNotFoundException.class, () -> {
+            currencyService.deleteCurrency(eur);
+        });
+        assertThrows(DataNotFoundException.class, () -> {
+            currencyService.deleteCurrency(pln);
+        });
+
+        assertDoesNotThrow(() -> {
+            currencyService.deleteCurrency(uah);
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.deleteCurrency(cad);
+        });
     }
 
     @Test
     public void testCurrencyRetrieval() {
         CurrencyService currencyService = new CurrencyService();
 
-        currencyService.addCurrency("USD", "US Dollar");
-        currencyService.addCurrency("EUR", "Euro");
-        currencyService.addCurrency("PLN", "Polish Zloty");
+        assertDoesNotThrow(() -> {
+            currencyService.getCurrencyByCode("USD");
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.getCurrencyByCode("EUR");
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.getCurrencyByCode("PLN");
+        });
 
-        assertTrue(currencyService.getCurrencyByCode("USD").isPresent());
-        assertTrue(currencyService.getCurrencyByCode("EUR").isPresent());
-        assertTrue(currencyService.getCurrencyByCode("PLN").isPresent());
-
-        assertFalse(currencyService.getCurrencyByCode("UAH").isPresent());
-        assertFalse(currencyService.getCurrencyByCode("RUB").isPresent());
-        assertFalse(currencyService.getCurrencyByCode("CAD").isPresent());
+        assertThrows(DataNotFoundException.class, () -> {
+            currencyService.getCurrencyByCode("UAH");
+        });
+        assertThrows(DataNotFoundException.class, () -> {
+            currencyService.getCurrencyByCode("RUB");
+        });
+        assertThrows(DataNotFoundException.class, () -> {
+            currencyService.getCurrencyByCode("CAD");
+        });
     }
 
     @Test
@@ -66,18 +108,14 @@ public class CurrencyServiceTest {
         var acc3 = new AccountData("andrey@gmail.com", new Currency("PLN", "Polish Zloty"), 1000);
 
         var currencyService = new CurrencyService();
-        currencyService.createExchangeRate("EUR", "USD", 1.1);
-        currencyService.createExchangeRate("USD", "PLN", 4);
-        currencyService.createExchangeRate("PLN", "EUR", 0.23);
-        currencyService.createExchangeRate("USD", "EUR", 0.9);
 
-        assertEquals("110", currencyService.exchangeCurrency(acc1, acc2, 100).get().getCurrentAmount());
-        assertEquals("400", currencyService.exchangeCurrency(acc2, acc3, 100).get().getCurrentAmount());
-        assertEquals("90", currencyService.exchangeCurrency(acc2, acc1, 100).get().getCurrentAmount());
-        assertEquals("23", currencyService.exchangeCurrency(acc3, acc1, 100).get().getCurrentAmount());
+        assertEquals("110", currencyService.exchangeCurrency(acc1, acc2, 100).getCurrentAmount());
+        assertEquals("400", currencyService.exchangeCurrency(acc2, acc3, 100).getCurrentAmount());
+        assertEquals("90", currencyService.exchangeCurrency(acc2, acc1, 100).getCurrentAmount());
+        assertEquals("23", currencyService.exchangeCurrency(acc3, acc1, 100).getCurrentAmount());
 
-        assertNotEquals("", currencyService.exchangeCurrency(acc2, acc1, 100).get().getCurrentAmount());
-        assertNotEquals("1234", currencyService.exchangeCurrency(acc3, acc1, 100).get().getCurrentAmount());
+        assertNotEquals("", currencyService.exchangeCurrency(acc2, acc1, 100).getCurrentAmount());
+        assertNotEquals("1234", currencyService.exchangeCurrency(acc3, acc1, 100).getCurrentAmount());
     }
 
     @Test
@@ -90,16 +128,18 @@ public class CurrencyServiceTest {
         acc1.deposit(1000);
 
         var currencyService = new CurrencyService();
-        currencyService.createExchangeRate("EUR", "USD", 1.1);
-        currencyService.createExchangeRate("USD", "PLN", 4);
-        currencyService.createExchangeRate("PLN", "EUR", 0.23);
-        currencyService.createExchangeRate("USD", "EUR", 0.9);
 
-        assertTrue(currencyService.updateExchangeRate("EUR", "USD", 1.05).isPresent());
-        assertTrue(currencyService.updateExchangeRate("USD", "PLN", 3.9).isPresent());
-        assertTrue(currencyService.updateExchangeRate("USD", "EUR", 0.95).isPresent());
+        assertDoesNotThrow(() -> {
+            currencyService.updateExchangeRate("EUR", "USD", 1.05);
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.updateExchangeRate("USD", "PLN", 3.9);
+        });
+        assertDoesNotThrow(() -> {
+            currencyService.updateExchangeRate("USD", "EUR", 0.95);
+        });
 
-        assertEquals(3.9, currencyService.getExchangeRateByCode("USD", "PLN").get().getRate());
-        assertEquals(1.05, currencyService.getExchangeRateByCode("EUR", "USD").get().getRate());
+        assertEquals(3.9, currencyService.getExchangeRateByCode("USD", "PLN").getRate());
+        assertEquals(1.05, currencyService.getExchangeRateByCode("EUR", "USD").getRate());
     }
 }

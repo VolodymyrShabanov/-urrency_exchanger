@@ -1,5 +1,6 @@
 package repository;
 
+import exceptions.DataInUseException;
 import interfaces.repository.ICurrencyRepository;
 import model.Currency;
 
@@ -13,8 +14,10 @@ public class CurrencyRepository implements ICurrencyRepository {
     }
 
     @Override
-    public Optional<Currency> addCurrency(String currencyCode, String currencyName) {
-        if (currencyCode.isBlank() || currencyName.isBlank()) return Optional.empty();
+    public Optional<Currency> addCurrency(String currencyCode, String currencyName) throws DataInUseException {
+        if (currencyCode.isBlank() || currencyName.isBlank()) {
+            throw new IllegalArgumentException("Error: empty user input.");
+        }
 
         if (getCurrencyByCode(currencyCode).isEmpty() && getCurrencyByName(currencyName).isEmpty()) {
             Currency currency = new Currency(currencyCode, currencyName);
@@ -23,10 +26,8 @@ public class CurrencyRepository implements ICurrencyRepository {
 
             return Optional.of(new Currency(currency));
         } else {
-            System.err.println("Error: currency with similar data already exists.");
+            throw new DataInUseException("Error: this currency already exist.");
         }
-
-        return Optional.empty();
     }
 
     @Override

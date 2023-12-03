@@ -208,18 +208,18 @@ public class Menu {
 
                     TransactionExchangeData exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 
-                    if (exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
+                    transactionService.addNewTransaction(exchangeData);
 
                     try {
                         accountService.withdrawCurrency(
                                 userService.getCurrentUserEmail().get(),
-                                exchangeData.get().getCurrentTransactionAmount(),
+                                exchangeData.getCurrentTransactionAmount(),
                                 currentCurrency
                         );
 
                         accountService.depositCurrency(
                                 userService.getCurrentUserEmail().get(),
-                                exchangeData.get().getTargetTransactionAmount(),
+                                exchangeData.getTargetTransactionAmount(),
                                 targetCurrency
                         );
                     } catch (TransactionException e) {
@@ -511,7 +511,7 @@ public class Menu {
                 case "1":
                     clearConsole();
 
-                    Optional<Currency> currencyToDelete;
+                    Currency currencyToDelete;
 
                     String editCurrency1;
                     String editCurrency2;
@@ -571,13 +571,7 @@ public class Menu {
 
                     clearConsole();
 
-                    if (currencyToDelete.isPresent()) {
-                        if (accountService.isAccountOpenByCurrency(currencyToDelete.get())) {
-                            System.err.println("Error: can't delete currency in use.");
-                        } else {
-                            currencyService.deleteCurrency(currencyToDelete.get());
-                        }
-                    }
+                    currencyService.deleteCurrency(currencyToDelete);
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -604,11 +598,9 @@ public class Menu {
 
                             clearConsole();
 
-                            Optional<Currency> fetchedCurrency = currencyService.getCurrencyByCode(queryCode);
+                            Currency fetchedCurrency = currencyService.getCurrencyByCode(queryCode);
 
-                            if (fetchedCurrency.isPresent()) {
-                                transactionService.displayTransactionsByCurrency(fetchedCurrency.get());
-                            }
+                            transactionService.displayTransactionsByCurrency(fetchedCurrency);
 
                             System.out.println("Press enter to continue...");
                             scanner.nextLine();

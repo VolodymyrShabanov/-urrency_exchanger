@@ -1,6 +1,7 @@
 package service;
 
 
+import exceptions.DataInUseException;
 import exceptions.DataInitializationException;
 import exceptions.DataNotFoundException;
 import interfaces.service.ICurrencyService;
@@ -53,7 +54,7 @@ public class CurrencyService implements ICurrencyService {
     }
 
     @Override
-    public Currency addCurrency(String code, String name) throws DataNotFoundException {
+    public Currency addCurrency(String code, String name) throws DataNotFoundException, DataInUseException {
         Optional<Currency> currencyOptional = currencyRepository.addCurrency(code, name);
 
         if (currencyOptional.isEmpty()) throw new DataNotFoundException("Error: this currency doesn't exist.");
@@ -62,11 +63,11 @@ public class CurrencyService implements ICurrencyService {
     }
 
     @Override
-    public void deleteCurrency(Currency currencyToDelete) {
+    public void deleteCurrency(Currency currencyToDelete) throws DataNotFoundException {
         Optional<Currency> currency = currencyRepository.getCurrencyByCode(currencyToDelete.getCode());
 
         if (currency.isEmpty()) {
-            throw new DataNotFoundException("Error: one of the currencies doesn't exist.");
+            throw new DataNotFoundException("Error: currency doesn't exist.");
         }
 
         currencyRepository.deleteCurrencyByCode(currency.get().getCode());
@@ -74,7 +75,7 @@ public class CurrencyService implements ICurrencyService {
     }
 
     @Override
-    public ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate) throws DataNotFoundException {
+    public ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate) throws DataNotFoundException, DataInUseException {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
 
@@ -84,8 +85,8 @@ public class CurrencyService implements ICurrencyService {
 
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
 
-        if (exchangeRate.isEmpty()) {
-            throw new DataNotFoundException("Error: this rate already exists.");
+        if (exchangeRate.isPresent()) {
+            throw new DataInUseException("Error: this rate already exists.");
         }
 
         ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency.get(), targetCurrency.get(), rate);
@@ -148,15 +149,19 @@ public class CurrencyService implements ICurrencyService {
             throw new DataInitializationException("Error: repo has already been initialized.");
         }
 
-        addCurrency("USD", "US Dollar");
-        addCurrency("EUR", "Euro");
-        addCurrency("PLN", "Polish Zloty");
+        try {
+            addCurrency("USD", "US Dollar");
+            addCurrency("EUR", "Euro");
+            addCurrency("PLN", "Polish Zloty");
 
-        createExchangeRate("EUR", "USD", 1.1);
-        createExchangeRate("USD", "EUR", 0.9);
-        createExchangeRate("USD", "PLN", 4);
-        createExchangeRate("PLN", "USD", 0.25);
-        createExchangeRate("EUR", "PLN", 4.3);
-        createExchangeRate("PLN", "EUR", 0.23);
+            createExchangeRate("EUR", "USD", 1.1);
+            createExchangeRate("USD", "EUR", 0.9);
+            createExchangeRate("USD", "PLN", 4);
+            createExchangeRate("PLN", "USD", 0.25);
+            createExchangeRate("EUR", "PLN", 4.3);
+            createExchangeRate("PLN", "EUR", 0.23);
+        } catch (DataInUseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
