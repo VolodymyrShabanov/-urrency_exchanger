@@ -1,12 +1,11 @@
 package service;
 
-import interfaces.ITransactionData;
+import interfaces.model.ITransactionData;
 import model.Account;
 import model.Currency;
 import model.TransactionDepositData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.TransactionRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 

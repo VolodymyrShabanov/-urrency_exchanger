@@ -1,6 +1,7 @@
 package service;
 
-import interfaces.ITransactionData;
+import interfaces.model.ITransactionData;
+import interfaces.service.ITransactionService;
 import model.Currency;
 import repository.TransactionRepository;
 
@@ -11,17 +12,19 @@ import java.util.Optional;
  * Created by Volodymyr Sh on 28.11.2023
  * project name: exchanger_currency
  */
-public class TransactionService {
-    private TransactionRepository transactionRepository;
+public class TransactionService implements ITransactionService {
+    private final TransactionRepository transactionRepository;
 
     public TransactionService() {
         this.transactionRepository = new TransactionRepository();
     }
 
+    @Override
     public void addNewTransaction(ITransactionData transactionData) {
         transactionRepository.addTransaction(transactionData);
     }
 
+    @Override
     public boolean displayTransactionsByUserEmail(String userEmail) {
         Optional<List<ITransactionData>> dataList = transactionRepository.getTransactionsByUserEmail(userEmail);
 
@@ -36,6 +39,7 @@ public class TransactionService {
         return true;
     }
 
+    @Override
     public boolean displayTransactionsByCurrency(Currency currency) {
         Optional<List<ITransactionData>> dataList = transactionRepository.getTransactionsByCurrency(currency);
 

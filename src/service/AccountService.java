@@ -1,6 +1,6 @@
 package service;
 
-import interfaces.ITransactionData;
+import interfaces.service.IAccountService;
 import model.*;
 import repository.AccountRepository;
 
@@ -8,13 +8,14 @@ import java.util.Optional;
 import java.util.Set;
 
 
-public class AccountService {
+public class AccountService implements IAccountService {
     private final AccountRepository accountRepository;
 
     public AccountService() {
         this.accountRepository = new AccountRepository();
     }
 
+    @Override
     public Optional<TransactionDepositData> openAccount(String email, double depositSum, Currency currency) {
         boolean accountExists = accountRepository.accountExists(email, currency);
 
@@ -28,6 +29,7 @@ public class AccountService {
         return Optional.empty();
     }
 
+    @Override
     public boolean closeAccount(String email, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
@@ -46,6 +48,7 @@ public class AccountService {
         return false;
     }
 
+    @Override
     public Optional<TransactionDepositData> depositCurrency(String email, double depositSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
@@ -61,6 +64,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public Optional<TransactionWithdrawData> withdrawCurrency(String email, double withdrawalSum, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
@@ -79,18 +83,21 @@ public class AccountService {
         return Optional.empty();
     }
 
+    @Override
     public boolean isAccountOpenByCurrency(Currency currency) {
         Optional<Set<Account>> accounts = accountRepository.getAccountsByCurrency(currency);
 
         return accounts.isPresent();
     }
 
+    @Override
     public Optional<Account> getAccountCopy(String email, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(email, currency);
 
         return account.map(Account::new);
     }
 
+    @Override
     public void printUserAccounts(String email) {
         Optional<Set<Account>> userAccounts = accountRepository.fetchAccounts(email);
 
@@ -101,6 +108,7 @@ public class AccountService {
         }
     }
 
+    @Override
     public void printUserAccount(String email, Currency currency) {
         Optional<Account> userAccount = accountRepository.fetchAccount(email, currency);
 

@@ -1,6 +1,6 @@
 package repository;
 
-import interfaces.ITransactionData;
+import interfaces.model.ITransactionData;
 import model.Currency;
 
 import java.util.*;

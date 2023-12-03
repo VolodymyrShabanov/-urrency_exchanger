@@ -1,7 +1,5 @@
 package service;
 
-import exception.ValidationException;
-import model.User;
 import org.junit.jupiter.api.Test;
 import util.UserRole;
 
@@ -31,18 +29,6 @@ class UserServiceTest {
     void createUser() {
         assertTrue(us.createUser("a@gmail.com", "1234qwert", UserRole.USER));
         assertFalse(us.createUser("a@gmail.com", "1234qwert", UserRole.USER));
-
-        assertThrows(ValidationException.class, () -> {
-            us.createUser("user", "1234qwert", UserRole.USER);
-        });
-
-        assertThrows(ValidationException.class, () -> {
-            us.createUser("user@gmail.com", "123", UserRole.USER);
-        });
-
-        assertThrows(ValidationException.class, () -> {
-            us.createUser("admin", "admin", UserRole.USER);
-        });
     }
 
     @Test

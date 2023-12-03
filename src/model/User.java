@@ -1,12 +1,12 @@
 package model;
 
+import interfaces.model.IUser;
 import util.UserRole;
 
-public class User {
+public class User implements IUser {
     private final String email;
-    private String password;
+    private final String password;
     private UserRole role;
-
 
     public User(String email, String password, UserRole role) {
         this.email = email;
@@ -22,22 +22,22 @@ public class User {
                 '}';
     }
 
+    @Override
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    @Override
     public UserRole getRole() {
         return role;
     }
 
+    @Override
     public void setRole(UserRole role) {
         this.role = role;
     }

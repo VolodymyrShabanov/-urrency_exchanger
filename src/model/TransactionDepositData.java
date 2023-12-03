@@ -1,6 +1,6 @@
 package model;
 
-import interfaces.ITransactionData;
+import interfaces.model.ITransactionData;
 import util.CurrencyTransactionType;
 
 import java.text.DecimalFormat;
@@ -26,16 +26,6 @@ public class TransactionDepositData implements ITransactionData {
         transactionDate = LocalDate.now().atStartOfDay();
     }
 
-    @Override
-    public String toString() {
-        return "TransactionDepositData{" +
-                "targetAccount=" + targetAccount +
-                ", targetTransactionAmount=" + targetTransactionAmount +
-                ", currencyTransactionType=" + currencyTransactionType +
-                ", transactionDate=" + transactionDate +
-                '}';
-    }
-
     public Account getTargetAccount() {
         return targetAccount;
     }
@@ -54,6 +44,15 @@ public class TransactionDepositData implements ITransactionData {
 
     public LocalDateTime getTransactionDate() {
         return transactionDate;
+    }
+
+    public String getCurrent() {
+        return targetAccount.toString();
+    }
+
+    public String getCurrentAmount() {
+        DecimalFormat df = new DecimalFormat("0.##");
+        return df.format(targetTransactionAmount);
     }
 
     @Override
@@ -97,12 +96,13 @@ public class TransactionDepositData implements ITransactionData {
         return List.of(targetAccount.getCurrency());
     }
 
-    public String getCurrent() {
-        return targetAccount.toString();
-    }
-
-    public String getCurrentAmount() {
-        DecimalFormat df = new DecimalFormat("0.##");
-        return df.format(targetTransactionAmount);
+    @Override
+    public String toString() {
+        return "TransactionDepositData{" +
+                "targetAccount=" + targetAccount +
+                ", targetTransactionAmount=" + targetTransactionAmount +
+                ", currencyTransactionType=" + currencyTransactionType +
+                ", transactionDate=" + transactionDate +
+                '}';
     }
 }

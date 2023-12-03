@@ -1,6 +1,8 @@
 package model;
 
-public class ExchangeRate {
+import interfaces.model.IExchangeRate;
+
+public class ExchangeRate implements IExchangeRate {
     private final Currency fromCurrency;
     private final Currency toCurrency;
     private double rate;
@@ -17,18 +19,22 @@ public class ExchangeRate {
         this.rate = exchangeRate.rate;
     }
 
+    @Override
     public Currency getFromCurrency() {
         return fromCurrency;
     }
 
+    @Override
     public Currency getToCurrency() {
         return toCurrency;
     }
 
+    @Override
     public void setRate(double rate) {
         this.rate = rate;
     }
 
+    @Override
     public double getRate() {
         return rate;
     }

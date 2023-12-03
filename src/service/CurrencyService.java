@@ -1,7 +1,8 @@
 package service;
 
 
-import exception.TransactionException;
+import exceptions.TransactionException;
+import interfaces.service.ICurrencyService;
 import model.Account;
 import model.Currency;
 import model.ExchangeRate;
@@ -11,7 +12,7 @@ import model.TransactionExchangeData;
 
 import java.util.Optional;
 
-public class CurrencyService {
+public class CurrencyService implements ICurrencyService {
     private final ExchangeRateRepository exchangeRateRepository;
     private final CurrencyRepository currencyRepository;
 
@@ -25,6 +26,7 @@ public class CurrencyService {
         dataInitStatus = true;
     }
 
+    @Override
     public Optional<TransactionExchangeData> exchangeCurrency(Account current, Account target, double amount) {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
@@ -46,10 +48,12 @@ public class CurrencyService {
         );
     }
 
+    @Override
     public Optional<Currency> addCurrency(String code, String name) {
         return currencyRepository.addCurrency(code, name);
     }
 
+    @Override
     public boolean deleteCurrency(Currency currencyToDelete) {
         Optional<Currency> currency = currencyRepository.getCurrencyByCode(currencyToDelete.getCode());
 
@@ -64,6 +68,7 @@ public class CurrencyService {
         return true;
     }
 
+    @Override
     public Optional<ExchangeRate> createExchangeRate(String fromCurrency, String toCurrency, double rate) {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
@@ -87,6 +92,7 @@ public class CurrencyService {
         return Optional.empty();
     }
 
+    @Override
     public Optional<ExchangeRate> updateExchangeRate(String currentCode, String targetCode, double newRate) {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(currentCode);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(targetCode);
@@ -110,10 +116,12 @@ public class CurrencyService {
         return Optional.empty();
     }
 
+    @Override
     public Optional<Currency> getCurrencyByCode(String code) {
         return currencyRepository.getCurrencyByCode(code);
     }
 
+    @Override
     public Optional<ExchangeRate> getExchangeRateByCode(String currentCode, String targetCode) {
         Optional<Currency> current = currencyRepository.getCurrencyByCode(currentCode);
         Optional<Currency> target = currencyRepository.getCurrencyByCode(targetCode);

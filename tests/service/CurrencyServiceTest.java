@@ -4,9 +4,6 @@ package service;
 import model.Account;
 import model.Currency;
 import org.junit.Test;
-import service.CurrencyService;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

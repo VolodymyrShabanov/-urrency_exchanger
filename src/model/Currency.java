@@ -1,8 +1,10 @@
 package model;
 
+import interfaces.model.ICurrency;
+
 import java.util.Objects;
 
-public class Currency {
+public class Currency implements ICurrency {
     private final String code;
     private final String name;
 

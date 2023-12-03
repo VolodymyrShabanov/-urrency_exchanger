@@ -1,6 +1,6 @@
 package model;
 
-import interfaces.ITransactionData;
+import interfaces.model.ITransactionData;
 import util.CurrencyTransactionType;
 
 import java.text.DecimalFormat;
@@ -38,19 +38,6 @@ public class TransactionExchangeData implements ITransactionData {
         transactionDate = LocalDate.now().atStartOfDay();
     }
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "currentAccount=" + currentAccount +
-                ", targetAccount=" + targetAccount +
-                ", conversionRate=" + conversionRate +
-                ", currentTransactionAmount=" + currentTransactionAmount +
-                ", targetTransactionAmount=" + targetTransactionAmount +
-                ", currencyTransactionType=" + currencyTransactionType +
-                ", transactionDate=" + transactionDate +
-                '}';
-    }
-
     public Account getCurrentAccount() {
         return currentAccount;
     }
@@ -81,6 +68,15 @@ public class TransactionExchangeData implements ITransactionData {
 
     public LocalDateTime getTransactionDate() {
         return transactionDate;
+    }
+
+    public String getCurrent() {
+        return currentAccount.toString();
+    }
+
+    public String getCurrentAmount() {
+        DecimalFormat df = new DecimalFormat("0.##");
+        return df.format(targetTransactionAmount);
     }
 
     @Override
@@ -128,12 +124,16 @@ public class TransactionExchangeData implements ITransactionData {
         return List.of(currentAccount.getCurrency(), targetAccount.getCurrency());
     }
 
-    public String getCurrent() {
-        return currentAccount.toString();
-    }
-
-    public String getCurrentAmount() {
-        DecimalFormat df = new DecimalFormat("0.##");
-        return df.format(targetTransactionAmount);
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "currentAccount=" + currentAccount +
+                ", targetAccount=" + targetAccount +
+                ", conversionRate=" + conversionRate +
+                ", currentTransactionAmount=" + currentTransactionAmount +
+                ", targetTransactionAmount=" + targetTransactionAmount +
+                ", currencyTransactionType=" + currencyTransactionType +
+                ", transactionDate=" + transactionDate +
+                '}';
     }
 }

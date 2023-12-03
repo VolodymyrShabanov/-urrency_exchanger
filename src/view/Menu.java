@@ -1,7 +1,6 @@
 package view;
 
 
-import interfaces.ITransactionData;
 import model.*;
 import service.AccountService;
 import service.CurrencyService;
@@ -489,7 +488,6 @@ public class Menu {
             String ans = scanner.nextLine();
 
             clearConsole();
-
             switch (ans) {
                 case "1":
                     clearConsole();

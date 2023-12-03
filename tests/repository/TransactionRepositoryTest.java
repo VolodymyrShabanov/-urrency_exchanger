@@ -1,6 +1,6 @@
 package repository;
 
-import interfaces.ITransactionData;
+import interfaces.model.ITransactionData;
 import model.Account;
 import model.Currency;
 import model.TransactionDepositData;

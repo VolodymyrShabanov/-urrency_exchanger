@@ -1,8 +1,7 @@
 package service;
 
-import exception.ValidationException;
-import exception.PermissionException;
-import interfaces.IUserService;
+import exceptions.ValidationException;
+import interfaces.service.IUserService;
 import model.User;
 import repository.UserRepository;
 import util.UserRole;
@@ -58,6 +57,7 @@ public class UserService implements IUserService {
         return UserRole.GUEST;
     }
 
+    @Override
     public boolean logout() {
         if (currentUser != null) {
             currentUser = null;
@@ -68,6 +68,7 @@ public class UserService implements IUserService {
         }
     }
 
+    @Override
     public UserRole assignUserRole(String userEmail, UserRole newRole) {
         Optional<User> user = userRepository.getUserByEmail(userEmail);
 
