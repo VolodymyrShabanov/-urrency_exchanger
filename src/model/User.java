@@ -4,6 +4,7 @@ import interfaces.model.IUser;
 import util.UserRole;
 
 public class User implements IUser {
+
     private String email;
     private String password;
     private UserRole role;

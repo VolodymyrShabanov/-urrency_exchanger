@@ -5,10 +5,9 @@ import model.Account;
 import model.Currency;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AccountRepository implements IAccountRepository {
-    private int repositorySize = 0;
 
     private final Map<String, Set<Account>> accounts;
 
@@ -28,7 +27,6 @@ public class AccountRepository implements IAccountRepository {
                 accounts.get(email).add(newAccount);
             }
 
-            repositorySize++;
             return Optional.of(new Account(newAccount));
         }
 
@@ -42,23 +40,16 @@ public class AccountRepository implements IAccountRepository {
         if (account.isEmpty()) return false;
 
         accounts.get(email).remove(account.get());
-        repositorySize--;
 
         return true;
     }
 
     @Override
     public boolean accountExists(String email, Currency currency) {
-        boolean isAccountOpen = accounts.containsKey(email);
-        Optional<Account> accountOptional = Optional.empty();
+        if (!accounts.containsKey(email)) return false;
 
-        if (isAccountOpen) {
-            accountOptional = accounts.get(email).stream()
-                    .filter(account -> account.getCurrency().equals(currency))
-                    .findFirst();
-        }
-
-        return accountOptional.isPresent();
+        return accounts.get(email).stream()
+                .anyMatch(account -> account.getCurrency().equals(currency));
     }
 
     @Override
@@ -85,11 +76,6 @@ public class AccountRepository implements IAccountRepository {
     }
 
     @Override
-    public int getRepositorySize() {
-        return repositorySize;
-    }
-
-    @Override
     public Optional<Set<Account>> getAccountsByCurrency(Currency currency) {
         Set<Account> fetchedAccounts = new HashSet<>();
 
@@ -111,6 +97,12 @@ public class AccountRepository implements IAccountRepository {
 
     @Override
     public int getSize() {
-        return accounts.size();
+        AtomicInteger size = new AtomicInteger();
+
+        accounts.values().forEach(accountSet -> {
+            size.addAndGet(accountSet.size());
+        });
+
+        return size.get();
     }
 }
