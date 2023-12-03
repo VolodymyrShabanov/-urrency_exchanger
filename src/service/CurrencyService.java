@@ -1,7 +1,7 @@
 package service;
 
 
-import exceptions.TransactionException;
+import exceptions.DataNotFoundException;
 import interfaces.service.ICurrencyService;
 import model.*;
 import repository.CurrencyRepository;
@@ -31,7 +31,7 @@ public class CurrencyService implements ICurrencyService {
         );
 
         if (exchangeRate.isEmpty()) {
-            throw new TransactionException("Exchange rate not found");
+            throw new DataNotFoundException("Exchange rate not found.");
         }
 
         double exchangedSum = amount * exchangeRate.get().getRate();

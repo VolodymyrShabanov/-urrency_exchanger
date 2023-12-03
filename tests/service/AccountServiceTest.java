@@ -1,11 +1,13 @@
 package service;
 
+import exceptions.DataAlreadyExistsException;
+import exceptions.DataInUseException;
+import exceptions.DataNotFoundException;
+import exceptions.TransactionException;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import service.AccountService;
 import model.Currency;
 
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,22 +28,50 @@ public class AccountServiceTest {
         Currency EUR = new Currency("EUR", "Euro");
         Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        assertTrue(accountService.openAccount("andrey@gmail.com", 1000, EUR).isPresent());
-        assertFalse(accountService.openAccount("andrey@gmail.com", 1000, EUR).isPresent());
-        assertTrue(accountService.openAccount("andrey@gmail.com", 1000, PLN).isPresent());
-        assertTrue(accountService.openAccount("alex@gmail.com", 1000, EUR).isPresent());
+        assertDoesNotThrow(() -> {
+            accountService.openAccount("andrey@gmail.com", 1000, EUR);
+        });
+
+        assertThrows(DataAlreadyExistsException.class, () -> {
+            accountService.openAccount("andrey@gmail.com", 1000, EUR);
+        });
+
+        assertDoesNotThrow(() -> {
+            accountService.openAccount("andrey@gmail.com", 1000, PLN);
+        });
+
+        assertDoesNotThrow(() -> {
+            accountService.openAccount("alex@gmail.com", 1000, EUR);
+        });
     }
 
     @Test
     public void testCloseAccount() {
         Currency EUR = new Currency("EUR", "Euro");
 
-        accountService.openAccount("andrey@gmail.com", 1000, EUR);
-        assertFalse(accountService.closeAccount("andrey@gmail.com", EUR));
+        try {
+            accountService.openAccount("andrey@gmail.com", 1000, EUR);
+        } catch (DataAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
 
-        accountService.withdrawCurrency("andrey@gmail.com", 1000 , EUR);
-        assertTrue(accountService.closeAccount("andrey@gmail.com", EUR));
-        assertFalse(accountService.closeAccount("alex@gmail.com", EUR));
+        assertThrows(DataInUseException.class, () -> {
+            accountService.closeAccount("andrey@gmail.com", EUR);
+        });
+
+        try {
+            accountService.withdrawCurrency("andrey@gmail.com", 1000, EUR);
+        } catch (TransactionException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertDoesNotThrow(() -> {
+            accountService.closeAccount("andrey@gmail.com", EUR);
+        });
+
+        assertThrows(DataNotFoundException.class, () -> {
+            accountService.closeAccount("alex@gmail.com", EUR);
+        });
     }
 
     @Test
@@ -49,9 +79,13 @@ public class AccountServiceTest {
         Currency EUR = new Currency("EUR", "Euro");
         Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        accountService.openAccount("andrey@gmail.com", 1000, EUR);
-        assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, EUR).get().getCurrentAmount(), "1000");
-        assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, PLN).get().getCurrentAmount(), "1000");
+        try {
+            accountService.openAccount("andrey@gmail.com", 1000, EUR);
+            assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, EUR).getCurrentAmount(), "1000");
+            assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, PLN).getCurrentAmount(), "1000");
+        } catch (DataAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -59,11 +93,15 @@ public class AccountServiceTest {
         Currency EUR = new Currency("EUR", "Euro");
         Currency PLN = new Currency("PLN", "Polish Zloty");
 
-        accountService.openAccount("simon@gmail.com", 1000, EUR);
-        assertEquals(accountService.withdrawCurrency("simon@gmail.com", 999, EUR).get().getCurrentAmount(), "999");
+        try {
+            accountService.openAccount("simon@gmail.com", 1000, EUR);
+            assertEquals(accountService.withdrawCurrency("simon@gmail.com", 999, EUR).getCurrentAmount(), "999");
+        } catch (DataAlreadyExistsException | TransactionException e) {
+            throw new RuntimeException(e);
+        }
 
-        assertThrows(NoSuchElementException.class, () -> {
-            accountService.withdrawCurrency("andrey@gmail.com", 1000, PLN).get().getCurrentAmount();
+        assertThrows(DataNotFoundException.class , () -> {
+            accountService.withdrawCurrency("andrey@gmail.com", 1000, PLN).getCurrentAmount();
         });
     }
 }

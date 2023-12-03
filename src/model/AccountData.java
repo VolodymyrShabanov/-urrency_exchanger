@@ -1,6 +1,8 @@
 package model;
 
-public class AccountData {
+import interfaces.model.IAccountData;
+
+public class AccountData implements IAccountData {
 
     private final String userEmail;
     private final double balance;

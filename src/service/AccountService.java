@@ -1,5 +1,9 @@
 package service;
 
+import exceptions.DataAlreadyExistsException;
+import exceptions.DataInUseException;
+import exceptions.DataNotFoundException;
+import exceptions.TransactionException;
 import interfaces.service.IAccountService;
 import model.*;
 import repository.AccountRepository;
@@ -17,7 +21,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public Optional<TransactionDepositData> openAccount(String userEmail, double depositSum, Currency currency) {
+    public TransactionDepositData openAccount(String userEmail, double depositSum, Currency currency) throws DataAlreadyExistsException {
         boolean accountExists = accountRepository.accountExists(userEmail, currency);
 
         if (!accountExists) {
@@ -25,35 +29,31 @@ public class AccountService implements IAccountService {
 
             AccountData accountData = new AccountData(newAccount.get());
 
-            return Optional.of(new TransactionDepositData(accountData, depositSum));
+            return new TransactionDepositData(accountData, depositSum);
         } else {
-            System.err.println("Data Error: this account already exists.");
+            throw new DataAlreadyExistsException("Error: this account already exists.");
         }
-
-        return Optional.empty();
     }
 
     @Override
-    public boolean closeAccount(String userEmail, Currency currency) {
+    public boolean closeAccount(String userEmail, Currency currency) throws DataInUseException, DataNotFoundException {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
         if (account.isEmpty()) {
-            System.err.println("Data Error: this account doesn't exist.");
+            throw new DataNotFoundException("Error: can't close Account (this Account doesn't exist).");
         } else {
             if (account.get().getBalance() == 0) {
                 accountRepository.deleteAccount(userEmail, currency);
                 System.out.printf("%s account successfully closed.\n", currency.toString());
                 return true;
             } else {
-                System.err.println("Account Error: account can't be closed (account balance isn't empty)");
+                throw new DataInUseException("Error: account can't be closed (account balance isn't empty).");
             }
         }
-
-        return false;
     }
 
     @Override
-    public Optional<TransactionDepositData> depositCurrency(String userEmail, double depositSum, Currency currency) {
+    public TransactionDepositData depositCurrency(String userEmail, double depositSum, Currency currency) throws DataAlreadyExistsException {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
         if (account.isPresent()) {
@@ -61,9 +61,9 @@ public class AccountService implements IAccountService {
 
             account.get().deposit(depositSum);
 
-            return Optional.of(new TransactionDepositData(accountData, depositSum));
+            return new TransactionDepositData(accountData, depositSum);
         } else {
-            Optional<TransactionDepositData> transactionData = openAccount(userEmail, depositSum, currency);
+            TransactionDepositData transactionData = openAccount(userEmail, depositSum, currency);
             System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
 
             return transactionData;
@@ -71,7 +71,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public Optional<TransactionWithdrawData> withdrawCurrency(String userEmail, double withdrawalSum, Currency currency) {
+    public TransactionWithdrawData withdrawCurrency(String userEmail, double withdrawalSum, Currency currency) throws TransactionException, DataNotFoundException {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
         if (account.isPresent()) {
@@ -80,15 +80,13 @@ public class AccountService implements IAccountService {
 
                 account.get().withdraw(withdrawalSum);
 
-                return Optional.of(new TransactionWithdrawData(accountData, withdrawalSum));
+                return new TransactionWithdrawData(accountData, withdrawalSum);
             } else {
-                System.err.println("Transaction Error: there is not enough balance.");
+                throw new TransactionException("Error: there is not enough balance.");
             }
         } else {
-            System.err.println("Data Error: this account doesn't exist.");
+            throw new DataNotFoundException("Error: this account doesn't exist.");
         }
-
-        return Optional.empty();
     }
 
     @Override
@@ -97,13 +95,13 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public Optional<AccountData> getAccountData(String userEmail, Currency currency) {
+    public AccountData getAccountData(String userEmail, Currency currency) throws DataNotFoundException {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
         if (account.isPresent()) {
-            return Optional.of(new AccountData(account.get()));
+            return new AccountData(account.get());
         } else {
-            return Optional.empty();
+            throw new DataNotFoundException("Error: this account doesn't exist.");
         }
     }
 
@@ -114,7 +112,7 @@ public class AccountService implements IAccountService {
         if (userAccounts.isPresent()) {
             userAccounts.get().forEach(System.out::println);
         } else {
-            System.err.println("Data Error: no such accounts associated with this user.");
+            System.err.println("This user doesn't have any open accounts.");
         }
     }
 
@@ -125,7 +123,7 @@ public class AccountService implements IAccountService {
         if (userAccount.isPresent()) {
             System.out.println(userAccount.get());
         } else {
-            System.err.println("Data Error: no such accounts associated with this user.");
+            System.err.println("This user doesn't have any open accounts.");
         }
     }
 }

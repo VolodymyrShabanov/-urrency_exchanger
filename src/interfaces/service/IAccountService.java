@@ -1,22 +1,25 @@
 package interfaces.service;
 
+import exceptions.DataAlreadyExistsException;
+import exceptions.DataInUseException;
+import exceptions.TransactionException;
 import model.*;
 
 import java.util.Optional;
 
 public interface IAccountService {
 
-    Optional<TransactionDepositData> openAccount(String email, double depositSum, Currency currency);
+    TransactionDepositData openAccount(String email, double depositSum, Currency currency) throws DataAlreadyExistsException;
 
-    boolean closeAccount(String email, Currency currency);
+    boolean closeAccount(String email, Currency currency) throws DataInUseException;
 
-    Optional<TransactionDepositData> depositCurrency(String email, double depositSum, Currency currency);
+    TransactionDepositData depositCurrency(String email, double depositSum, Currency currency) throws DataAlreadyExistsException;
 
-    Optional<TransactionWithdrawData> withdrawCurrency(String email, double withdrawalSum, Currency currency);
+    TransactionWithdrawData withdrawCurrency(String email, double withdrawalSum, Currency currency) throws TransactionException;
 
     boolean isAccountOpenByCurrency(Currency currency);
 
-    Optional<AccountData> getAccountData(String email, Currency currency);
+    AccountData getAccountData(String email, Currency currency);
 
     void printUserAccounts(String email);
 

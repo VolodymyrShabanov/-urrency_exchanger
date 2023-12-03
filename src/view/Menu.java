@@ -1,6 +1,9 @@
 package view;
 
 
+import exceptions.DataAlreadyExistsException;
+import exceptions.DataInUseException;
+import exceptions.TransactionException;
 import model.*;
 import service.AccountService;
 import service.CurrencyService;
@@ -200,29 +203,35 @@ public class Menu {
 
                     clearConsole();
 
-                    AccountData currentAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), currentCurrency).get();
-                    AccountData targetAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), targetCurrency).get();
+                    AccountData currentAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), currentCurrency);
+                    AccountData targetAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), targetCurrency);
 
                     Optional<TransactionExchangeData> exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 
                     if (exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
 
-                    accountService.withdrawCurrency(
-                            userService.getCurrentUserEmail().get(),
-                            exchangeData.get().getCurrentTransactionAmount(),
-                            currentCurrency
-                    );
+                    try {
+                        accountService.withdrawCurrency(
+                                userService.getCurrentUserEmail().get(),
+                                exchangeData.get().getCurrentTransactionAmount(),
+                                currentCurrency
+                        );
 
-                    accountService.depositCurrency(
-                            userService.getCurrentUserEmail().get(),
-                            exchangeData.get().getTargetTransactionAmount(),
-                            targetCurrency
-                    );
+                        accountService.depositCurrency(
+                                userService.getCurrentUserEmail().get(),
+                                exchangeData.get().getTargetTransactionAmount(),
+                                targetCurrency
+                        );
+                    } catch (TransactionException e) {
+                        throw new RuntimeException(e);
+                    } catch (DataAlreadyExistsException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 case "2":
                     clearConsole();
 
-                    Optional<TransactionDepositData> dataDeposit;
+                    TransactionDepositData dataDeposit;
 
                     try {
                         System.out.println("Enter deposit sum:");
@@ -252,17 +261,21 @@ public class Menu {
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
                         break;
+                    } catch (DataAlreadyExistsException e) {
+                        throw new RuntimeException(e);
                     }
 
                     clearConsole();
 
-                    if (dataDeposit.isPresent()) transactionService.addNewTransaction(dataDeposit.get());
+                    transactionService.addNewTransaction(dataDeposit);
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
                     break;
                 case "3":
                     clearConsole();
+
+                    TransactionWithdrawData dataWithdraw;
 
                     try {
                         System.out.println("Enter withdrawal sum:");
@@ -273,6 +286,12 @@ public class Menu {
 
                         System.out.println("Enter currency type:");
                         currencyType = scanner.nextLine();
+
+                        dataWithdraw = accountService.withdrawCurrency(
+                                userService.getCurrentUserEmail().get(),
+                                depositSum,
+                                currencyService.getCurrencyByCode(currencyType).get()
+                        );
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
@@ -285,17 +304,13 @@ public class Menu {
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
                         break;
+                    } catch (TransactionException e) {
+                        throw new RuntimeException(e);
                     }
 
                     clearConsole();
 
-                    Optional<TransactionWithdrawData> dataWithdraw = accountService.withdrawCurrency(
-                            userService.getCurrentUserEmail().get(),
-                            depositSum,
-                            currencyService.getCurrencyByCode(currencyType).get()
-                    );
-
-                    if (dataWithdraw.isPresent()) transactionService.addNewTransaction(dataWithdraw.get());
+                    transactionService.addNewTransaction(dataWithdraw);
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -316,6 +331,8 @@ public class Menu {
 
                         System.out.println("Enter currency type:");
                         currencyType = scanner.nextLine();
+
+                        accountService.openAccount(email, depositSum, currencyService.getCurrencyByCode(currencyType).get());
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
@@ -328,11 +345,11 @@ public class Menu {
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
                         break;
+                    } catch (DataAlreadyExistsException e) {
+                        throw new RuntimeException(e);
                     }
 
                     clearConsole();
-
-                    accountService.openAccount(email, depositSum, currencyService.getCurrencyByCode(currencyType).get());
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -362,6 +379,8 @@ public class Menu {
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
                         break;
+                    } catch (DataInUseException e) {
+                        throw new RuntimeException(e);
                     }
 
                     System.out.println("Press enter to continue...");
