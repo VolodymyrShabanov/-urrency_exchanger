@@ -2,13 +2,15 @@ package repository;
 
 import interfaces.repository.IUserRepository;
 import model.User;
+import util.UserRole;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class UserRepository implements IUserRepository {
-    private Map<String, User> users;
+
+    private final Map<String, User> users;
 
     public UserRepository() {
         this.users = new HashMap<>();
@@ -20,18 +22,18 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void addUser(User user) {
-        users.put(user.getEmail(), user);
+    public boolean addUser(String email, String password, UserRole userRole) {
+        if(userExists(email)) return false;
+
+        User newUser = new User(email, password, userRole);
+        users.put(email, newUser);
+
+        return true;
     }
 
     @Override
     public Optional<User> getUserByEmail(String email) {
         return Optional.ofNullable(users.get(email));
-    }
-
-    @Override
-    public void updateUser(User user) {
-        users.put(user.getEmail(), user);
     }
 
     @Override

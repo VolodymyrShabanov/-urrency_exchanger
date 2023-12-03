@@ -1,6 +1,7 @@
 package interfaces.repository;
 
 import model.User;
+import util.UserRole;
 
 import java.util.Optional;
 
@@ -8,11 +9,9 @@ public interface IUserRepository {
 
     boolean userExists(String email);
 
-    void addUser(User user);
+    boolean addUser(String email, String password, UserRole userRole);
 
     Optional<User> getUserByEmail(String email);
-
-    void updateUser(User user);
 
     int getSize();
 }
