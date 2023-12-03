@@ -2,7 +2,6 @@ package service;
 
 import exceptions.DataNotFoundException;
 import interfaces.model.ITransactionData;
-import model.Account;
 import model.AccountData;
 import model.Currency;
 import model.TransactionDepositData;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransactionServiceTest {
+
     TransactionService tr = new TransactionService();
     Currency usd = new Currency("USD", "US Dollar");
     Currency eur = new Currency("EUR", "Euro");

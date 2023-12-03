@@ -1,10 +1,7 @@
 package view;
 
 
-import exceptions.DataAlreadyExistsException;
-import exceptions.DataInUseException;
-import exceptions.LoginException;
-import exceptions.TransactionException;
+import exceptions.*;
 import model.*;
 import service.AccountService;
 import service.CurrencyService;
@@ -12,6 +9,7 @@ import service.TransactionService;
 import service.UserService;
 import util.UserRole;
 
+import javax.xml.crypto.Data;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -91,8 +89,13 @@ public class Menu {
 
                     try {
                         userService.createUser(tempEmail, tempPass, UserRole.USER);
-                    } catch (DataInUseException e) {
-                        throw new RuntimeException(e);
+                    } catch (DataInUseException | ValidationException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
                     }
 
                     System.out.println("Press enter to continue...");
@@ -115,8 +118,13 @@ public class Menu {
 
                     try {
                         loginResult = userService.login(tempEmail, tempPass);
-                    } catch (LoginException e) {
-                        throw new RuntimeException(e);
+                    } catch (LoginException | DataNotFoundException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
                     }
 
                     switch (loginResult) {
@@ -135,6 +143,7 @@ public class Menu {
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "0":
                     isMenuRunning = false;
@@ -147,6 +156,7 @@ public class Menu {
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
             }
 
@@ -154,7 +164,6 @@ public class Menu {
         }
     }
 
-    // TODO: add 'scanner input type' exception handling
     private void runUserMenu() {
         boolean isMenuRunning = true;
 
@@ -166,7 +175,9 @@ public class Menu {
             try {
                 currentUserEmail = userService.getCurrentUserEmail();
             } catch (LoginException e) {
-                throw new RuntimeException(e);
+                System.err.println(e.getMessage());
+
+                break;
             }
 
             System.out.printf("                       Welcome %s!\n\n", currentUserEmail);
@@ -207,26 +218,41 @@ public class Menu {
                         System.out.println("Enter sum to exchange:");
                         currentAmount = scanner.nextDouble();
                         scanner.nextLine();
+                    } catch (DataNotFoundException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
-                        break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
 
-                        System.out.println("Press enter to continue...");
-                        scanner.nextLine();
                         break;
                     }
 
                     clearConsole();
 
-                    AccountData currentAccount = accountService.getAccountData(currentUserEmail, currentCurrency);
-                    AccountData targetAccount = accountService.getAccountData(currentUserEmail, targetCurrency);
+                    AccountData currentAccount;
+                    AccountData targetAccount;
 
-                    TransactionExchangeData exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+                    TransactionExchangeData exchangeData;
+
+                    try {
+                        currentAccount = accountService.getAccountData(currentUserEmail, currentCurrency);
+                        targetAccount = accountService.getAccountData(currentUserEmail, targetCurrency);
+                        exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+                    } catch (DataNotFoundException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    }
 
                     transactionService.addNewTransaction(exchangeData);
 
@@ -243,7 +269,12 @@ public class Menu {
                                 targetCurrency
                         );
                     } catch (TransactionException | DataAlreadyExistsException e) {
-                        throw new RuntimeException(e);
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
                     }
                     break;
                 case "2":
@@ -267,25 +298,23 @@ public class Menu {
                                 depositSum,
                                 currencyService.getCurrencyByCode(currencyType)
                         );
+
+                        transactionService.addNewTransaction(dataDeposit);
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
+                    } catch (NoSuchElementException | DataAlreadyExistsException e) {
                         System.err.println("Error: data you've provided doesn't exist.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (DataAlreadyExistsException e) {
-                        throw new RuntimeException(e);
                     }
-
-                    clearConsole();
-
-                    transactionService.addNewTransaction(dataDeposit);
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -310,28 +339,27 @@ public class Menu {
                                 depositSum,
                                 currencyService.getCurrencyByCode(currencyType)
                         );
+
+                        transactionService.addNewTransaction(dataWithdraw);
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
+                    } catch (NoSuchElementException | TransactionException | DataNotFoundException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (TransactionException e) {
-                        throw new RuntimeException(e);
                     }
-
-                    clearConsole();
-
-                    transactionService.addNewTransaction(dataWithdraw);
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "4":
                     clearConsole();
@@ -352,21 +380,20 @@ public class Menu {
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
+                    } catch (DataNotFoundException | DataAlreadyExistsException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
-                        break;
-                    } catch (DataAlreadyExistsException e) {
-                        throw new RuntimeException(e);
-                    }
 
-                    clearConsole();
+                        break;
+                    }
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "5":
                     clearConsole();
@@ -386,19 +413,20 @@ public class Menu {
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
+                    } catch (DataNotFoundException | DataInUseException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (DataInUseException e) {
-                        throw new RuntimeException(e);
                     }
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "6":
                     clearConsole();
@@ -429,12 +457,14 @@ public class Menu {
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
+                    } catch (DataNotFoundException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
                     }
 
@@ -450,29 +480,33 @@ public class Menu {
 
                         clearConsole();
 
-                        if (currencyType.isBlank())
+                        if (currencyType.isBlank()) {
                             accountService.printUserAccounts(currentUserEmail);
-                        else
+                        } else {
                             accountService.printUserAccount(
                                     currentUserEmail,
                                     currencyService.getCurrencyByCode(currencyType)
                             );
+                        }
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
+                    } catch (DataNotFoundException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
                     }
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "8":
                     clearConsole();
@@ -483,10 +517,12 @@ public class Menu {
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "0":
                     isMenuRunning = false;
                     isAppRunning = false;
+
                     break;
                 default:
                     clearConsole();
@@ -495,6 +531,7 @@ public class Menu {
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
             }
 
@@ -514,7 +551,12 @@ public class Menu {
             System.out.println("2. Delete Currency");
             System.out.println("3. Get Transactions Log");
             System.out.println("4. Edit User Role");
+
+            System.out.println();
+
             System.out.println("5. Log Out");
+
+            System.out.println();
 
             System.out.println("0. Exit");
 
@@ -541,20 +583,26 @@ public class Menu {
                         System.out.println("Enter exchange rate:");
                         editRate = scanner.nextDouble();
                         scanner.nextLine();
+
+                        currencyService.updateExchangeRate(editCurrency1, editCurrency2, editRate);
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
                         break;
+                    } catch (DataNotFoundException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
                     }
-
-                    clearConsole();
-
-                    currencyService.updateExchangeRate(editCurrency1, editCurrency2, editRate);
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "2":
                     System.out.println("Enter currency code you want to delete:");
@@ -563,32 +611,28 @@ public class Menu {
                     clearConsole();
 
                     try {
-                        queryCodeToDelete = scanner.nextLine();
-
                         currencyToDelete = currencyService.getCurrencyByCode(queryCodeToDelete);
+
+                        currencyService.deleteCurrency(currencyToDelete);
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
                         break;
-                    } catch (NoSuchElementException e) {
-                        System.err.println("Error: data you've provided doesn't exist.");
+                    } catch (DataNotFoundException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
-                        break;
-                    } catch (Exception e) {
-                        System.err.println(e.getMessage());
+
                         break;
                     }
 
-                    clearConsole();
-
-                    currencyService.deleteCurrency(currencyToDelete);
-
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "3":
                     System.out.println("Select option:\n1. By User Email\n2. By Currency");
@@ -601,31 +645,53 @@ public class Menu {
                             System.out.println("Enter user email:");
                             String queryEmail = scanner.nextLine();
 
-                            transactionService.displayTransactionsByUserEmail(queryEmail);
+                            clearConsole();
+
+                            try {
+                                transactionService.displayTransactionsByUserEmail(queryEmail);
+                            } catch (DataNotFoundException e) {
+                                System.err.println(e.getMessage());
+
+                                System.out.println("Press enter to continue...");
+                                scanner.nextLine();
+
+                                break;
+                            }
 
                             System.out.println("Press enter to continue...");
                             scanner.nextLine();
+
                             break;
                         case "2":
                             System.out.println("Enter currency code:");
                             String queryCode = scanner.nextLine();
 
                             clearConsole();
+                            try {
+                                Currency fetchedCurrency = currencyService.getCurrencyByCode(queryCode);
+                                transactionService.displayTransactionsByCurrency(fetchedCurrency);
+                            } catch (DataNotFoundException e) {
+                                System.err.println(e.getMessage());
 
-                            Currency fetchedCurrency = currencyService.getCurrencyByCode(queryCode);
+                                System.out.println("Press enter to continue...");
+                                scanner.nextLine();
 
-                            transactionService.displayTransactionsByCurrency(fetchedCurrency);
+                                break;
+                            }
 
                             System.out.println("Press enter to continue...");
                             scanner.nextLine();
+
                             break;
                         default:
                             System.err.println("Error: please choose a valid option.");
+
                             break;
                     }
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "4":
                     System.out.println("Enter user email:");
@@ -640,26 +706,37 @@ public class Menu {
 
                     try {
                         userService.assignUserRole(queryEmail, UserRole.valueOf(queryRole));
-                    } catch (Exception e) {
-                        System.err.println("Error: error has occurred when assigning roles.");
+                    } catch (LoginException | PermissionException e) {
+                        System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
+
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Error: this role doesn't exist.");
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
                         break;
                     }
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "5":
                     isMenuRunning = false;
                     state = UserRole.GUEST;
+
                     break;
                 case "0":
                     clearConsole();
 
                     isMenuRunning = false;
                     isAppRunning = false;
+
                     break;
                 default:
                     clearConsole();
@@ -668,6 +745,7 @@ public class Menu {
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
             }
 
