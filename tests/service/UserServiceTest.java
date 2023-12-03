@@ -10,6 +10,7 @@ import util.UserRole;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
+
     UserService us = new UserService();
 
     @Test

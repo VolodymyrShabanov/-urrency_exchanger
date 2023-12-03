@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.DataNotFoundException;
 import interfaces.model.ITransactionData;
 import model.Account;
 import model.AccountData;
@@ -40,17 +41,31 @@ class TransactionServiceTest {
         assertTrue(tr.displayTransactionsByUserEmail("a@gm.com"));
         assertTrue(tr.displayTransactionsByUserEmail("alex@gm.com"));
 
-        assertFalse(tr.displayTransactionsByUserEmail("john@gm.com"));
-        assertFalse(tr.displayTransactionsByUserEmail("kate@gm.com"));
+        assertThrows(DataNotFoundException.class, () -> {
+            tr.displayTransactionsByUserEmail("john@gm.com");
+        });
+        assertThrows(DataNotFoundException.class, () -> {
+            tr.displayTransactionsByUserEmail("kate@gm.com");
+        });
     }
 
     @Test
     void displayTransactionsByCurrency() {
-        assertTrue(tr.displayTransactionsByCurrency(usd));
-        assertTrue(tr.displayTransactionsByCurrency(eur));
-        assertTrue(tr.displayTransactionsByCurrency(pln));
+        assertDoesNotThrow(() -> {
+            tr.displayTransactionsByCurrency(usd);
+        });
+        assertDoesNotThrow(() -> {
+            tr.displayTransactionsByCurrency(eur);
+        });
+        assertDoesNotThrow(() -> {
+            tr.displayTransactionsByCurrency(pln);
+        });
 
-        assertFalse(tr.displayTransactionsByCurrency(cad));
-        assertFalse(tr.displayTransactionsByCurrency(uah));
+        assertThrows(DataNotFoundException.class, () -> {
+            tr.displayTransactionsByCurrency(cad);
+        });
+        assertThrows(DataNotFoundException.class, () -> {
+            tr.displayTransactionsByCurrency(uah);
+        });
     }
 }

@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.DataNotFoundException;
 import interfaces.model.ITransactionData;
 import interfaces.service.ITransactionService;
 import model.Currency;
@@ -26,10 +27,12 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public boolean displayTransactionsByUserEmail(String userEmail) {
+    public boolean displayTransactionsByUserEmail(String userEmail) throws DataNotFoundException {
         Optional<List<ITransactionData>> dataList = transactionRepository.getTransactionsByUserEmail(userEmail);
 
-        if (dataList.isEmpty()) return false;
+        if (dataList.isEmpty()) {
+            throw new DataNotFoundException("Error: this user's history doesn't exist.");
+        }
 
         System.out.printf("User %s transaction history:\n", dataList.get().get(0).getUserEmail());
 
@@ -41,10 +44,12 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public boolean displayTransactionsByCurrency(Currency currency) {
+    public boolean displayTransactionsByCurrency(Currency currency) throws DataNotFoundException {
         Optional<List<ITransactionData>> dataList = transactionRepository.getTransactionsByCurrency(currency);
 
-        if (dataList.isEmpty()) return false;
+        if (dataList.isEmpty()) {
+            throw new DataNotFoundException("Error: this user's history doesn't exist.");
+        }
 
         System.out.printf("%s currency transaction history:\n", currency.getCode());
 
