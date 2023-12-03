@@ -1,12 +1,13 @@
 package repository;
 
+import interfaces.repository.IAccountRepository;
 import model.Account;
 import model.Currency;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AccountRepository {
+public class AccountRepository implements IAccountRepository {
     private int repositorySize = 0;
 
     private final Map<String, Set<Account>> accounts;
@@ -15,6 +16,7 @@ public class AccountRepository {
         this.accounts = new HashMap<>();
     }
 
+    @Override
     public Optional<Account> createAccount(String email, double depositSum, Currency currency) {
         if (!accountExists(email, currency)) {
             Account newAccount = new Account(email, currency, depositSum);
@@ -33,6 +35,7 @@ public class AccountRepository {
         return Optional.empty();
     }
 
+    @Override
     public boolean deleteAccount(String email, Currency currency) {
         Optional<Account> account = fetchAccount(email, currency);
 
@@ -44,6 +47,7 @@ public class AccountRepository {
         return true;
     }
 
+    @Override
     public boolean accountExists(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();
@@ -57,6 +61,7 @@ public class AccountRepository {
         return accountOptional.isPresent();
     }
 
+    @Override
     public Optional<Account> fetchAccount(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
         Optional<Account> accountOptional = Optional.empty();
@@ -70,6 +75,7 @@ public class AccountRepository {
         return accountOptional;
     }
 
+    @Override
     public Optional<Set<Account>> fetchAccounts(String email) {
         if (accounts.containsKey(email)) {
             return Optional.ofNullable(accounts.get(email));
@@ -78,10 +84,12 @@ public class AccountRepository {
         }
     }
 
+    @Override
     public int getRepositorySize() {
         return repositorySize;
     }
 
+    @Override
     public Optional<Set<Account>> getAccountsByCurrency(Currency currency) {
         Set<Account> fetchedAccounts = new HashSet<>();
 
@@ -91,7 +99,7 @@ public class AccountRepository {
                             .filter(account -> account.getCurrency().getCode().equals(currency.getCode()))
                             .findFirst();
 
-                    if(tempAccount.isPresent()) fetchedAccounts.add(tempAccount.get());
+                    if (tempAccount.isPresent()) fetchedAccounts.add(tempAccount.get());
                 });
 
         if (fetchedAccounts.isEmpty()) {
@@ -99,5 +107,10 @@ public class AccountRepository {
         } else {
             return Optional.of(Set.copyOf(fetchedAccounts));
         }
+    }
+
+    @Override
+    public int getSize() {
+        return accounts.size();
     }
 }

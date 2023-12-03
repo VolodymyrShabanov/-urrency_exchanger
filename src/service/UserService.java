@@ -31,7 +31,7 @@ public class UserService implements IUserService {
             System.err.println(e.getMessage());
         }
 
-        if (userRepository.isUserExist(email)) {
+        if (userRepository.userExists(email)) {
             return false;
         }
 

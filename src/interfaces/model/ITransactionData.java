@@ -7,6 +7,7 @@ import util.CurrencyTransactionType;
 import java.util.List;
 
 public interface ITransactionData {
+
     String getInfo();
 
     CurrencyTransactionType getType();

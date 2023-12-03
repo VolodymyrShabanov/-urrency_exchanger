@@ -1,6 +1,7 @@
 package repository;
 
 import interfaces.model.ITransactionData;
+import interfaces.repository.ITransactionRepository;
 import model.Currency;
 
 import java.util.*;
@@ -9,13 +10,14 @@ import java.util.*;
  * Created by Volodymyr Sh on 28.11.2023
  * project name: exchanger_currency
  */
-public class TransactionRepository {
+public class TransactionRepository implements ITransactionRepository {
     private final Map<String, List<ITransactionData>> transactions;
 
     public TransactionRepository() {
         this.transactions = new HashMap<>();
     }
 
+    @Override
     public void addTransaction(ITransactionData transactionData) {
         boolean emailExists = transactions.containsKey(transactionData.getUserEmail());
 
@@ -26,6 +28,7 @@ public class TransactionRepository {
         }
     }
 
+    @Override
     public Optional<List<ITransactionData>> getTransactionsByCurrency(Currency currency) {
         if (transactions.isEmpty()) return Optional.empty();
 
@@ -44,11 +47,12 @@ public class TransactionRepository {
                             });
                 });
 
-        if(transactionList.isEmpty()) return Optional.empty();
+        if (transactionList.isEmpty()) return Optional.empty();
 
         return Optional.of(transactionList);
     }
 
+    @Override
     public Optional<List<ITransactionData>> getTransactionsByUserEmail(String userEmail) {
         boolean emailExists = transactions.containsKey(userEmail);
 
@@ -57,7 +61,8 @@ public class TransactionRepository {
         return Optional.empty();
     }
 
-    public int size() {
+    @Override
+    public int getSize() {
         return transactions.size();
     }
 }

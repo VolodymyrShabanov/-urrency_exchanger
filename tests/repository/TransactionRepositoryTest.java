@@ -28,20 +28,20 @@ class TransactionRepositoryTest {
     void addTransaction() {
         TransactionRepository tr = new TransactionRepository();
 
-        assertEquals(0, tr.size());
+        assertEquals(0, tr.getSize());
 
         tr.addTransaction(tr1);
 
-        assertEquals(1, tr.size());
+        assertEquals(1, tr.getSize());
 
         tr.addTransaction(tr2);
         tr.addTransaction(tr3);
 
-        assertEquals(1, tr.size());
+        assertEquals(1, tr.getSize());
 
         tr.addTransaction(tr4);
 
-        assertEquals(2, tr.size());
+        assertEquals(2, tr.getSize());
     }
 
     @Test
