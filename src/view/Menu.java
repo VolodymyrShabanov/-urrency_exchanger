@@ -175,12 +175,12 @@ public class Menu {
 
                     try {
                         System.out.println("Enter Current currency code:");
-                        currentCurrency = currencyService.getCurrencyByCode(scanner.nextLine()).get();
+                        currentCurrency = currencyService.getCurrencyByCode(scanner.nextLine());
 
                         clearConsole();
 
                         System.out.println("Enter Target currency code:");
-                        targetCurrency = currencyService.getCurrencyByCode(scanner.nextLine()).get();
+                        targetCurrency = currencyService.getCurrencyByCode(scanner.nextLine());
 
                         clearConsole();
 
@@ -206,7 +206,7 @@ public class Menu {
                     AccountData currentAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), currentCurrency);
                     AccountData targetAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), targetCurrency);
 
-                    Optional<TransactionExchangeData> exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
+                    TransactionExchangeData exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 
                     if (exchangeData.isPresent()) transactionService.addNewTransaction(exchangeData.get());
 
@@ -247,7 +247,7 @@ public class Menu {
                         dataDeposit = accountService.depositCurrency(
                                 userService.getCurrentUserEmail().get(),
                                 depositSum,
-                                currencyService.getCurrencyByCode(currencyType).get()
+                                currencyService.getCurrencyByCode(currencyType)
                         );
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
@@ -290,7 +290,7 @@ public class Menu {
                         dataWithdraw = accountService.withdrawCurrency(
                                 userService.getCurrentUserEmail().get(),
                                 depositSum,
-                                currencyService.getCurrencyByCode(currencyType).get()
+                                currencyService.getCurrencyByCode(currencyType)
                         );
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
@@ -332,7 +332,7 @@ public class Menu {
                         System.out.println("Enter currency type:");
                         currencyType = scanner.nextLine();
 
-                        accountService.openAccount(email, depositSum, currencyService.getCurrencyByCode(currencyType).get());
+                        accountService.openAccount(email, depositSum, currencyService.getCurrencyByCode(currencyType));
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
@@ -365,7 +365,7 @@ public class Menu {
 
                         accountService.closeAccount(
                                 userService.getCurrentUserEmail().get(),
-                                currencyService.getCurrencyByCode(currencyType).get()
+                                currencyService.getCurrencyByCode(currencyType)
                         );
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
@@ -403,7 +403,7 @@ public class Menu {
                                 System.out.println("Enter currency code:");
                                 ans = scanner.nextLine();
 
-                                Currency currencyFilter = currencyService.getCurrencyByCode(ans).get();
+                                Currency currencyFilter = currencyService.getCurrencyByCode(ans);
                                 transactionService.displayTransactionsByCurrency(currencyFilter);
                                 break;
                             default:
@@ -441,7 +441,7 @@ public class Menu {
                         else
                             accountService.printUserAccount(
                                     userService.getCurrentUserEmail().get(),
-                                    currencyService.getCurrencyByCode(currencyType).get()
+                                    currencyService.getCurrencyByCode(currencyType)
                             );
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");

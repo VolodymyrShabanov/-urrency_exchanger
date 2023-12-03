@@ -1,6 +1,7 @@
 package service;
 
 
+import exceptions.DataInitializationException;
 import exceptions.DataNotFoundException;
 import interfaces.service.ICurrencyService;
 import model.*;
@@ -10,6 +11,7 @@ import repository.ExchangeRateRepository;
 import java.util.Optional;
 
 public class CurrencyService implements ICurrencyService {
+
     private final ExchangeRateRepository exchangeRateRepository;
     private final CurrencyRepository currencyRepository;
 
@@ -19,133 +21,142 @@ public class CurrencyService implements ICurrencyService {
         this.currencyRepository = new CurrencyRepository();
         this.exchangeRateRepository = new ExchangeRateRepository();
 
-        init();
-        dataInitStatus = true;
+        try {
+            init();
+            dataInitStatus = true;
+        } catch (DataInitializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public Optional<TransactionExchangeData> exchangeCurrency(AccountData current, AccountData target, double amount) {
+    public TransactionExchangeData exchangeCurrency(AccountData current, AccountData target, double amount)
+            throws DataNotFoundException {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()
         );
 
         if (exchangeRate.isEmpty()) {
-            throw new DataNotFoundException("Exchange rate not found.");
+            throw new DataNotFoundException("Error: this exchange rate doesn't exist.");
         }
 
         double exchangedSum = amount * exchangeRate.get().getRate();
 
-        return Optional.of(new TransactionExchangeData(
+        return new TransactionExchangeData(
                 current,
                 target,
                 exchangeRate.get().getRate(),
                 amount,
-                exchangedSum)
+                exchangedSum
         );
     }
 
     @Override
-    public Optional<Currency> addCurrency(String code, String name) {
-        return currencyRepository.addCurrency(code, name);
+    public Currency addCurrency(String code, String name) throws DataNotFoundException {
+        Optional<Currency> currencyOptional = currencyRepository.addCurrency(code, name);
+
+        if (currencyOptional.isEmpty()) throw new DataNotFoundException("Error: this currency doesn't exist.");
+
+        return currencyOptional.get();
     }
 
     @Override
-    public boolean deleteCurrency(Currency currencyToDelete) {
+    public void deleteCurrency(Currency currencyToDelete) {
         Optional<Currency> currency = currencyRepository.getCurrencyByCode(currencyToDelete.getCode());
 
         if (currency.isEmpty()) {
-            System.err.println("Currency not found.");
-            return false;
+            throw new DataNotFoundException("Error: one of the currencies doesn't exist.");
         }
 
         currencyRepository.deleteCurrencyByCode(currency.get().getCode());
         System.out.printf("Currency '%s' has successfully been deleted.\n", currencyToDelete.getName());
-
-        return true;
     }
 
     @Override
-    public Optional<ExchangeRate> createExchangeRate(String fromCurrency, String toCurrency, double rate) {
+    public ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate) throws DataNotFoundException {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
 
         if (sourceCurrency.isEmpty() || targetCurrency.isEmpty()) {
-            System.out.println("Invalid currency codes.");
-            return Optional.empty();
+            throw new DataNotFoundException("Error: one of the currencies doesn't exist.");
         }
 
-        Optional<ExchangeRate> existingRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
+        Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
 
-        if (existingRate.isEmpty()) {
-            ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency.get(), targetCurrency.get(), rate);
-            exchangeRateRepository.createExchangeRate(newExchangeRate);
-
-            return Optional.of(new ExchangeRate(newExchangeRate));
-        } else {
-            System.err.println("Error: this rate already exists.");
+        if (exchangeRate.isEmpty()) {
+            throw new DataNotFoundException("Error: this rate already exists.");
         }
 
-        return Optional.empty();
+        ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency.get(), targetCurrency.get(), rate);
+        exchangeRateRepository.createExchangeRate(newExchangeRate);
+
+        return new ExchangeRate(newExchangeRate);
     }
 
     @Override
-    public Optional<ExchangeRate> updateExchangeRate(String currentCode, String targetCode, double newRate) {
+    public ExchangeRate updateExchangeRate(String currentCode, String targetCode, double newRate) throws DataNotFoundException {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(currentCode);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(targetCode);
 
         if (sourceCurrency.isEmpty() || targetCurrency.isEmpty()) {
-            System.out.println("Invalid currency codes.");
-
-            return Optional.empty();
+            throw new DataNotFoundException("Error: one of the currencies doesn't exist.");
         }
 
-        Optional<ExchangeRate> existingRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
+        Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(sourceCurrency.get(), targetCurrency.get());
 
-        if (existingRate.isPresent()) {
-            existingRate.get().setRate(newRate);
-            System.out.println("Exchange Rate has successfully been updated.");
-            return Optional.of(new ExchangeRate(existingRate.get()));
-        } else {
-            System.out.println("Error: this rate doesn't exist.");
+        if (exchangeRate.isEmpty()) {
+            throw new DataNotFoundException("Error: this rate doesn't exist.");
         }
 
-        return Optional.empty();
+        exchangeRate.get().setRate(newRate);
+        System.out.println("Exchange Rate has successfully been updated.");
+
+        return new ExchangeRate(exchangeRate.get());
     }
 
     @Override
-    public Optional<Currency> getCurrencyByCode(String code) {
-        return currencyRepository.getCurrencyByCode(code);
+    public Currency getCurrencyByCode(String code) throws DataNotFoundException {
+        Optional<Currency> currencyOptional = currencyRepository.getCurrencyByCode(code);
+
+        if (currencyOptional.isEmpty())
+            throw new DataNotFoundException("Error: currency with this code doesn't exist.");
+
+        return currencyOptional.get();
     }
 
     @Override
-    public Optional<ExchangeRate> getExchangeRateByCode(String currentCode, String targetCode) {
+    public ExchangeRate getExchangeRateByCode(String currentCode, String targetCode) throws DataNotFoundException {
         Optional<Currency> current = currencyRepository.getCurrencyByCode(currentCode);
         Optional<Currency> target = currencyRepository.getCurrencyByCode(targetCode);
 
         if (current.isEmpty() || target.isEmpty()) {
-            return Optional.empty();
+            throw new DataNotFoundException("Error: one of the currencies doesn't exist.");
         }
 
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(current.get(), target.get());
 
-        return exchangeRate.map(ExchangeRate::new);
+        if (exchangeRate.isEmpty()) {
+            throw new DataNotFoundException("Error: this exchange rate doesn't exist.");
+        }
+
+        return exchangeRate.get();
     }
 
-    private void init() {
-        if (!dataInitStatus) {
-            addCurrency("USD", "US Dollar");
-            addCurrency("EUR", "Euro");
-            addCurrency("PLN", "Polish Zloty");
-
-            createExchangeRate("EUR", "USD", 1.1);
-            createExchangeRate("USD", "EUR", 0.9);
-            createExchangeRate("USD", "PLN", 4);
-            createExchangeRate("PLN", "USD", 0.25);
-            createExchangeRate("EUR", "PLN", 4.3);
-            createExchangeRate("PLN", "EUR", 0.23);
-        } else {
-            System.err.println("Error: repo has already been initialized.");
+    private void init() throws DataInitializationException {
+        if (dataInitStatus) {
+            throw new DataInitializationException("Error: repo has already been initialized.");
         }
+
+        addCurrency("USD", "US Dollar");
+        addCurrency("EUR", "Euro");
+        addCurrency("PLN", "Polish Zloty");
+
+        createExchangeRate("EUR", "USD", 1.1);
+        createExchangeRate("USD", "EUR", 0.9);
+        createExchangeRate("USD", "PLN", 4);
+        createExchangeRate("PLN", "USD", 0.25);
+        createExchangeRate("EUR", "PLN", 4.3);
+        createExchangeRate("PLN", "EUR", 0.23);
     }
 }
