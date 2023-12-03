@@ -2,6 +2,7 @@ package service;
 
 
 import model.Account;
+import model.AccountData;
 import model.Currency;
 import org.junit.Test;
 
@@ -60,12 +61,9 @@ public class CurrencyServiceTest {
 
     @Test
     public void testCurrencyExchange() {
-        var acc1 = new Account("andrey@gmail.com", new Currency("EUR", "Euro"));
-        acc1.deposit(1000);
-        var acc2 = new Account("andrey@gmail.com", new Currency("USD", "US Dollar"));
-        acc2.deposit(2000);
-        var acc3 = new Account("andrey@gmail.com", new Currency("PLN", "Polish Zloty"));
-        acc1.deposit(1000);
+        var acc1 = new AccountData("andrey@gmail.com", new Currency("EUR", "Euro"), 1000);
+        var acc2 = new AccountData("andrey@gmail.com", new Currency("USD", "US Dollar"), 2000);
+        var acc3 = new AccountData("andrey@gmail.com", new Currency("PLN", "Polish Zloty"), 1000);
 
         var currencyService = new CurrencyService();
         currencyService.createExchangeRate("EUR", "USD", 1.1);

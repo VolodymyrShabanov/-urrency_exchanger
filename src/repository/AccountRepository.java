@@ -37,11 +37,12 @@ public class AccountRepository implements IAccountRepository {
     public boolean deleteAccount(String email, Currency currency) {
         Optional<Account> account = fetchAccount(email, currency);
 
-        if (account.isEmpty()) return false;
-
-        accounts.get(email).remove(account.get());
-
-        return true;
+        if (account.isEmpty()) {
+            return false;
+        } else {
+            accounts.get(email).remove(account.get());
+            return true;
+        }
     }
 
     @Override
@@ -49,27 +50,26 @@ public class AccountRepository implements IAccountRepository {
         if (!accounts.containsKey(email)) return false;
 
         return accounts.get(email).stream()
-                .anyMatch(account -> account.getCurrency().equals(currency));
+                .anyMatch(account -> account.getCurrency().getCode().equals(currency.getCode()));
     }
 
     @Override
     public Optional<Account> fetchAccount(String email, Currency currency) {
         boolean isAccountOpen = accounts.containsKey(email);
-        Optional<Account> accountOptional = Optional.empty();
 
         if (isAccountOpen) {
-            accountOptional = accounts.get(email).stream()
+            return accounts.get(email).stream()
                     .filter(account -> account.getCurrency().getCode().equals(currency.getCode()))
                     .findFirst();
         }
 
-        return accountOptional;
+        return Optional.empty();
     }
 
     @Override
     public Optional<Set<Account>> fetchAccounts(String email) {
         if (accounts.containsKey(email)) {
-            return Optional.ofNullable(accounts.get(email));
+            return Optional.of(accounts.get(email));
         } else {
             return Optional.empty();
         }
@@ -91,7 +91,7 @@ public class AccountRepository implements IAccountRepository {
         if (fetchedAccounts.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(Set.copyOf(fetchedAccounts));
+            return Optional.of(fetchedAccounts);
         }
     }
 

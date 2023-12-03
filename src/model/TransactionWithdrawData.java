@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TransactionWithdrawData implements ITransactionData {
-    private final Account currentAccount;
+    private final AccountData currentAccount;
 
     private final double currentTransactionAmount;
 
@@ -17,7 +17,7 @@ public class TransactionWithdrawData implements ITransactionData {
 
     private final LocalDateTime transactionDate;
 
-    public TransactionWithdrawData(Account currentAccount, double currentTransactionAmount) {
+    public TransactionWithdrawData(AccountData currentAccount, double currentTransactionAmount) {
         this.currentAccount = currentAccount;
         this.currentTransactionAmount = currentTransactionAmount;
 
@@ -26,7 +26,7 @@ public class TransactionWithdrawData implements ITransactionData {
         transactionDate = LocalDate.now().atStartOfDay();
     }
 
-    public Account getCurrentAccount() {
+    public AccountData getCurrentAccount() {
         return currentAccount;
     }
 
@@ -82,7 +82,7 @@ public class TransactionWithdrawData implements ITransactionData {
     }
 
     @Override
-    public List<Account> getAccounts() {
+    public List<AccountData> getAccounts() {
         return List.of(currentAccount);
     }
 

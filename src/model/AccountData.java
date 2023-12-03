@@ -12,6 +12,12 @@ public class AccountData {
         this.balance = depositSum;
     }
 
+    public AccountData(String userEmail, Currency currency) {
+        this.userEmail = userEmail;
+        this.currency = currency;
+        this.balance = 0;
+    }
+
     public AccountData(Account account) {
         this.userEmail = account.getUserEmail();
         this.balance = account.getBalance();

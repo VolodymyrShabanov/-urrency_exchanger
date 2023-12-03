@@ -1,9 +1,6 @@
 package interfaces.service;
 
-import model.Account;
-import model.Currency;
-import model.TransactionDepositData;
-import model.TransactionWithdrawData;
+import model.*;
 
 import java.util.Optional;
 
@@ -19,7 +16,7 @@ public interface IAccountService {
 
     boolean isAccountOpenByCurrency(Currency currency);
 
-    Optional<Account> getAccountCopy(String email, Currency currency);
+    Optional<AccountData> getAccountData(String email, Currency currency);
 
     void printUserAccounts(String email);
 

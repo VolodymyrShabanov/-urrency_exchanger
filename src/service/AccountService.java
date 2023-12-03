@@ -22,9 +22,12 @@ public class AccountService implements IAccountService {
 
         if (!accountExists) {
             Optional<Account> newAccount = accountRepository.createAccount(userEmail, depositSum, currency);
-            return Optional.of(new TransactionDepositData(newAccount.get(), depositSum));
+
+            AccountData accountData = new AccountData(newAccount.get());
+
+            return Optional.of(new TransactionDepositData(accountData, depositSum));
         } else {
-            System.err.println("Error: this account already exists.");
+            System.err.println("Data Error: this account already exists.");
         }
 
         return Optional.empty();
@@ -35,14 +38,14 @@ public class AccountService implements IAccountService {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
         if (account.isEmpty()) {
-            System.err.println("Error: this account doesn't exist.");
+            System.err.println("Data Error: this account doesn't exist.");
         } else {
             if (account.get().getBalance() == 0) {
                 accountRepository.deleteAccount(userEmail, currency);
                 System.out.printf("%s account successfully closed.\n", currency.toString());
                 return true;
             } else {
-                System.err.println("Error: account can't be closed (account balance isn't empty)");
+                System.err.println("Account Error: account can't be closed (account balance isn't empty)");
             }
         }
 
@@ -54,9 +57,11 @@ public class AccountService implements IAccountService {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
         if (account.isPresent()) {
+            AccountData accountData = new AccountData(account.get());
+
             account.get().deposit(depositSum);
 
-            return Optional.of(new TransactionDepositData(account.get(), depositSum));
+            return Optional.of(new TransactionDepositData(accountData, depositSum));
         } else {
             Optional<TransactionDepositData> transactionData = openAccount(userEmail, depositSum, currency);
             System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
@@ -71,14 +76,16 @@ public class AccountService implements IAccountService {
 
         if (account.isPresent()) {
             if (account.get().getBalance() >= withdrawalSum) {
+                AccountData accountData = new AccountData(account.get());
+
                 account.get().withdraw(withdrawalSum);
 
-                return Optional.of(new TransactionWithdrawData(account.get(), withdrawalSum));
+                return Optional.of(new TransactionWithdrawData(accountData, withdrawalSum));
             } else {
                 System.err.println("Transaction Error: there is not enough balance.");
             }
         } else {
-            System.err.println("Data Fetching Error: this account doesn't exist.");
+            System.err.println("Data Error: this account doesn't exist.");
         }
 
         return Optional.empty();
@@ -86,16 +93,18 @@ public class AccountService implements IAccountService {
 
     @Override
     public boolean isAccountOpenByCurrency(Currency currency) {
-        Optional<Set<Account>> accounts = accountRepository.getAccountsByCurrency(currency);
-
-        return accounts.isPresent();
+        return accountRepository.getAccountsByCurrency(currency).isPresent();
     }
 
     @Override
-    public Optional<Account> getAccountCopy(String userEmail, Currency currency) {
+    public Optional<AccountData> getAccountData(String userEmail, Currency currency) {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
 
-        return account.map(Account::new);
+        if (account.isPresent()) {
+            return Optional.of(new AccountData(account.get()));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -105,7 +114,7 @@ public class AccountService implements IAccountService {
         if (userAccounts.isPresent()) {
             userAccounts.get().forEach(System.out::println);
         } else {
-            System.err.println("Error: no such accounts associated with this user.");
+            System.err.println("Data Error: no such accounts associated with this user.");
         }
     }
 
@@ -116,7 +125,7 @@ public class AccountService implements IAccountService {
         if (userAccount.isPresent()) {
             System.out.println(userAccount.get());
         } else {
-            System.err.println("Error: no such accounts associated with this user.");
+            System.err.println("Data Error: no such accounts associated with this user.");
         }
     }
 }

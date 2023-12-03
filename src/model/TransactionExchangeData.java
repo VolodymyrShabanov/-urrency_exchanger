@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TransactionExchangeData implements ITransactionData {
-    private final Account currentAccount;
-    private final Account targetAccount;
+    private final AccountData currentAccount;
+    private final AccountData targetAccount;
 
     private final double conversionRate;
 
@@ -20,8 +20,8 @@ public class TransactionExchangeData implements ITransactionData {
     private final CurrencyTransactionType currencyTransactionType;
     private final LocalDateTime transactionDate;
 
-    public TransactionExchangeData(Account currentAccount,
-                                   Account targetAccount,
+    public TransactionExchangeData(AccountData currentAccount,
+                                   AccountData targetAccount,
                                    double conversionRate,
                                    double currentTransactionAmount,
                                    double targetTransactionAmount
@@ -38,11 +38,11 @@ public class TransactionExchangeData implements ITransactionData {
         transactionDate = LocalDate.now().atStartOfDay();
     }
 
-    public Account getCurrentAccount() {
+    public AccountData getCurrentAccount() {
         return currentAccount;
     }
 
-    public Account getTargetAccount() {
+    public AccountData getTargetAccount() {
         return targetAccount;
     }
 
@@ -110,7 +110,7 @@ public class TransactionExchangeData implements ITransactionData {
     }
 
     @Override
-    public List<Account> getAccounts() {
+    public List<AccountData> getAccounts() {
         return List.of(currentAccount, targetAccount);
     }
 

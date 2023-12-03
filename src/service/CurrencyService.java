@@ -3,12 +3,9 @@ package service;
 
 import exceptions.TransactionException;
 import interfaces.service.ICurrencyService;
-import model.Account;
-import model.Currency;
-import model.ExchangeRate;
+import model.*;
 import repository.CurrencyRepository;
 import repository.ExchangeRateRepository;
-import model.TransactionExchangeData;
 
 import java.util.Optional;
 
@@ -27,7 +24,7 @@ public class CurrencyService implements ICurrencyService {
     }
 
     @Override
-    public Optional<TransactionExchangeData> exchangeCurrency(Account current, Account target, double amount) {
+    public Optional<TransactionExchangeData> exchangeCurrency(AccountData current, AccountData target, double amount) {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()

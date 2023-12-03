@@ -1,15 +1,12 @@
 package interfaces.service;
 
-import model.Account;
-import model.Currency;
-import model.ExchangeRate;
-import model.TransactionExchangeData;
+import model.*;
 
 import java.util.Optional;
 
 public interface ICurrencyService {
 
-    Optional<TransactionExchangeData> exchangeCurrency(Account current, Account target, double amount);
+    Optional<TransactionExchangeData> exchangeCurrency(AccountData current, AccountData target, double amount);
 
     Optional<Currency> addCurrency(String code, String name);
 

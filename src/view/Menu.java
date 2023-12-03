@@ -200,8 +200,8 @@ public class Menu {
 
                     clearConsole();
 
-                    Account currentAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), currentCurrency).get();
-                    Account targetAccount = accountService.getAccountCopy(userService.getCurrentUserEmail().get(), targetCurrency).get();
+                    AccountData currentAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), currentCurrency).get();
+                    AccountData targetAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), targetCurrency).get();
 
                     Optional<TransactionExchangeData> exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 

@@ -1,7 +1,7 @@
 package interfaces.model;
 
+import model.AccountData;
 import model.Currency;
-import model.Account;
 import util.CurrencyTransactionType;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public interface ITransactionData {
 
     String getUserEmail();
 
-    List<Account> getAccounts();
+    List<AccountData> getAccounts();
 
     List<Double> getAmounts();
 

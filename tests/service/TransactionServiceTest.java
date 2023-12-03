@@ -2,6 +2,7 @@ package service;
 
 import interfaces.model.ITransactionData;
 import model.Account;
+import model.AccountData;
 import model.Currency;
 import model.TransactionDepositData;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,9 +20,9 @@ class TransactionServiceTest {
 
     @BeforeEach
     void init() {
-        var acc1 = new Account("a@gm.com", usd);
-        var acc2 = new Account("a@gm.com", eur);
-        var acc3 = new Account("alex@gm.com", pln);
+        var acc1 = new AccountData("a@gm.com", usd);
+        var acc2 = new AccountData("a@gm.com", eur);
+        var acc3 = new AccountData("alex@gm.com", pln);
 
         ITransactionData tr1 = new TransactionDepositData(acc1, 100);
         ITransactionData tr2 = new TransactionDepositData(acc2, 100);

@@ -2,6 +2,7 @@ package repository;
 
 import interfaces.model.ITransactionData;
 import model.Account;
+import model.AccountData;
 import model.Currency;
 import model.TransactionDepositData;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,9 @@ class TransactionRepositoryTest {
     Currency cad = new Currency("CAD", "Canadian Dollar");
     Currency uah = new Currency("UAH", "Ukrainian Hryvnia");
 
-    Account acc1 = new Account("a@gm.com", usd);
-    Account acc2 = new Account("a@gm.com", eur);
-    Account acc3 = new Account("alex@gm.com", pln);
+    AccountData acc1 = new AccountData("a@gm.com", usd);
+    AccountData acc2 = new AccountData("a@gm.com", eur);
+    AccountData acc3 = new AccountData("alex@gm.com", pln);
 
     ITransactionData tr1 = new TransactionDepositData(acc1, 100);
     ITransactionData tr2 = new TransactionDepositData(acc2, 100);

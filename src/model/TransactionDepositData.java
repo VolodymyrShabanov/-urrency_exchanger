@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TransactionDepositData implements ITransactionData {
-    private final Account targetAccount;
+    private final AccountData targetAccount;
 
     private final double targetTransactionAmount;
 
@@ -17,7 +17,7 @@ public class TransactionDepositData implements ITransactionData {
 
     private final LocalDateTime transactionDate;
 
-    public TransactionDepositData(Account targetAccount, double targetTransactionAmount) {
+    public TransactionDepositData(AccountData targetAccount, double targetTransactionAmount) {
         this.targetAccount = targetAccount;
         this.targetTransactionAmount = targetTransactionAmount;
 
@@ -26,7 +26,7 @@ public class TransactionDepositData implements ITransactionData {
         transactionDate = LocalDate.now().atStartOfDay();
     }
 
-    public Account getTargetAccount() {
+    public AccountData getTargetAccount() {
         return targetAccount;
     }
 
@@ -82,7 +82,7 @@ public class TransactionDepositData implements ITransactionData {
     }
 
     @Override
-    public List<Account> getAccounts() {
+    public List<AccountData> getAccounts() {
         return List.of(targetAccount);
     }
 
