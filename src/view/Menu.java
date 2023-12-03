@@ -3,6 +3,7 @@ package view;
 
 import exceptions.DataAlreadyExistsException;
 import exceptions.DataInUseException;
+import exceptions.LoginException;
 import exceptions.TransactionException;
 import model.*;
 import service.AccountService;
@@ -89,7 +90,11 @@ public class Menu {
 
                     clearConsole();
 
-                    userService.createUser(tempEmail, tempPass, UserRole.USER);
+                    try {
+                        userService.createUser(tempEmail, tempPass, UserRole.USER);
+                    } catch (DataInUseException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
@@ -107,7 +112,15 @@ public class Menu {
 
                     clearConsole();
 
-                    switch (userService.login(tempEmail, tempPass)) {
+                    UserRole loginResult;
+
+                    try {
+                        loginResult = userService.login(tempEmail, tempPass);
+                    } catch (LoginException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    switch (loginResult) {
                         case USER:
                             isMenuRunning = false;
                             state = UserRole.USER;
@@ -149,7 +162,15 @@ public class Menu {
         while (isMenuRunning) {
             clearConsole();
 
-            System.out.printf("                       Welcome %s!\n\n", userService.getCurrentUserEmail().get());
+            String currentUserEmail;
+
+            try {
+                currentUserEmail = userService.getCurrentUserEmail();
+            } catch (LoginException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.printf("                       Welcome %s!\n\n", currentUserEmail);
             System.out.println(
                     "1. Exchange Currency   | 4. Open Account    | 6. Transaction History\n" +
                             "                       |                    |\n" +
@@ -203,8 +224,8 @@ public class Menu {
 
                     clearConsole();
 
-                    AccountData currentAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), currentCurrency);
-                    AccountData targetAccount = accountService.getAccountData(userService.getCurrentUserEmail().get(), targetCurrency);
+                    AccountData currentAccount = accountService.getAccountData(currentUserEmail, currentCurrency);
+                    AccountData targetAccount = accountService.getAccountData(currentUserEmail, targetCurrency);
 
                     TransactionExchangeData exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
 
@@ -212,19 +233,17 @@ public class Menu {
 
                     try {
                         accountService.withdrawCurrency(
-                                userService.getCurrentUserEmail().get(),
+                                currentUserEmail,
                                 exchangeData.getCurrentTransactionAmount(),
                                 currentCurrency
                         );
 
                         accountService.depositCurrency(
-                                userService.getCurrentUserEmail().get(),
+                                currentUserEmail,
                                 exchangeData.getTargetTransactionAmount(),
                                 targetCurrency
                         );
-                    } catch (TransactionException e) {
-                        throw new RuntimeException(e);
-                    } catch (DataAlreadyExistsException e) {
+                    } catch (TransactionException | DataAlreadyExistsException e) {
                         throw new RuntimeException(e);
                     }
                     break;
@@ -245,7 +264,7 @@ public class Menu {
                         currencyService.getCurrencyByCode(currencyType);
 
                         dataDeposit = accountService.depositCurrency(
-                                userService.getCurrentUserEmail().get(),
+                                currentUserEmail,
                                 depositSum,
                                 currencyService.getCurrencyByCode(currencyType)
                         );
@@ -288,7 +307,7 @@ public class Menu {
                         currencyType = scanner.nextLine();
 
                         dataWithdraw = accountService.withdrawCurrency(
-                                userService.getCurrentUserEmail().get(),
+                                currentUserEmail,
                                 depositSum,
                                 currencyService.getCurrencyByCode(currencyType)
                         );
@@ -318,10 +337,6 @@ public class Menu {
                 case "4":
                     clearConsole();
 
-                    String email = userService.getCurrentUserEmail().get();
-
-                    clearConsole();
-
                     try {
                         System.out.println("Enter deposit sum:");
                         depositSum = scanner.nextDouble();
@@ -332,7 +347,7 @@ public class Menu {
                         System.out.println("Enter currency type:");
                         currencyType = scanner.nextLine();
 
-                        accountService.openAccount(email, depositSum, currencyService.getCurrencyByCode(currencyType));
+                        accountService.openAccount(currentUserEmail, depositSum, currencyService.getCurrencyByCode(currencyType));
                     } catch (InputMismatchException e) {
                         System.err.println("Error: please provide correct input.");
 
@@ -364,7 +379,7 @@ public class Menu {
                         clearConsole();
 
                         accountService.closeAccount(
-                                userService.getCurrentUserEmail().get(),
+                                currentUserEmail,
                                 currencyService.getCurrencyByCode(currencyType)
                         );
                     } catch (InputMismatchException e) {
@@ -397,7 +412,7 @@ public class Menu {
 
                         switch (ans) {
                             case "1":
-                                transactionService.displayTransactionsByUserEmail(userService.getCurrentUserEmail().get());
+                                transactionService.displayTransactionsByUserEmail(currentUserEmail);
                                 break;
                             case "2":
                                 System.out.println("Enter currency code:");
@@ -437,10 +452,10 @@ public class Menu {
                         clearConsole();
 
                         if (currencyType.isBlank())
-                            accountService.printUserAccounts(userService.getCurrentUserEmail().get());
+                            accountService.printUserAccounts(currentUserEmail);
                         else
                             accountService.printUserAccount(
-                                    userService.getCurrentUserEmail().get(),
+                                    currentUserEmail,
                                     currencyService.getCurrencyByCode(currencyType)
                             );
                     } catch (InputMismatchException e) {

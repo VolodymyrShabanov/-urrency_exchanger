@@ -1,18 +1,18 @@
 package interfaces.service;
 
+import exceptions.DataInUseException;
+import exceptions.LoginException;
 import util.UserRole;
-
-import java.util.Optional;
 
 public interface IUserService {
 
-    Optional<String> getCurrentUserEmail();
+    String getCurrentUserEmail() throws LoginException;
 
-    boolean createUser(String email, String password, UserRole role);
+    boolean createUser(String email, String password, UserRole role) throws DataInUseException;
 
-    UserRole login(String email, String password);
+    UserRole login(String email, String password) throws LoginException;
 
-    boolean logout();
+    boolean logout() throws LoginException;
 
-    UserRole assignUserRole(String userEmail, UserRole newRole);
+    UserRole assignUserRole(String userEmail, UserRole newRole) throws LoginException;
 }

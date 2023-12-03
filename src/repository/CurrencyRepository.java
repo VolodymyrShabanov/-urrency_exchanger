@@ -26,7 +26,7 @@ public class CurrencyRepository implements ICurrencyRepository {
 
             return Optional.of(new Currency(currency));
         } else {
-            throw new DataInUseException("Error: this currency already exist.");
+            throw new DataInUseException("Error: this currency already exists.");
         }
     }
 
