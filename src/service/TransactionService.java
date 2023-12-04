@@ -34,11 +34,11 @@ public class TransactionService implements ITransactionService {
             throw new DataNotFoundException("Error: this user's history doesn't exist.");
         }
 
-        System.out.printf("User %s transaction history:\n", dataList.get().get(0).getUserEmail());
+        System.out.printf("\n-----------------user '%s' transaction history:\n", dataList.get().get(0).getUserEmail());
 
-        dataList.get().forEach(dataEl -> {
-            System.out.println(dataEl.getInfo());
-        });
+        for (int i = 0; i < dataList.get().size(); i++) {
+            System.out.printf("%d. %s\n\n", (i + 1), dataList.get().get(i).getInfo());
+        }
 
         return true;
     }
@@ -51,11 +51,11 @@ public class TransactionService implements ITransactionService {
             throw new DataNotFoundException("Error: this user's history doesn't exist.");
         }
 
-        System.out.printf("%s currency transaction history:\n", currency.getCode());
+        System.out.printf("\n-----------------%s currency transaction history:\n", currency.getCode());
 
-        dataList.get().forEach(dataEl -> {
-            System.out.println(dataEl.getInfo());
-        });
+        for (int i = 0; i < dataList.get().size(); i++) {
+            System.out.printf("%d. %s\n\n", (i + 1), dataList.get().get(i).getInfo());
+        }
 
         return true;
     }

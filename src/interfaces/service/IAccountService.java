@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public interface IAccountService {
 
-    TransactionDepositData openAccount(String email, double depositSum, Currency currency) throws DataAlreadyExistsException;
+    TransactionDepositData openAccount(String email, double depositSum, Currency currency) throws DataAlreadyExistsException, TransactionException;
 
     boolean closeAccount(String email, Currency currency) throws DataInUseException;
 
-    TransactionDepositData depositCurrency(String email, double depositSum, Currency currency) throws DataAlreadyExistsException;
+    TransactionDepositData depositCurrency(String email, double depositSum, Currency currency) throws DataAlreadyExistsException, TransactionException;
 
     TransactionWithdrawData withdrawCurrency(String email, double withdrawalSum, Currency currency) throws TransactionException;
 

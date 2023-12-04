@@ -9,7 +9,6 @@ import service.TransactionService;
 import service.UserService;
 import util.UserRole;
 
-import javax.xml.crypto.Data;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -58,8 +57,8 @@ public class Menu {
     private void runGuestMenu() {
         boolean isMenuRunning = true;
 
-        String tempEmail = "";
-        String tempPass = "";
+        String tempEmail;
+        String tempPass;
 
         while (isMenuRunning) {
             clearConsole();
@@ -245,7 +244,7 @@ public class Menu {
                         currentAccount = accountService.getAccountData(currentUserEmail, currentCurrency);
                         targetAccount = accountService.getAccountData(currentUserEmail, targetCurrency);
                         exchangeData = currencyService.exchangeCurrency(currentAccount, targetAccount, currentAmount);
-                    } catch (DataNotFoundException e) {
+                    } catch (DataNotFoundException | TransactionException e) {
                         System.err.println(e.getMessage());
 
                         System.out.println("Press enter to continue...");
@@ -307,7 +306,7 @@ public class Menu {
                         scanner.nextLine();
 
                         break;
-                    } catch (NoSuchElementException | DataAlreadyExistsException e) {
+                    } catch (NoSuchElementException | DataAlreadyExistsException | TransactionException e) {
                         System.err.println("Error: data you've provided doesn't exist.");
 
                         System.out.println("Press enter to continue...");
@@ -375,7 +374,7 @@ public class Menu {
                         currencyType = scanner.nextLine();
 
                         accountService.openAccount(currentUserEmail, depositSum, currencyService.getCurrencyByCode(currencyType));
-                    } catch (InputMismatchException e) {
+                    } catch (InputMismatchException | TransactionException e) {
                         System.err.println("Error: please provide correct input.");
 
                         System.out.println("Press enter to continue...");
@@ -434,6 +433,7 @@ public class Menu {
                     System.out.println("Display user transaction history:\n" +
                             "1. All transactions\n" +
                             "2. By currency");
+
                     try {
                         ans = scanner.nextLine();
 
@@ -470,6 +470,7 @@ public class Menu {
 
                     System.out.println("Press enter to continue...");
                     scanner.nextLine();
+
                     break;
                 case "7":
                     clearConsole();
@@ -577,12 +578,18 @@ public class Menu {
                         System.out.println("Enter Current currency:");
                         editCurrency1 = scanner.nextLine();
 
+                        clearConsole();
+
                         System.out.println("Enter Target currency:");
                         editCurrency2 = scanner.nextLine();
+
+                        clearConsole();
 
                         System.out.println("Enter exchange rate:");
                         editRate = scanner.nextDouble();
                         scanner.nextLine();
+
+                        clearConsole();
 
                         currencyService.updateExchangeRate(editCurrency1, editCurrency2, editRate);
                     } catch (InputMismatchException e) {
@@ -612,6 +619,8 @@ public class Menu {
 
                     try {
                         currencyToDelete = currencyService.getCurrencyByCode(queryCodeToDelete);
+
+                        clearConsole();
 
                         currencyService.deleteCurrency(currencyToDelete);
                     } catch (InputMismatchException e) {

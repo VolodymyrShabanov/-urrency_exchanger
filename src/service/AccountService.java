@@ -21,8 +21,12 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public TransactionDepositData openAccount(String userEmail, double depositSum, Currency currency) throws DataAlreadyExistsException {
+    public TransactionDepositData openAccount(String userEmail, double depositSum, Currency currency) throws DataAlreadyExistsException, TransactionException {
         boolean accountExists = accountRepository.accountExists(userEmail, currency);
+
+        if(depositSum < 1) {
+            throw new TransactionException("Error: invalid deposit sum.");
+        }
 
         if (!accountExists) {
             Optional<Account> newAccount = accountRepository.createAccount(userEmail, depositSum, currency);
@@ -44,7 +48,9 @@ public class AccountService implements IAccountService {
         } else {
             if (account.get().getBalance() == 0) {
                 accountRepository.deleteAccount(userEmail, currency);
-                System.out.printf("%s account successfully closed.\n", currency.toString());
+
+                System.out.printf("- %s account successfully closed.\n", account.get().getCurrency().getCode());
+
                 return true;
             } else {
                 throw new DataInUseException("Error: account can't be closed (account balance isn't empty).");
@@ -53,34 +59,62 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public TransactionDepositData depositCurrency(String userEmail, double depositSum, Currency currency) throws DataAlreadyExistsException {
+    public TransactionDepositData depositCurrency(String userEmail, double depositSum, Currency currency)
+            throws DataAlreadyExistsException, TransactionException {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
+
+        if(depositSum < 1) {
+            throw new TransactionException("Error: invalid deposit sum.");
+        }
 
         if (account.isPresent()) {
             AccountData accountData = new AccountData(account.get());
 
+            TransactionDepositData transactionData = new TransactionDepositData(accountData, depositSum);
+
             account.get().deposit(depositSum);
+
+            System.out.printf("- %s %s deposited\n",
+                    transactionData.getFormattedTargetAmount(),
+                    transactionData.getCurrencies().get(0).getCode()
+            );
 
             return new TransactionDepositData(accountData, depositSum);
         } else {
             TransactionDepositData transactionData = openAccount(userEmail, depositSum, currency);
-            System.out.printf("%s account is open \n%f %s added\n", currency.toString(), depositSum, currency.toString());
+            System.out.printf("- %s account is open \n- %s %s deposited\n",
+                    transactionData.getCurrencies().get(0).getCode(),
+                    transactionData.getFormattedTargetAmount(),
+                    transactionData.getCurrencies().get(0).getCode()
+            );
 
             return transactionData;
         }
     }
 
     @Override
-    public TransactionWithdrawData withdrawCurrency(String userEmail, double withdrawalSum, Currency currency) throws TransactionException, DataNotFoundException {
+    public TransactionWithdrawData withdrawCurrency(String userEmail, double withdrawalSum, Currency currency)
+            throws TransactionException, DataNotFoundException {
         Optional<Account> account = accountRepository.fetchAccount(userEmail, currency);
+
+        if(withdrawalSum < 1) {
+            throw new TransactionException("Error: invalid withdrawal sum.");
+        }
 
         if (account.isPresent()) {
             if (account.get().getBalance() >= withdrawalSum) {
                 AccountData accountData = new AccountData(account.get());
 
+                TransactionWithdrawData transactionData = new TransactionWithdrawData(accountData, withdrawalSum);
+
                 account.get().withdraw(withdrawalSum);
 
-                return new TransactionWithdrawData(accountData, withdrawalSum);
+                System.out.printf("- %s %s withdrawn\n",
+                        transactionData.getFormattedCurrentAmount(),
+                        transactionData.getCurrencies().get(0).getCode()
+                );
+
+                return transactionData;
             } else {
                 throw new TransactionException("Error: there is not enough balance.");
             }

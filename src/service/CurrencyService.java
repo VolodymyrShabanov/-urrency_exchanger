@@ -4,6 +4,7 @@ package service;
 import exceptions.DataInUseException;
 import exceptions.DataInitializationException;
 import exceptions.DataNotFoundException;
+import exceptions.TransactionException;
 import interfaces.service.ICurrencyService;
 import model.*;
 import repository.CurrencyRepository;
@@ -32,11 +33,15 @@ public class CurrencyService implements ICurrencyService {
 
     @Override
     public TransactionExchangeData exchangeCurrency(AccountData current, AccountData target, double amount)
-            throws DataNotFoundException {
+            throws DataNotFoundException, TransactionException {
         Optional<ExchangeRate> exchangeRate = exchangeRateRepository.getExchangeRate(
                 current.getCurrency(),
                 target.getCurrency()
         );
+
+        if(amount < 1) {
+            throw new TransactionException("Error: invalid exchange sum.");
+        }
 
         if (exchangeRate.isEmpty()) {
             throw new DataNotFoundException("Error: this exchange rate doesn't exist.");
@@ -71,11 +76,12 @@ public class CurrencyService implements ICurrencyService {
         }
 
         currencyRepository.deleteCurrencyByCode(currency.get().getCode());
-        System.out.printf("Currency '%s' has successfully been deleted.\n", currencyToDelete.getName());
+        System.out.printf("- Currency '%s' has successfully been deleted.\n", currencyToDelete.getName());
     }
 
     @Override
-    public ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate) throws DataNotFoundException, DataInUseException {
+    public ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate)
+            throws DataNotFoundException, DataInUseException {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
 
@@ -111,7 +117,7 @@ public class CurrencyService implements ICurrencyService {
         }
 
         exchangeRate.get().setRate(newRate);
-        System.out.println("Exchange Rate has successfully been updated.");
+        System.out.printf("- Exchange rate (%s --> %s) has successfully been updated.\n", currentCode, targetCode);
 
         return new ExchangeRate(exchangeRate.get());
     }
@@ -120,8 +126,9 @@ public class CurrencyService implements ICurrencyService {
     public Currency getCurrencyByCode(String code) throws DataNotFoundException {
         Optional<Currency> currencyOptional = currencyRepository.getCurrencyByCode(code);
 
-        if (currencyOptional.isEmpty())
+        if (currencyOptional.isEmpty()) {
             throw new DataNotFoundException("Error: currency with this code doesn't exist.");
+        }
 
         return currencyOptional.get();
     }

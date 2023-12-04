@@ -81,8 +81,8 @@ public class AccountServiceTest {
 
         try {
             accountService.openAccount("andrey@gmail.com", 1000, EUR);
-            assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, EUR).getCurrentAmount(), "1000");
-            assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, PLN).getCurrentAmount(), "1000");
+            assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, EUR).getFormattedTargetAmount(), "1000");
+            assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, PLN).getFormattedTargetAmount(), "1000");
         } catch (DataAlreadyExistsException e) {
             throw new RuntimeException(e);
         }
@@ -95,13 +95,13 @@ public class AccountServiceTest {
 
         try {
             accountService.openAccount("simon@gmail.com", 1000, EUR);
-            assertEquals(accountService.withdrawCurrency("simon@gmail.com", 999, EUR).getCurrentAmount(), "999");
+            assertEquals(accountService.withdrawCurrency("simon@gmail.com", 999, EUR).getFormattedCurrentAmount(), "999");
         } catch (DataAlreadyExistsException | TransactionException e) {
             throw new RuntimeException(e);
         }
 
         assertThrows(DataNotFoundException.class , () -> {
-            accountService.withdrawCurrency("andrey@gmail.com", 1000, PLN).getCurrentAmount();
+            accountService.withdrawCurrency("andrey@gmail.com", 1000, PLN).getFormattedCurrentAmount();
         });
     }
 }

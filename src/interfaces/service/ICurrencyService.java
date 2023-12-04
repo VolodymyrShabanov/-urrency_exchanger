@@ -1,11 +1,12 @@
 package interfaces.service;
 
 import exceptions.DataInUseException;
+import exceptions.TransactionException;
 import model.*;
 
 public interface ICurrencyService {
 
-    TransactionExchangeData exchangeCurrency(AccountData current, AccountData target, double amount);
+    TransactionExchangeData exchangeCurrency(AccountData current, AccountData target, double amount) throws TransactionException;
 
     Currency addCurrency(String code, String name) throws DataInUseException;
 

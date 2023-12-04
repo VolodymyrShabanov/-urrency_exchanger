@@ -50,18 +50,21 @@ public class TransactionWithdrawData implements ITransactionData {
         return currentAccount.toString();
     }
 
-    public String getCurrentAmount() {
+    public String getFormattedCurrentAmount() {
         DecimalFormat df = new DecimalFormat("0.##");
+
         return df.format(currentTransactionAmount);
     }
 
     @Override
     public String getInfo() {
-        return String.format("%s withdrawn %f (-%f) from %s account\nDate: %s",
+        return String.format("%s withdrawn %s %s (-%s %s) from %s account\nDate: %s",
                 currentAccount.getUserEmail(),
-                currentTransactionAmount,
-                currentTransactionAmount,
+                getFormattedCurrentAmount(),
                 currentAccount.getCurrency().getCode(),
+                getFormattedCurrentAmount(),
+                currentAccount.getCurrency().getCode(),
+                currentAccount.getCurrency().getName(),
                 transactionDate.toString()
         );
     }

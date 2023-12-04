@@ -6,6 +6,8 @@ public interface IAccount {
 
     String getUserEmail();
 
+    String getFormattedBalance();
+
     double getBalance();
 
     Currency getCurrency();

@@ -58,8 +58,20 @@ public class TransactionExchangeData implements ITransactionData {
         return currentTransactionAmount;
     }
 
+    public String getFormattedCurrentAmount() {
+        DecimalFormat df = new DecimalFormat("0.##");
+
+        return df.format(currentTransactionAmount);
+    }
+
     public double getTargetTransactionAmount() {
         return targetTransactionAmount;
+    }
+
+    public String getFormattedTargetAmount() {
+        DecimalFormat df = new DecimalFormat("0.##");
+
+        return df.format(targetTransactionAmount);
     }
 
     public CurrencyTransactionType getCurrencyTransactionType() {
@@ -81,14 +93,14 @@ public class TransactionExchangeData implements ITransactionData {
 
     @Override
     public String getInfo() {
-        return String.format("FROM: %s %s\nTO: %s %s\n\n%f %s --> %f %s\n\nConversion Rate: %f\n",
+        return String.format("\nFROM: %s %s\nTO: %s %s\n\n%s %s --> %s %s\n\nConversion Rate: %f\n",
                 currentAccount.getUserEmail(),
                 currentAccount.getCurrency().getCode(),
                 targetAccount.getUserEmail(),
                 targetAccount.getCurrency().getCode(),
-                currentTransactionAmount,
+                getFormattedCurrentAmount(),
                 currentAccount.getCurrency().getCode(),
-                targetTransactionAmount,
+                getFormattedTargetAmount(),
                 targetAccount.getCurrency().getCode(),
                 conversionRate
         );

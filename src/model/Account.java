@@ -2,6 +2,8 @@ package model;
 
 import interfaces.model.IAccount;
 
+import java.text.DecimalFormat;
+
 public class Account implements IAccount {
 
     private String userEmail;
@@ -28,10 +30,10 @@ public class Account implements IAccount {
 
     @Override
     public String toString() {
-        return String.format("User: %s | Currency: %s | Account Balance %f",
+        return String.format("User: %s | Currency: %s | Account Balance %s",
                 userEmail,
                 currency.toString(),
-                balance
+                getFormattedBalance()
         );
 
     }
@@ -39,6 +41,13 @@ public class Account implements IAccount {
     @Override
     public String getUserEmail() {
         return userEmail;
+    }
+
+    @Override
+    public String getFormattedBalance() {
+        DecimalFormat dc = new DecimalFormat("0.##");
+
+        return dc.format(balance);
     }
 
     @Override

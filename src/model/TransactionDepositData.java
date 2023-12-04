@@ -50,18 +50,21 @@ public class TransactionDepositData implements ITransactionData {
         return targetAccount.toString();
     }
 
-    public String getCurrentAmount() {
+    public String getFormattedTargetAmount() {
         DecimalFormat df = new DecimalFormat("0.##");
+
         return df.format(targetTransactionAmount);
     }
 
     @Override
     public String getInfo() {
-        return String.format("%s deposited %f (+%f) to %s account\nDate: %s",
+        return String.format("%s deposited %s %s (+%s %s) to %s account\nDate: %s",
                 targetAccount.getUserEmail(),
-                targetTransactionAmount,
-                targetTransactionAmount,
+                getFormattedTargetAmount(),
                 targetAccount.getCurrency().getCode(),
+                getFormattedTargetAmount(),
+                targetAccount.getCurrency().getCode(),
+                targetAccount.getCurrency().getName(),
                 transactionDate.toString()
         );
     }
