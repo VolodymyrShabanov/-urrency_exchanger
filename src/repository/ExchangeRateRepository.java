@@ -22,7 +22,7 @@ public class ExchangeRateRepository implements IExchangeRateRepository {
     }
 
     @Override
-    public boolean createExchangeRate(ExchangeRate exchangeRate) {
+    public boolean addExchangeRate(ExchangeRate exchangeRate) {
         String key = generateKey(exchangeRate.getFromCurrency(), exchangeRate.getToCurrency());
 
         if (exchangeRates.containsKey(key)) return false;

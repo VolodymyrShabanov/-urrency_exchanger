@@ -3,6 +3,7 @@ package service;
 
 import exceptions.DataInUseException;
 import exceptions.DataNotFoundException;
+import exceptions.TransactionException;
 import model.Account;
 import model.AccountData;
 import model.Currency;
@@ -17,7 +18,7 @@ public class CurrencyServiceTest {
     public void testCurrencyCreation() {
         CurrencyService currencyService = new CurrencyService();
 
-        // CurrencyService is using initializator
+        // Should throw an exception because CurrencyService is using data initializator
         assertThrows(DataInUseException.class, () -> {
             currencyService.addCurrency("USD", "US Dollar");
         });
@@ -109,13 +110,17 @@ public class CurrencyServiceTest {
 
         var currencyService = new CurrencyService();
 
-        assertEquals("110", currencyService.exchangeCurrency(acc1, acc2, 100).getCurrentAmount());
-        assertEquals("400", currencyService.exchangeCurrency(acc2, acc3, 100).getCurrentAmount());
-        assertEquals("90", currencyService.exchangeCurrency(acc2, acc1, 100).getCurrentAmount());
-        assertEquals("23", currencyService.exchangeCurrency(acc3, acc1, 100).getCurrentAmount());
+        try {
+            assertEquals("110", currencyService.exchangeCurrency(acc1, acc2, 100).getCurrentAmount());
+            assertEquals("400", currencyService.exchangeCurrency(acc2, acc3, 100).getCurrentAmount());
+            assertEquals("90", currencyService.exchangeCurrency(acc2, acc1, 100).getCurrentAmount());
+            assertEquals("23", currencyService.exchangeCurrency(acc3, acc1, 100).getCurrentAmount());
 
-        assertNotEquals("", currencyService.exchangeCurrency(acc2, acc1, 100).getCurrentAmount());
-        assertNotEquals("1234", currencyService.exchangeCurrency(acc3, acc1, 100).getCurrentAmount());
+            assertNotEquals("", currencyService.exchangeCurrency(acc2, acc1, 100).getCurrentAmount());
+            assertNotEquals("1234", currencyService.exchangeCurrency(acc3, acc1, 100).getCurrentAmount());
+        } catch (TransactionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

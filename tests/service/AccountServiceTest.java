@@ -51,7 +51,7 @@ public class AccountServiceTest {
 
         try {
             accountService.openAccount("andrey@gmail.com", 1000, EUR);
-        } catch (DataAlreadyExistsException e) {
+        } catch (DataAlreadyExistsException | TransactionException e) {
             throw new RuntimeException(e);
         }
 
@@ -83,7 +83,7 @@ public class AccountServiceTest {
             accountService.openAccount("andrey@gmail.com", 1000, EUR);
             assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, EUR).getFormattedTargetAmount(), "1000");
             assertEquals(accountService.depositCurrency("andrey@gmail.com", 1000, PLN).getFormattedTargetAmount(), "1000");
-        } catch (DataAlreadyExistsException e) {
+        } catch (DataAlreadyExistsException | TransactionException e) {
             throw new RuntimeException(e);
         }
     }

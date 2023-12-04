@@ -39,7 +39,7 @@ public class CurrencyService implements ICurrencyService {
                 target.getCurrency()
         );
 
-        if(amount < 1) {
+        if (amount < 1) {
             throw new TransactionException("Error: invalid exchange sum.");
         }
 
@@ -59,28 +59,33 @@ public class CurrencyService implements ICurrencyService {
     }
 
     @Override
-    public Currency addCurrency(String code, String name) throws DataNotFoundException, DataInUseException {
-        Optional<Currency> currencyOptional = currencyRepository.addCurrency(code, name);
+    public Currency addCurrency(String currencyCode, String currencyName) throws IllegalArgumentException, DataInUseException {
+        if (currencyRepository.getCurrencyByCode(currencyCode).isPresent() ||
+                currencyRepository.getCurrencyByName(currencyName).isPresent()) {
+            throw new DataInUseException("Error: currencies with similar data already exist.");
+        }
 
-        if (currencyOptional.isEmpty()) throw new DataNotFoundException("Error: this currency doesn't exist.");
+        Optional<Currency> currencyOptional = currencyRepository.addCurrency(currencyCode, currencyName);
+
+        if (currencyOptional.isEmpty()) {
+            throw new IllegalArgumentException("Error: invalid currency data provided.");
+        }
 
         return currencyOptional.get();
     }
 
     @Override
-    public void deleteCurrency(Currency currencyToDelete) throws DataNotFoundException {
-        Optional<Currency> currency = currencyRepository.getCurrencyByCode(currencyToDelete.getCode());
-
-        if (currency.isEmpty()) {
-            throw new DataNotFoundException("Error: currency doesn't exist.");
+    public void deleteCurrency(Currency currencyToDelete, boolean currencyUsed) throws DataInUseException {
+        if (currencyUsed) {
+            throw new DataInUseException("Error: can't delete the currency in use.");
         }
 
-        currencyRepository.deleteCurrencyByCode(currency.get().getCode());
+        currencyRepository.deleteCurrencyByCode(currencyToDelete.getCode());
         System.out.printf("- Currency '%s' has successfully been deleted.\n", currencyToDelete.getName());
     }
 
     @Override
-    public ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate)
+    public void createExchangeRate(String fromCurrency, String toCurrency, double rate)
             throws DataNotFoundException, DataInUseException {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(fromCurrency);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(toCurrency);
@@ -96,13 +101,11 @@ public class CurrencyService implements ICurrencyService {
         }
 
         ExchangeRate newExchangeRate = new ExchangeRate(sourceCurrency.get(), targetCurrency.get(), rate);
-        exchangeRateRepository.createExchangeRate(newExchangeRate);
-
-        return new ExchangeRate(newExchangeRate);
+        exchangeRateRepository.addExchangeRate(newExchangeRate);
     }
 
     @Override
-    public ExchangeRate updateExchangeRate(String currentCode, String targetCode, double newRate) throws DataNotFoundException {
+    public void updateExchangeRate(String currentCode, String targetCode, double newRate) throws DataNotFoundException {
         Optional<Currency> sourceCurrency = currencyRepository.getCurrencyByCode(currentCode);
         Optional<Currency> targetCurrency = currencyRepository.getCurrencyByCode(targetCode);
 
@@ -118,8 +121,6 @@ public class CurrencyService implements ICurrencyService {
 
         exchangeRate.get().setRate(newRate);
         System.out.printf("- Exchange rate (%s --> %s) has successfully been updated.\n", currentCode, targetCode);
-
-        return new ExchangeRate(exchangeRate.get());
     }
 
     @Override

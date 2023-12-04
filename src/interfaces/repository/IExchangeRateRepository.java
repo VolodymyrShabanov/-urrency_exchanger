@@ -10,7 +10,7 @@ public interface IExchangeRateRepository {
 
     Optional<ExchangeRate> getExchangeRate(Currency baseCurrency, Currency targetCurrency);
 
-    boolean createExchangeRate(ExchangeRate exchangeRate);
+    boolean addExchangeRate(ExchangeRate exchangeRate);
 
     Optional<Map<String, ExchangeRate>> getAllExchangeRates();
 

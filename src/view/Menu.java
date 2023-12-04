@@ -548,14 +548,16 @@ public class Menu {
 
             System.out.println("Select:");
 
-            System.out.println("1. Edit Exchange Rate");
-            System.out.println("2. Delete Currency");
-            System.out.println("3. Get Transactions Log");
-            System.out.println("4. Edit User Role");
+            System.out.println("1. Create Exchange Rate");
+            System.out.println("2. Edit Exchange Rate");
+            System.out.println("3. Create New Currency");
+            System.out.println("4. Delete Currency");
+            System.out.println("5. Get Transactions Log");
+            System.out.println("6. Edit User Role");
 
             System.out.println();
 
-            System.out.println("5. Log Out");
+            System.out.println("7. Log Out");
 
             System.out.println();
 
@@ -568,7 +570,50 @@ public class Menu {
                 case "1":
                     clearConsole();
 
-                    Currency currencyToDelete;
+                    String currentCurrency;
+                    String targetCurrency;
+                    double rate;
+
+                    try {
+                        System.out.println("Enter Current currency:");
+                        currentCurrency = scanner.nextLine();
+
+                        clearConsole();
+
+                        System.out.println("Enter Target currency:");
+                        targetCurrency = scanner.nextLine();
+
+                        clearConsole();
+
+                        System.out.println("Enter exchange rate:");
+                        rate = scanner.nextDouble();
+                        scanner.nextLine();
+
+                        clearConsole();
+
+                        currencyService.createExchangeRate(currentCurrency, targetCurrency, rate);
+                    } catch (InputMismatchException e) {
+                        System.err.println("Error: please provide correct input.");
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    } catch (DataNotFoundException | DataInUseException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    }
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
+
+                    break;
+                case "2":
+                    clearConsole();
 
                     String editCurrency1;
                     String editCurrency2;
@@ -597,37 +642,6 @@ public class Menu {
 
                         System.out.println("Press enter to continue...");
                         scanner.nextLine();
-                        break;
-                    } catch (DataNotFoundException e) {
-                        System.err.println(e.getMessage());
-
-                        System.out.println("Press enter to continue...");
-                        scanner.nextLine();
-
-                        break;
-                    }
-
-                    System.out.println("Press enter to continue...");
-                    scanner.nextLine();
-
-                    break;
-                case "2":
-                    System.out.println("Enter currency code you want to delete:");
-                    String queryCodeToDelete = scanner.nextLine();
-
-                    clearConsole();
-
-                    try {
-                        currencyToDelete = currencyService.getCurrencyByCode(queryCodeToDelete);
-
-                        clearConsole();
-
-                        currencyService.deleteCurrency(currencyToDelete);
-                    } catch (InputMismatchException e) {
-                        System.err.println("Error: please provide correct input.");
-
-                        System.out.println("Press enter to continue...");
-                        scanner.nextLine();
 
                         break;
                     } catch (DataNotFoundException e) {
@@ -644,6 +658,74 @@ public class Menu {
 
                     break;
                 case "3":
+                    clearConsole();
+
+                    String currencyCode;
+                    String currencyName;
+
+                    try {
+                        System.out.println("Enter new currency code:");
+                        currencyCode = scanner.nextLine();
+
+                        System.out.println("Enter new currency name:");
+                        currencyName = scanner.nextLine();
+
+                        currencyService.addCurrency(currencyCode, currencyName);
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Error: please provide correct input.");
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    } catch (DataInUseException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    }
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
+
+                    break;
+                case "4":
+                    Currency currencyToDelete;
+                    String queryCodeToDelete;
+                    boolean currencyUsed;
+
+                    clearConsole();
+
+                    try {
+                        System.out.println("Enter currency code you want to delete:");
+                        queryCodeToDelete = scanner.nextLine();
+
+                        currencyToDelete = currencyService.getCurrencyByCode(queryCodeToDelete);
+                        currencyUsed = accountService.isAccountOpenByCurrency(currencyToDelete);
+                        currencyService.deleteCurrency(currencyToDelete, currencyUsed);
+                    } catch (InputMismatchException e) {
+                        System.err.println("Error: please provide correct input.");
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    } catch (DataNotFoundException | DataInUseException e) {
+                        System.err.println(e.getMessage());
+
+                        System.out.println("Press enter to continue...");
+                        scanner.nextLine();
+
+                        break;
+                    }
+
+                    System.out.println("Press enter to continue...");
+                    scanner.nextLine();
+
+                    break;
+                case "5":
                     System.out.println("Select option:\n1. By User Email\n2. By Currency");
                     String queryOption = scanner.nextLine();
 
@@ -702,7 +784,7 @@ public class Menu {
                     scanner.nextLine();
 
                     break;
-                case "4":
+                case "6":
                     System.out.println("Enter user email:");
                     String queryEmail = scanner.nextLine();
 
@@ -735,7 +817,7 @@ public class Menu {
                     scanner.nextLine();
 
                     break;
-                case "5":
+                case "7":
                     isMenuRunning = false;
                     state = UserRole.GUEST;
 

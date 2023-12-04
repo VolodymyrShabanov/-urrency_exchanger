@@ -14,20 +14,16 @@ public class CurrencyRepository implements ICurrencyRepository {
     }
 
     @Override
-    public Optional<Currency> addCurrency(String currencyCode, String currencyName) throws DataInUseException {
+    public Optional<Currency> addCurrency(String currencyCode, String currencyName) {
         if (currencyCode.isBlank() || currencyName.isBlank()) {
-            throw new IllegalArgumentException("Error: empty user input.");
+            return Optional.empty();
         }
 
-        if (getCurrencyByCode(currencyCode).isEmpty() && getCurrencyByName(currencyName).isEmpty()) {
-            Currency currency = new Currency(currencyCode, currencyName);
+        Currency currency = new Currency(currencyCode, currencyName);
 
-            currencies.add(currency);
+        currencies.add(currency);
 
-            return Optional.of(new Currency(currency));
-        } else {
-            throw new DataInUseException("Error: this currency already exists.");
-        }
+        return Optional.of(new Currency(currency));
     }
 
     @Override

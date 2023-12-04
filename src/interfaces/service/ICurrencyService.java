@@ -1,6 +1,7 @@
 package interfaces.service;
 
 import exceptions.DataInUseException;
+import exceptions.DataNotFoundException;
 import exceptions.TransactionException;
 import model.*;
 
@@ -10,11 +11,11 @@ public interface ICurrencyService {
 
     Currency addCurrency(String code, String name) throws DataInUseException;
 
-    void deleteCurrency(Currency currencyToDelete);
+    void deleteCurrency(Currency currencyToDelete, boolean currencyUsed) throws DataInUseException;
 
-    ExchangeRate createExchangeRate(String fromCurrency, String toCurrency, double rate) throws DataInUseException;
+    void createExchangeRate(String fromCurrency, String toCurrency, double rate) throws DataInUseException;
 
-    ExchangeRate updateExchangeRate(String currentCode, String targetCode, double newRate);
+    void updateExchangeRate(String currentCode, String targetCode, double newRate);
 
     Currency getCurrencyByCode(String code);
 

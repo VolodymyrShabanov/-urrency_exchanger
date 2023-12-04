@@ -23,12 +23,12 @@ class ExchangeRateRepositoryTest {
         var eurpln = new ExchangeRate(eur, pln, 4.3);
         var plneur = new ExchangeRate(pln, eur, 0.23);
 
-        exchangeRateRepository.createExchangeRate(eurusd);
-        exchangeRateRepository.createExchangeRate(usdeur);
-        exchangeRateRepository.createExchangeRate(usdpln);
-        exchangeRateRepository.createExchangeRate(plnusd);
-        exchangeRateRepository.createExchangeRate(eurpln);
-        exchangeRateRepository.createExchangeRate(plneur);
+        exchangeRateRepository.addExchangeRate(eurusd);
+        exchangeRateRepository.addExchangeRate(usdeur);
+        exchangeRateRepository.addExchangeRate(usdpln);
+        exchangeRateRepository.addExchangeRate(plnusd);
+        exchangeRateRepository.addExchangeRate(eurpln);
+        exchangeRateRepository.addExchangeRate(plneur);
     }
 
     @Test
@@ -66,14 +66,14 @@ class ExchangeRateRepositoryTest {
         var cadpln = new ExchangeRate(cad, pln, 100);
         var plncad = new ExchangeRate(pln, cad, 0.01);
 
-        assertTrue(exchangeRateRepository.createExchangeRate(usdcad));
-        assertTrue(exchangeRateRepository.createExchangeRate(cadusd));
-        assertTrue(exchangeRateRepository.createExchangeRate(cadpln));
-        assertTrue(exchangeRateRepository.createExchangeRate(plncad));
+        assertTrue(exchangeRateRepository.addExchangeRate(usdcad));
+        assertTrue(exchangeRateRepository.addExchangeRate(cadusd));
+        assertTrue(exchangeRateRepository.addExchangeRate(cadpln));
+        assertTrue(exchangeRateRepository.addExchangeRate(plncad));
 
-        assertFalse(exchangeRateRepository.createExchangeRate(eurusd));
-        assertFalse(exchangeRateRepository.createExchangeRate(usdeur));
-        assertFalse(exchangeRateRepository.createExchangeRate(usdpln));
+        assertFalse(exchangeRateRepository.addExchangeRate(eurusd));
+        assertFalse(exchangeRateRepository.addExchangeRate(usdeur));
+        assertFalse(exchangeRateRepository.addExchangeRate(usdpln));
     }
 
     @Test

@@ -30,10 +30,11 @@ public class Account implements IAccount {
 
     @Override
     public String toString() {
-        return String.format("User: %s | Currency: %s | Account Balance %s",
+        return String.format("User: %s | Currency: %s | Account Balance: %s %s",
                 userEmail,
                 currency.toString(),
-                getFormattedBalance()
+                getFormattedBalance(),
+                currency.getCode()
         );
 
     }

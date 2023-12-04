@@ -12,48 +12,26 @@ class CurrencyRepositoryTest {
     void addCurrency() {
         var currencyRepo = new CurrencyRepository();
 
-        assertDoesNotThrow(() -> {
-            currencyRepo.addCurrency("USD", "US Dollar");
-        });
-        assertDoesNotThrow(() -> {
-            currencyRepo.addCurrency("EUR", "Euro");
-        });
-        assertDoesNotThrow(() -> {
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        });
+        assertTrue(currencyRepo.addCurrency("USD", "US Dollar").isPresent());
+        assertTrue(currencyRepo.addCurrency("EUR", "Euro").isPresent());
+        assertTrue(currencyRepo.addCurrency("PLN", "Polish Zloty").isPresent());
 
-        assertThrows(DataInUseException.class, () -> {
-            currencyRepo.addCurrency("USD", "US Dollar");
-        });
-        assertThrows(DataInUseException.class, () -> {
-            currencyRepo.addCurrency("EUR", "Euro");
-        });
-        assertThrows(DataInUseException.class, () -> {
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        });
+        assertTrue(currencyRepo.addCurrency("USD", "US Dollar").isPresent());
+        assertTrue(currencyRepo.addCurrency("EUR", "Euro").isPresent());
+        assertTrue(currencyRepo.addCurrency("PLN", "Polish Zloty").isPresent());
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            currencyRepo.addCurrency("", "");
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            currencyRepo.addCurrency("", "Rubble");
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            currencyRepo.addCurrency("Pun intended", "");
-        });
+        assertFalse(currencyRepo.addCurrency("", "").isPresent());
+        assertFalse(currencyRepo.addCurrency("", "Rubble").isPresent());
+        assertFalse(currencyRepo.addCurrency("Pun intended", "").isPresent());
     }
 
     @Test
     void getCurrencyByName() {
         var currencyRepo = new CurrencyRepository();
 
-        try {
-            currencyRepo.addCurrency("USD", "US Dollar");
-            currencyRepo.addCurrency("EUR", "Euro");
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        } catch (DataInUseException e) {
-            throw new RuntimeException(e);
-        }
+        currencyRepo.addCurrency("USD", "US Dollar");
+        currencyRepo.addCurrency("EUR", "Euro");
+        currencyRepo.addCurrency("PLN", "Polish Zloty");
 
         assertTrue(currencyRepo.getCurrencyByName("US Dollar").isPresent());
         assertTrue(currencyRepo.getCurrencyByName("Euro").isPresent());
@@ -68,13 +46,9 @@ class CurrencyRepositoryTest {
     void getCurrencyByCode() {
         var currencyRepo = new CurrencyRepository();
 
-        try {
-            currencyRepo.addCurrency("USD", "US Dollar");
-            currencyRepo.addCurrency("EUR", "Euro");
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        } catch (DataInUseException e) {
-            throw new RuntimeException(e);
-        }
+        currencyRepo.addCurrency("USD", "US Dollar");
+        currencyRepo.addCurrency("EUR", "Euro");
+        currencyRepo.addCurrency("PLN", "Polish Zloty");
 
         assertTrue(currencyRepo.getCurrencyByCode("USD").isPresent());
         assertTrue(currencyRepo.getCurrencyByCode("EUR").isPresent());
@@ -91,13 +65,9 @@ class CurrencyRepositoryTest {
 
         assertFalse(currencyRepo.getAllCurrencies().isPresent());
 
-        try {
-            currencyRepo.addCurrency("USD", "US Dollar");
-            currencyRepo.addCurrency("EUR", "Euro");
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        } catch (DataInUseException e) {
-            throw new RuntimeException(e);
-        }
+        currencyRepo.addCurrency("USD", "US Dollar");
+        currencyRepo.addCurrency("EUR", "Euro");
+        currencyRepo.addCurrency("PLN", "Polish Zloty");
 
         assertTrue(currencyRepo.getAllCurrencies().isPresent());
     }
@@ -108,13 +78,9 @@ class CurrencyRepositoryTest {
 
         assertFalse(currencyRepo.deleteCurrencyByCode("USD"));
 
-        try {
-            currencyRepo.addCurrency("USD", "US Dollar");
-            currencyRepo.addCurrency("EUR", "Euro");
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        } catch (DataInUseException e) {
-            throw new RuntimeException(e);
-        }
+        currencyRepo.addCurrency("USD", "US Dollar");
+        currencyRepo.addCurrency("EUR", "Euro");
+        currencyRepo.addCurrency("PLN", "Polish Zloty");
 
         assertTrue(currencyRepo.deleteCurrencyByCode("USD"));
         assertTrue(currencyRepo.deleteCurrencyByCode("EUR"));
@@ -133,13 +99,9 @@ class CurrencyRepositoryTest {
 
         assertFalse(currencyRepo.deleteCurrencyByName("USD"));
 
-        try {
-            currencyRepo.addCurrency("USD", "US Dollar");
-            currencyRepo.addCurrency("EUR", "Euro");
-            currencyRepo.addCurrency("PLN", "Polish Zloty");
-        } catch (DataInUseException e) {
-            throw new RuntimeException(e);
-        }
+        currencyRepo.addCurrency("USD", "US Dollar");
+        currencyRepo.addCurrency("EUR", "Euro");
+        currencyRepo.addCurrency("PLN", "Polish Zloty");
 
         assertTrue(currencyRepo.deleteCurrencyByName("US Dollar"));
         assertTrue(currencyRepo.deleteCurrencyByName("Euro"));
