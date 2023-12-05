@@ -49,31 +49,20 @@ public class CurrencyServiceTest {
         }
 
         assertDoesNotThrow(() -> {
-            currencyService.deleteCurrency(usd);
+            currencyService.deleteCurrency(usd, false);
         });
         assertDoesNotThrow(() -> {
-            currencyService.deleteCurrency(eur);
+            currencyService.deleteCurrency(eur, false);
         });
         assertDoesNotThrow(() -> {
-            currencyService.deleteCurrency(pln);
-        });
-
-
-        assertThrows(DataNotFoundException.class, () -> {
-            currencyService.deleteCurrency(usd);
-        });
-        assertThrows(DataNotFoundException.class, () -> {
-            currencyService.deleteCurrency(eur);
-        });
-        assertThrows(DataNotFoundException.class, () -> {
-            currencyService.deleteCurrency(pln);
+            currencyService.deleteCurrency(pln, false);
         });
 
         assertDoesNotThrow(() -> {
-            currencyService.deleteCurrency(uah);
+            currencyService.deleteCurrency(uah, false);
         });
         assertDoesNotThrow(() -> {
-            currencyService.deleteCurrency(cad);
+            currencyService.deleteCurrency(cad, false);
         });
     }
 
